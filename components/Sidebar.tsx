@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const calculatorCategories = [
+const categories = [
   {
-    label: "금융",
+    label: "금융 계산기",
     items: [
       { title: "환율 계산기", href: "/calculators/exchange-rate" },
       { title: "연봉 실수령액", href: "/calculators/salary" },
@@ -14,10 +14,12 @@ const calculatorCategories = [
       { title: "실업급여 계산기", href: "/calculators/unemployment" },
       { title: "적금 이자 계산기", href: "/calculators/savings" },
       { title: "전월세 전환", href: "/calculators/rent-conversion" },
+      { title: "자동차세 계산기", href: "/calculators/car-tax" },
+      { title: "전기요금 계산기", href: "/calculators/electricity" },
     ],
   },
   {
-    label: "생활",
+    label: "생활 계산기",
     items: [
       { title: "퍼센트 계산기", href: "/calculators/percent" },
       { title: "글자수 세기", href: "/calculators/character-count" },
@@ -28,22 +30,12 @@ const calculatorCategories = [
       { title: "비율 계산기", href: "/calculators/ratio" },
       { title: "BMI 계산기", href: "/calculators/bmi" },
       { title: "음주 측정기", href: "/calculators/alcohol" },
-    ],
-  },
-  {
-    label: "세금/요금",
-    items: [
-      { title: "자동차세 계산기", href: "/calculators/car-tax" },
-      { title: "전기요금 계산기", href: "/calculators/electricity" },
       { title: "연차 계산기", href: "/calculators/annual-leave" },
       { title: "학점 계산기", href: "/calculators/gpa" },
     ],
   },
-];
-
-const toolCategories = [
   {
-    label: "도구",
+    label: "온라인 도구",
     items: [
       { title: "타이머 & 스톱워치", href: "/tools/timer" },
       { title: "JSON 포매터", href: "/tools/json-formatter" },
@@ -59,14 +51,16 @@ const toolCategories = [
 
 export default function Sidebar({ type }: { type: "calculators" | "tools" }) {
   const pathname = usePathname();
-  const categories = type === "calculators"
-    ? [...calculatorCategories, ...toolCategories]
-    : [...toolCategories, ...calculatorCategories];
+
+  // Show current type's categories first
+  const sorted = type === "tools"
+    ? [...categories].sort((a, b) => (a.label === "온라인 도구" ? -1 : b.label === "온라인 도구" ? 1 : 0))
+    : categories;
 
   return (
     <aside className="hidden lg:block w-56 flex-shrink-0">
       <nav className="sticky top-20 space-y-4 max-h-[calc(100vh-6rem)] overflow-y-auto pr-2 pb-8">
-        {categories.map((cat) => (
+        {sorted.map((cat) => (
           <div key={cat.label}>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 px-2">
               {cat.label}

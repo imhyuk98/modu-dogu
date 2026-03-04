@@ -3,42 +3,30 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
-const calculatorCategories = [
-  {
-    label: "금융",
-    items: [
-      { title: "환율 계산기", href: "/calculators/exchange-rate" },
-      { title: "연봉 실수령액", href: "/calculators/salary" },
-      { title: "대출이자 계산기", href: "/calculators/loan" },
-      { title: "퇴직금 계산기", href: "/calculators/retirement" },
-      { title: "실업급여 계산기", href: "/calculators/unemployment" },
-      { title: "적금 이자 계산기", href: "/calculators/savings" },
-      { title: "전월세 전환", href: "/calculators/rent-conversion" },
-    ],
-  },
-  {
-    label: "생활",
-    items: [
-      { title: "퍼센트 계산기", href: "/calculators/percent" },
-      { title: "글자수 세기", href: "/calculators/character-count" },
-      { title: "나이 계산기", href: "/calculators/age" },
-      { title: "날짜 계산기 (D-day)", href: "/calculators/dday" },
-      { title: "평수 계산기", href: "/calculators/pyeong" },
-      { title: "단위 변환기", href: "/calculators/unit-converter" },
-      { title: "비율 계산기", href: "/calculators/ratio" },
-      { title: "BMI 계산기", href: "/calculators/bmi" },
-      { title: "음주 측정기", href: "/calculators/alcohol" },
-    ],
-  },
-  {
-    label: "세금/요금",
-    items: [
-      { title: "자동차세 계산기", href: "/calculators/car-tax" },
-      { title: "전기요금 계산기", href: "/calculators/electricity" },
-      { title: "연차 계산기", href: "/calculators/annual-leave" },
-      { title: "학점 계산기", href: "/calculators/gpa" },
-    ],
-  },
+const financeCalcs = [
+  { title: "환율 계산기", href: "/calculators/exchange-rate" },
+  { title: "연봉 실수령액", href: "/calculators/salary" },
+  { title: "대출이자 계산기", href: "/calculators/loan" },
+  { title: "퇴직금 계산기", href: "/calculators/retirement" },
+  { title: "실업급여 계산기", href: "/calculators/unemployment" },
+  { title: "적금 이자 계산기", href: "/calculators/savings" },
+  { title: "전월세 전환", href: "/calculators/rent-conversion" },
+  { title: "자동차세 계산기", href: "/calculators/car-tax" },
+  { title: "전기요금 계산기", href: "/calculators/electricity" },
+];
+
+const lifeCalcs = [
+  { title: "퍼센트 계산기", href: "/calculators/percent" },
+  { title: "글자수 세기", href: "/calculators/character-count" },
+  { title: "나이 계산기", href: "/calculators/age" },
+  { title: "날짜 계산기", href: "/calculators/dday" },
+  { title: "평수 계산기", href: "/calculators/pyeong" },
+  { title: "단위 변환기", href: "/calculators/unit-converter" },
+  { title: "비율 계산기", href: "/calculators/ratio" },
+  { title: "BMI 계산기", href: "/calculators/bmi" },
+  { title: "음주 측정기", href: "/calculators/alcohol" },
+  { title: "연차 계산기", href: "/calculators/annual-leave" },
+  { title: "학점 계산기", href: "/calculators/gpa" },
 ];
 
 const toolItems = [
@@ -97,9 +85,56 @@ function DropdownMenu({
   );
 }
 
+function MobileSection({
+  label,
+  items,
+  expanded,
+  onToggle,
+  onClose,
+}: {
+  label: string;
+  items: { title: string; href: string }[];
+  expanded: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      <button
+        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        onClick={onToggle}
+      >
+        <span>{label}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {expanded && (
+        <div className="bg-gray-50 px-4 py-2 grid grid-cols-2 gap-x-2 gap-y-0.5">
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block px-2 py-1.5 text-sm text-gray-600 hover:text-blue-600 rounded"
+              onClick={onClose}
+            >
+              {item.title}
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+
+  const closeMobile = () => setMobileOpen(false);
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -114,22 +149,27 @@ export default function Header() {
             홈
           </Link>
 
-          <DropdownMenu label="계산기">
-            {calculatorCategories.map((cat) => (
-              <div key={cat.label}>
-                <p className="px-4 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {cat.label}
-                </p>
-                {cat.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                  >
-                    {item.title}
-                  </Link>
-                ))}
-              </div>
+          <DropdownMenu label="금융 계산기">
+            {financeCalcs.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </DropdownMenu>
+
+          <DropdownMenu label="생활 계산기">
+            {lifeCalcs.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              >
+                {item.title}
+              </Link>
             ))}
           </DropdownMenu>
 
@@ -174,78 +214,39 @@ export default function Header() {
           <Link
             href="/"
             className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobile}
           >
             홈
           </Link>
 
-          {/* Calculator categories */}
-          <button
-            className="w-full flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-            onClick={() => setMobileExpanded(mobileExpanded === "calc" ? null : "calc")}
-          >
-            <span>계산기</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${mobileExpanded === "calc" ? "rotate-180" : ""}`}
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {mobileExpanded === "calc" && (
-            <div className="bg-gray-50">
-              {calculatorCategories.map((cat) => (
-                <div key={cat.label}>
-                  <p className="px-6 py-2 text-xs font-semibold text-gray-400 tracking-wider">
-                    {cat.label}
-                  </p>
-                  {cat.items.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-8 py-2 text-sm text-gray-600 hover:text-blue-600"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {item.title}
-                    </Link>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
+          <MobileSection
+            label="금융 계산기"
+            items={financeCalcs}
+            expanded={mobileExpanded === "finance"}
+            onToggle={() => setMobileExpanded(mobileExpanded === "finance" ? null : "finance")}
+            onClose={closeMobile}
+          />
 
-          {/* Tools */}
-          <button
-            className="w-full flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-            onClick={() => setMobileExpanded(mobileExpanded === "tools" ? null : "tools")}
-          >
-            <span>온라인 도구</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${mobileExpanded === "tools" ? "rotate-180" : ""}`}
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {mobileExpanded === "tools" && (
-            <div className="bg-gray-50">
-              {toolItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="block px-8 py-2 text-sm text-gray-600 hover:text-blue-600"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </div>
-          )}
+          <MobileSection
+            label="생활 계산기"
+            items={lifeCalcs}
+            expanded={mobileExpanded === "life"}
+            onToggle={() => setMobileExpanded(mobileExpanded === "life" ? null : "life")}
+            onClose={closeMobile}
+          />
+
+          <MobileSection
+            label="온라인 도구"
+            items={toolItems}
+            expanded={mobileExpanded === "tools"}
+            onToggle={() => setMobileExpanded(mobileExpanded === "tools" ? null : "tools")}
+            onClose={closeMobile}
+          />
 
           <Link
             href="/about"
             className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 border-t border-gray-100"
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobile}
           >
             소개
           </Link>
