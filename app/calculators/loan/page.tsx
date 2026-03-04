@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateLoan, type LoanResult, type RepaymentType } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function LoanCalculator() {
   const [amount, setAmount] = useState("");
@@ -180,6 +181,7 @@ export default function LoanCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="loan" />
+</div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateRetirement, type RetirementResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function RetirementCalculator() {
   const [startDate, setStartDate] = useState("");
@@ -180,6 +181,7 @@ export default function RetirementCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="retirement" />
+</div>
   );
 }

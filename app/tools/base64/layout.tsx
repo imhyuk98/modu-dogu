@@ -20,5 +20,29 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "Base64 인코더/디코더",
+            description:
+              "텍스트를 Base64로 인코딩하거나 Base64 문자열을 원본 텍스트로 디코딩할 수 있는 무료 온라인 도구입니다.",
+            url: "https://vibe-revenue.pages.dev/tools/base64",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

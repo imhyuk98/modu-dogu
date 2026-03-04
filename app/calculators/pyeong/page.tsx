@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 const PYEONG_TO_SQM = 400 / 121; // 3.305785...
 const PYEONG_TO_SQFT = 35.5832;
@@ -375,6 +376,7 @@ export default function PyeongCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="pyeong" />
+</div>
   );
 }

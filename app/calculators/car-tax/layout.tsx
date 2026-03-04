@@ -24,5 +24,29 @@ export default function CarTaxLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "자동차세 계산기",
+            description:
+              "차량 배기량과 차령에 따른 자동차세(지방세 포함)를 계산할 수 있는 무료 온라인 자동차세 계산기입니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/car-tax",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

@@ -24,5 +24,29 @@ export default function ExchangeRateLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "환율 계산기",
+            description:
+              "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/exchange-rate",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

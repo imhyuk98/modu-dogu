@@ -8,5 +8,29 @@ export const metadata: Metadata = {
 };
 
 export default function LoanLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "대출이자 계산기",
+            description:
+              "대출 원금, 이자율, 기간을 입력하면 원리금균등상환과 원금균등상환 방식의 월 상환금과 총 이자를 자동으로 계산합니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/loan",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

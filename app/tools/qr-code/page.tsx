@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import QRCode from "qrcode";
+import RelatedTools from "@/components/RelatedTools";
 
 type InputTab = "text" | "wifi" | "email";
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
@@ -430,6 +431,7 @@ export default function QrCodeGenerator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="qr-code" />
+</div>
   );
 }

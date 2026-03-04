@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateSavings, type SavingsResult, type SavingsType } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function SavingsCalculator() {
   const [monthly, setMonthly] = useState("");
@@ -197,6 +198,7 @@ export default function SavingsCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="savings" />
+</div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Tab = "timer" | "stopwatch";
 
@@ -590,6 +591,7 @@ export default function TimerStopwatchPage() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="timer" />
+</div>
   );
 }

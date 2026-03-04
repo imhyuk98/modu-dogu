@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 interface CurrencyInfo {
   code: string;
@@ -422,6 +423,7 @@ export default function ExchangeRateCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="exchange-rate" />
+</div>
   );
 }

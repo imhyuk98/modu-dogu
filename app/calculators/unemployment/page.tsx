@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateUnemployment, type UnemploymentResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function UnemploymentCalculator() {
   const [age, setAge] = useState("");
@@ -200,6 +201,7 @@ export default function UnemploymentCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="unemployment" />
+</div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateAge, type AgeResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function AgeCalculator() {
   const [birthDate, setBirthDate] = useState("");
@@ -136,6 +137,7 @@ export default function AgeCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="age" />
+</div>
   );
 }

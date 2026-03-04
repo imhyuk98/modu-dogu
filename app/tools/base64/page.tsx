@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "encode" | "decode";
 
@@ -371,6 +372,7 @@ export default function Base64Tool() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="base64" />
+</div>
   );
 }

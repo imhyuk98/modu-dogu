@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateBMI, type BMIResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 const BMI_RANGES = [
   { label: "저체중", range: "18.5 미만", color: "bg-blue-400" },
@@ -163,6 +164,7 @@ export default function BMICalculator() {
           </ul>
         </div>
       </section>
-    </div>
+          <RelatedTools current="bmi" />
+</div>
   );
 }

@@ -7,5 +7,29 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "실업급여 계산기",
+            description:
+              "나이, 근속연수, 평균 월급을 입력하면 실업급여 일액과 수급 기간을 자동으로 계산합니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/unemployment",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

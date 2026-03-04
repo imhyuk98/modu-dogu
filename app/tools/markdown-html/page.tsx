@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 // ── Pure JS Markdown → HTML parser ──────────────────────────────
 
@@ -638,6 +639,7 @@ ${html}
           ))}
         </div>
       </section>
-    </div>
+          <RelatedTools current="markdown-html" />
+</div>
   );
 }

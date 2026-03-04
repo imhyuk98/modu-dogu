@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateDday, calculateDateDiff, type DdayResult, type DateDiffResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "dday" | "diff";
 
@@ -176,6 +177,7 @@ export default function DdayCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="dday" />
+</div>
   );
 }

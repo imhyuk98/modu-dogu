@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "csv-to-json" | "json-to-csv";
 type Delimiter = "," | "\t" | ";" | "|";
@@ -523,6 +524,7 @@ export default function CsvJsonConverter() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="csv-json" />
+</div>
   );
 }

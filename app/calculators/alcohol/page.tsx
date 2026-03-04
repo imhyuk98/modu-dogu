@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateBAC, type AlcoholResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 const DRINK_PRESETS = [
   { label: "소주 (1잔)", type: "soju", volume: 50, percent: 17 },
@@ -216,6 +217,7 @@ export default function AlcoholCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="alcohol" />
+</div>
   );
 }

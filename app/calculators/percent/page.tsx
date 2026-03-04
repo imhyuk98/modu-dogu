@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Tab = "basic" | "ratio" | "discount" | "change";
 
@@ -596,6 +597,7 @@ export default function PercentCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="percent" />
+</div>
   );
 }

@@ -24,5 +24,29 @@ export default function PyeongLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "평수 계산기",
+            description:
+              "평(坪)을 제곱미터(㎡)로, 제곱미터를 평으로 간편하게 변환할 수 있는 무료 온라인 평수 계산기입니다. 아파트, 오피스텔, 상가 면적 변환에 활용하세요.",
+            url: "https://vibe-revenue.pages.dev/calculators/pyeong",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

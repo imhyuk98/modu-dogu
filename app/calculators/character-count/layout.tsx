@@ -20,5 +20,29 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "글자수 세기",
+            description:
+              "입력한 텍스트의 글자수, 공백 포함/제외 문자수, 단어수, 바이트 수를 실시간으로 계산하는 무료 온라인 글자수 세기 도구입니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/character-count",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

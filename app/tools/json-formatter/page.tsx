@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 const SAMPLE_JSON = {
   name: "홍길동",
@@ -358,6 +359,7 @@ export default function JsonFormatterPage() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="json-formatter" />
+</div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 interface UploadedFile {
   id: string;
@@ -592,6 +593,7 @@ export default function ImageConverter() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="image-converter" />
+</div>
   );
 }

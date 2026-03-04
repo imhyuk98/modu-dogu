@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 interface CharStats {
   totalChars: number;
@@ -432,6 +433,7 @@ export default function CharacterCountPage() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="character-count" />
+</div>
   );
 }

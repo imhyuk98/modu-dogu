@@ -7,5 +7,29 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "단위 변환기",
+            description:
+              "길이(cm, inch, ft), 무게(kg, lb, oz), 온도(℃, ℉) 등 다양한 단위를 간편하게 변환합니다.",
+            url: "https://vibe-revenue.pages.dev/calculators/unit-converter",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Season = "other" | "summer" | "winter";
 type HousingType = "low" | "high";
@@ -632,6 +633,7 @@ function Row({
       >
         {value.toLocaleString("ko-KR")}원
       </span>
-    </div>
+          <RelatedTools current="electricity" />
+</div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 // --- Color conversion utilities ---
 
@@ -544,6 +545,7 @@ export default function ColorConverterPage() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="color-converter" />
+</div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { calculateSalary, type SalaryResult } from "@/lib/calculations";
 import type { Metadata } from "next";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function SalaryCalculator() {
   const [salary, setSalary] = useState("");
@@ -267,6 +268,7 @@ function Row({
       >
         {formatted}
       </span>
-    </div>
+          <RelatedTools current="salary" />
+</div>
   );
 }

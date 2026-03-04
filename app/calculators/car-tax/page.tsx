@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type VehicleType = "non-business" | "business" | "electric" | "hybrid";
 
@@ -633,6 +634,7 @@ function Row({
       >
         {formatted}
       </span>
-    </div>
+          <RelatedTools current="car-tax" />
+</div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 type Category = "length" | "weight" | "temperature" | "area" | "volume";
 
@@ -198,6 +199,7 @@ export default function UnitConverter() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="unit-converter" />
+</div>
   );
 }

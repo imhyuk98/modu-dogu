@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calculateAnnualLeave, type AnnualLeaveResult } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 export default function AnnualLeaveCalculator() {
   const [startDate, setStartDate] = useState("");
@@ -149,6 +150,7 @@ export default function AnnualLeaveCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="annual-leave" />
+</div>
   );
 }

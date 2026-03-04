@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { convertJeonseToMonthly, convertMonthlyToJeonse } from "@/lib/calculations";
+import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "toMonthly" | "toJeonse";
 
@@ -243,6 +244,7 @@ export default function RentConversionCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="rent-conversion" />
+</div>
   );
 }

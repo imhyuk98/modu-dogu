@@ -20,5 +20,29 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "CSV JSON 변환기",
+            description:
+              "CSV 데이터를 JSON으로, JSON 데이터를 CSV로 간편하게 변환할 수 있는 무료 온라인 도구입니다.",
+            url: "https://vibe-revenue.pages.dev/tools/csv-json",
+            applicationCategory: "UtilityApplication",
+            operatingSystem: "All",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "KRW",
+            },
+          }),
+        }}
+      />
+      {children}
+    </>
+  );
 }

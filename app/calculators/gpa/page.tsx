@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 interface Subject {
   id: number;
@@ -461,6 +462,7 @@ export default function GpaCalculator() {
           </div>
         </div>
       </section>
-    </div>
+          <RelatedTools current="gpa" />
+</div>
   );
 }
