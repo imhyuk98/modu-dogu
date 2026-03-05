@@ -67,9 +67,30 @@ export default function BloodTypeCalculator() {
   const [father, setFather] = useState<BloodType>("A");
   const [mother, setMother] = useState<BloodType>("B");
   const [result, setResult] = useState<Record<BloodType, number> | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleCalculate = () => {
     setResult(calculateBloodType(father, mother));
+  };
+
+  const handleReset = () => {
+    setFather("A");
+    setMother("B");
+    setResult(null);
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const possible = bloodTypes.filter((bt) => result[bt] > 0).map((bt) => `${bt}형 ${result[bt]}%`).join(", ");
+    const text = `아빠 ${father}형 + 엄마 ${mother}형 = ${possible}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
@@ -142,12 +163,20 @@ export default function BloodTypeCalculator() {
           <span className="text-gray-500 font-medium">?</span>
         </div>
 
-        <button
-          onClick={handleCalculate}
-          className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg text-lg"
-        >
-          아기 혈액형 확인하기
-        </button>
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={handleCalculate}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg text-lg"
+          >
+            아기 혈액형 확인하기
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
+          </button>
+        </div>
       </div>
 
       {/* 결과 영역 */}
@@ -155,7 +184,15 @@ export default function BloodTypeCalculator() {
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-6 text-center">
             <p className="text-pink-100 text-sm mb-1">아빠 {father}형 + 엄마 {mother}형</p>
-            <p className="text-2xl font-bold">아기 혈액형 확률</p>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-2xl font-bold">아기 혈액형 확률</p>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-pink-200 rounded hover:bg-white/20 transition-colors text-pink-100"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
           </div>
 
           <div className="p-6">

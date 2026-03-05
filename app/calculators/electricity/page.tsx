@@ -201,7 +201,7 @@ export default function ElectricityCalculator() {
         전기요금 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2024년 한국전력 기준 가정용 전기요금을 누진제로 계산합니다.
+        2025년 한국전력 기준 가정용 전기요금을 누진제로 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -417,7 +417,7 @@ export default function ElectricityCalculator() {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             전기요금 누진제는 전력 사용량이 많을수록 더 높은 단가가 적용되는
-            요금 체계입니다. 2024년 기준 가정용 전기요금은 3구간 누진 체계로
+            요금 체계입니다. 2025년 기준 가정용 전기요금은 3구간 누진 체계로
             운영되며, 사용량이 많아질수록 기본요금과 kWh당 단가가 모두
             올라갑니다. 하계(7~8월)에는 냉방 수요를 고려하여 구간 기준이
             완화되며, 1,000kWh를 초과하는 슈퍼유저 구간이 별도로 적용됩니다.
@@ -496,7 +496,7 @@ export default function ElectricityCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            주택용(저압) 전기요금표 (2024년 기준)
+            주택용(저압) 전기요금표 (2025년 기준)
           </h2>
           <div className="overflow-x-auto">
             <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">

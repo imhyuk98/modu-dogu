@@ -1,4 +1,4 @@
-// 2024년 기준 4대보험 요율
+// 2025년 기준 4대보험 요율
 const INSURANCE_RATES = {
   nationalPension: 0.045, // 국민연금 4.5%
   healthInsurance: 0.03545, // 건강보험 3.545%
@@ -54,7 +54,7 @@ function calculateIncomeTax(monthlyGross: number): number {
     earnedIncome - personalDeduction - pensionDeduction - healthDeduction - employmentDeduction
   );
 
-  // 소득세율 (2024년 기준)
+  // 소득세율 (2025년 기준)
   let tax = 0;
   if (taxableIncome <= 14_000_000) {
     tax = taxableIncome * 0.06;
@@ -556,7 +556,7 @@ export function calculateUnemployment(
   let dailyAmount = Math.round(dailyWage * 0.6);
 
   // 상한: 66,000원 / 하한: 최저임금의 80% × 1일 소정근로시간(8h)
-  const lowerLimit = Math.round(9860 * 0.8 * 8); // 2024 최저임금 기준
+  const lowerLimit = Math.round(10030 * 0.8 * 8); // 2025 최저임금 기준
   dailyAmount = Math.min(66000, Math.max(lowerLimit, dailyAmount));
 
   // 소정급여일수 (나이 + 근속연수 기준)

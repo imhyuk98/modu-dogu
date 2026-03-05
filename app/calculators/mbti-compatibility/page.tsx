@@ -197,6 +197,19 @@ export default function MbtiCompatibilityPage() {
   const [myMbti, setMyMbti] = useState<MbtiType | null>(null);
   const [partnerMbti, setPartnerMbti] = useState<MbtiType | null>(null);
   const [result, setResult] = useState<CompatibilityResult | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!result || !myMbti || !partnerMbti) return;
+    const text = `[MBTI 궁합] ${myMbti} + ${partnerMbti} = ${result.score}점 (${result.grade})`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   const handleTest = () => {
     if (!myMbti || !partnerMbti) return;
@@ -302,8 +315,16 @@ export default function MbtiCompatibilityPage() {
 
             <ScoreGauge score={result.score} color={result.color} />
 
-            <div className={`mt-4 inline-block px-4 py-1.5 rounded-full text-white font-semibold ${result.bgColor}`}>
-              {result.grade}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <div className={`inline-block px-4 py-1.5 rounded-full text-white font-semibold ${result.bgColor}`}>
+                {result.grade}
+              </div>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-500"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
             </div>
           </div>
 

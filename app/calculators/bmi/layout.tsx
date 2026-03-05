@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   description:
     "키와 몸무게를 입력하면 체질량지수(BMI)를 계산하고 저체중, 정상, 과체중, 비만 여부를 확인할 수 있습니다.",
   keywords: ["BMI 계산기", "체질량지수", "비만도 측정", "BMI 계산", "비만 계산기"],
+  openGraph: {
+    title: "BMI 계산기 - 체질량지수 비만도 측정",
+    description: "키와 몸무게를 입력하면 체질량지수(BMI)를 계산하고 저체중, 정상, 과체중, 비만 여부를 확인할 수 있습니다.",
+  },
 };
 
 export default function BMILayout({ children }: { children: React.ReactNode }) {

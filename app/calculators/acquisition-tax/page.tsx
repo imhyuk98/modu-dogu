@@ -145,7 +145,7 @@ export default function AcquisitionTaxCalculator() {
         부동산 취득세 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 주택 취득세, 농어촌특별세, 지방교육세를 계산합니다.
+        2025년 기준 주택 취득세, 농어촌특별세, 지방교육세를 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -334,7 +334,7 @@ export default function AcquisitionTaxCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            주택 수별 취득세율 (2024년 기준)
+            주택 수별 취득세율 (2025년 기준)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">

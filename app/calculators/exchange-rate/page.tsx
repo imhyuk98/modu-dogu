@@ -49,6 +49,7 @@ export default function ExchangeRateCalculator() {
   const [fromAmount, setFromAmount] = useState("1");
   const [toAmount, setToAmount] = useState("");
   const [lastEdited, setLastEdited] = useState<"from" | "to">("from");
+  const [copied, setCopied] = useState(false);
 
   // Available currencies (only those present in API response)
   const [availableCurrencies, setAvailableCurrencies] = useState<CurrencyInfo[]>(CURRENCIES);
@@ -153,6 +154,29 @@ export default function ExchangeRateCalculator() {
     setLastEdited("from");
   };
 
+  const handleReset = () => {
+    setFromCurrency("USD");
+    setToCurrency("KRW");
+    setFromAmount("1");
+    setToAmount("");
+    setLastEdited("from");
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!rates || !toAmount) return;
+    const fromInfo = getCurrencyInfo(fromCurrency);
+    const toInfo = getCurrencyInfo(toCurrency);
+    const text = `${fromAmount} ${fromInfo?.name || fromCurrency}(${fromCurrency}) = ${toAmount} ${toInfo?.name || toCurrency}(${toCurrency})`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   const getQuickRateKRW = (code: string): number => {
     if (!rates || !rates[code] || !rates["KRW"]) return 0;
     const krwPerUnit = rates["KRW"] / rates[code];
@@ -221,11 +245,11 @@ export default function ExchangeRateCalculator() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             보내는 통화
           </label>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
-              className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[180px]"
+              className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-auto sm:min-w-[180px]"
             >
               {availableCurrencies.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -259,11 +283,11 @@ export default function ExchangeRateCalculator() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             받는 통화
           </label>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={toCurrency}
               onChange={(e) => setToCurrency(e.target.value)}
-              className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[180px]"
+              className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-auto sm:min-w-[180px]"
             >
               {availableCurrencies.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -289,13 +313,30 @@ export default function ExchangeRateCalculator() {
               const toInfo = getCurrencyInfo(toCurrency);
               const rate = convert(1, fromCurrency, toCurrency);
               return (
-                <span>
-                  1 {fromInfo?.flag} {fromCurrency} = {formatResult(rate, toCurrency)} {toInfo?.flag} {toCurrency}
-                </span>
+                <div className="flex items-center justify-center gap-2">
+                  <span>
+                    1 {fromInfo?.flag} {fromCurrency} = {formatResult(rate, toCurrency)} {toInfo?.flag} {toCurrency}
+                  </span>
+                  <button
+                    onClick={handleCopy}
+                    className="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-500"
+                  >
+                    {copied ? "복사됨!" : "복사"}
+                  </button>
+                </div>
               );
             })()}
           </div>
         )}
+
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
+          </button>
+        </div>
       </div>
 
       {/* 주요 환율 현황 */}

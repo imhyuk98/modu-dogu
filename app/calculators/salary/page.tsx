@@ -55,7 +55,7 @@ export default function SalaryCalculator() {
         연봉 실수령액 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 4대보험과 소득세를 공제한 월 실수령액을 계산합니다.
+        2025년 기준 4대보험과 소득세를 공제한 월 실수령액을 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -178,7 +178,7 @@ export default function SalaryCalculator() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-3">4대보험 요율 (2024년 기준)</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">4대보험 요율 (2025년 기준)</h2>
           <div className="overflow-x-auto">
             <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">
               <thead>

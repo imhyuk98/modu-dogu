@@ -261,7 +261,7 @@ export default function RandomRoulette() {
                     {editingIndex !== i && (
                       <button
                         onClick={() => startEdit(i)}
-                        className="text-gray-400 hover:text-blue-500 transition-colors text-xs px-1"
+                        className="text-gray-400 hover:text-blue-500 transition-colors text-sm p-2 min-w-[36px] min-h-[36px] flex items-center justify-center"
                         title="수정"
                       >
                         &#9998;
@@ -270,7 +270,7 @@ export default function RandomRoulette() {
                     <button
                       onClick={() => removeItem(i)}
                       disabled={items.length <= 2}
-                      className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-lg leading-none px-1"
+                      className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-lg p-2 min-w-[36px] min-h-[36px] flex items-center justify-center"
                       title="삭제"
                     >
                       &times;
@@ -327,7 +327,7 @@ export default function RandomRoulette() {
               ref={canvasCallback}
               width={320}
               height={320}
-              className="rounded-full shadow-lg"
+              className="rounded-full shadow-lg max-w-full h-auto"
             />
           </div>
 

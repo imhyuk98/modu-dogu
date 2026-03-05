@@ -271,6 +271,7 @@ export default function ConstellationCalculator() {
   const [month, setMonth] = useState<number>(0);
   const [day, setDay] = useState<number>(0);
   const [result, setResult] = useState<ConstellationInfo | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const maxDay = month > 0 ? daysInMonth[month] : 31;
 
@@ -286,6 +287,25 @@ export default function ConstellationCalculator() {
       setDay(0);
     }
     setResult(null);
+  };
+
+  const handleReset = () => {
+    setMonth(0);
+    setDay(0);
+    setResult(null);
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const text = `${month}월 ${day}일 - ${result.name} (${result.symbol})\n원소: ${result.element} / 수호성: ${result.planet}\n잘 맞는 별자리: ${result.compatible.join(", ")}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
@@ -339,6 +359,12 @@ export default function ConstellationCalculator() {
           >
             별자리 확인
           </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
+          </button>
         </div>
       </div>
 
@@ -348,9 +374,17 @@ export default function ConstellationCalculator() {
           {/* 별자리 헤더 */}
           <div className="text-center py-8 px-6">
             <div className="text-7xl mb-3">{result.symbol}</div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-1">
-              {result.name}
-            </h2>
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <h2 className="text-3xl font-bold text-gray-900">
+                {result.name}
+              </h2>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-500"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
             <p className="text-gray-600">
               {result.startMonth}월 {result.startDay}일 ~ {result.endMonth}월{" "}
               {result.endDay}일

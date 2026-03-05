@@ -183,6 +183,23 @@ export default function NameCompatibilityPage() {
   const [name2, setName2] = useState("");
   const [result, setResult] = useState<CompatibilityResult | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const text = `[이름 궁합] ${name1.trim()} + ${name2.trim()} = ${result.percentage}%\n${result.comment}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleCalculate();
+  };
 
   const handleCalculate = () => {
     const trimmed1 = name1.trim();
@@ -233,6 +250,7 @@ export default function NameCompatibilityPage() {
               type="text"
               value={name1}
               onChange={(e) => setName1(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="예: 홍길동"
               maxLength={10}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -249,6 +267,7 @@ export default function NameCompatibilityPage() {
               type="text"
               value={name2}
               onChange={(e) => setName2(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder="예: 김철수"
               maxLength={10}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -305,6 +324,12 @@ export default function NameCompatibilityPage() {
                   </span>
                 </div>
               </div>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-pink-300 rounded hover:bg-pink-100 transition-colors text-pink-600 mb-2"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
 
               <p className="text-gray-700 font-medium">{result.comment}</p>
             </div>

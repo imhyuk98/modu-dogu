@@ -136,6 +136,7 @@ export default function SajuCalculator() {
   const [day, setDay] = useState(1);
   const [hour, setHour] = useState(-1);
   const [result, setResult] = useState<SajuResult | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -143,6 +144,36 @@ export default function SajuCalculator() {
 
   const handleCalculate = () => {
     setResult(calculateSaju(year, month, day, hour));
+  };
+
+  const handleReset = () => {
+    setYear(1990);
+    setMonth(1);
+    setDay(1);
+    setHour(-1);
+    setResult(null);
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const pillars = [
+      `년주: ${천간한자[result.년간]}${지지한자[result.년지]}`,
+      `월주: ${천간한자[result.월간]}${지지한자[result.월지]}`,
+      `일주: ${천간한자[result.일간]}${지지한자[result.일지]}`,
+    ];
+    if (hour >= 0) {
+      pillars.push(`시주: ${천간한자[result.시간]}${지지한자[result.시지]}`);
+    }
+    const ohText = (["목", "화", "토", "금", "수"] as const).map((oh) => `${oh}: ${result.오행비율[oh]}개`).join(", ");
+    const text = `[사주팔자] ${year}년 ${month}월 ${day}일\n${pillars.join(" / ")}\n오행: ${ohText}\n일간: ${천간한자[result.일간]} ${천간[result.일간]}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const totalOh = result ? Object.values(result.오행비율).reduce((a, b) => a + b, 0) : 0;
@@ -206,12 +237,20 @@ export default function SajuCalculator() {
             </select>
           </div>
         </div>
-        <button
-          onClick={handleCalculate}
-          className="w-full py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
-        >
-          사주 보기
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={handleCalculate}
+            className="flex-1 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            사주 보기
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
+          </button>
+        </div>
       </div>
 
       {/* 결과 영역 */}
@@ -219,7 +258,15 @@ export default function SajuCalculator() {
         <div className="space-y-6">
           {/* 사주 팔자 카드 */}
           <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 text-center">나의 사주팔자</h2>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <h2 className="text-lg font-bold text-gray-900">나의 사주팔자</h2>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-500"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { label: "시주", 간: result.시간, 지: result.시지, show: hour >= 0 },

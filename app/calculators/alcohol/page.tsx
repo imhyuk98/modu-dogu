@@ -109,10 +109,10 @@ export default function AlcoholCalculator() {
                 <span className="text-sm text-gray-700">{p.label}</span>
                 <div className="flex items-center gap-3">
                   <button onClick={() => updateDrink(p.type, -1)}
-                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-200 transition-colors">−</button>
+                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-200 transition-colors">−</button>
                   <span className="w-6 text-center font-medium">{drinks[p.type] || 0}</span>
                   <button onClick={() => updateDrink(p.type, 1)}
-                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-200 transition-colors">+</button>
+                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-200 transition-colors">+</button>
                 </div>
               </div>
             ))}

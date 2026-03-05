@@ -48,6 +48,19 @@ export default function AveragePriceCalculator() {
     { id: 2, price: "", quantity: "" },
   ]);
   const [result, setResult] = useState<AveragePriceResult | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const text = `평균단가: ${formatNumber(result.averagePrice)}원 (총 ${formatNumber(result.totalQuantity)}주 / 총 ${formatNumber(result.totalAmount)}원)`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
 
@@ -182,9 +195,17 @@ export default function AveragePriceCalculator() {
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">평균단가</p>
-            <p className="text-3xl font-bold">
-              {formatNumber(result.averagePrice)}원
-            </p>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-3xl font-bold">
+                {formatNumber(result.averagePrice)}원
+              </p>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-blue-300 rounded hover:bg-white/20 transition-colors text-blue-100"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
             <p className="text-blue-200 text-sm mt-2">
               총 {formatNumber(result.totalQuantity)}주 / 총{" "}
               {formatNumber(result.totalAmount)}원

@@ -228,6 +228,7 @@ export default function ZodiacCalculator() {
   const [yearInput, setYearInput] = useState("");
   const [result, setResult] = useState<ZodiacResult | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleCalculate = () => {
     const year = parseInt(yearInput, 10);
@@ -239,6 +240,25 @@ export default function ZodiacCalculator() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleCalculate();
+  };
+
+  const handleReset = () => {
+    setYearInput("");
+    setResult(null);
+    setShowAnimation(false);
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const text = `[띠 계산기] ${result.year}년생 - ${result.animal.emoji} ${result.animal.name}띠\n${result.fullName}\n오행: ${result.stem.element}\n잘 맞는 띠: ${result.animal.goodMatch.join(", ")}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const currentYear = new Date().getFullYear();
@@ -287,6 +307,12 @@ export default function ZodiacCalculator() {
           >
             알아보기
           </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
+          </button>
         </div>
 
         {/* Quick select */}
@@ -326,9 +352,17 @@ export default function ZodiacCalculator() {
               >
                 {result.animal.emoji}
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                {result.animal.name}띠
-              </h2>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h2 className="text-3xl font-bold text-gray-900">
+                  {result.animal.name}띠
+                </h2>
+                <button
+                  onClick={handleCopy}
+                  className="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-500"
+                >
+                  {copied ? "복사됨!" : "복사"}
+                </button>
+              </div>
               <p className="text-lg text-gray-600">{result.animal.hanja}</p>
             </div>
 
@@ -493,7 +527,7 @@ export default function ZodiacCalculator() {
                     <div className="text-xs font-medium text-gray-700">
                       {animal.name}
                     </div>
-                    <div className="text-[10px] text-gray-400">
+                    <div className="text-xs text-gray-400">
                       {animal.hanja}
                     </div>
                   </button>

@@ -162,7 +162,7 @@ export default function GiftTaxCalculator() {
     <div className="py-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">증여세 계산기</h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 증여재산가액과 증여자와의 관계에 따른 증여세를 계산합니다.
+        2025년 기준 증여재산가액과 증여자와의 관계에 따른 증여세를 계산합니다.
       </p>
 
       {/* 입력 영역 */}

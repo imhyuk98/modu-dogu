@@ -339,7 +339,7 @@ export default function LadderGamePage() {
                   {participants.length > 2 && (
                     <button
                       onClick={() => removeParticipant(idx)}
-                      className="text-red-400 hover:text-red-600 transition-colors text-lg px-1"
+                      className="text-red-400 hover:text-red-600 transition-colors text-lg p-2 min-w-[36px] min-h-[36px] flex items-center justify-center"
                     >
                       &#x2715;
                     </button>

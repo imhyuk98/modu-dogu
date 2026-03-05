@@ -131,7 +131,7 @@ function CardGrid({ items, hoverColor, search, favorites, onToggleFav }: {
           </Link>
           <button
             onClick={(e) => { e.preventDefault(); onToggleFav(item.href); }}
-            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-yellow-50 hover:border-yellow-300"
+            className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 border border-gray-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-yellow-50 hover:border-yellow-300"
             aria-label={favorites.includes(item.href) ? "즐겨찾기 해제" : "즐겨찾기 추가"}
             title={favorites.includes(item.href) ? "즐겨찾기 해제" : "즐겨찾기 추가"}
           >

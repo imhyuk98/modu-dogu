@@ -142,7 +142,7 @@ export default function RentConversionCalculator() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
           </div>
-          <p className="text-xs text-gray-400 mt-1">2024년 법정 전환율 상한: 한국은행 기준금리 + 2%</p>
+          <p className="text-xs text-gray-400 mt-1">2025년 법정 전환율 상한: 한국은행 기준금리 + 2%</p>
         </div>
 
         {error && <p className="text-red-500 text-sm mt-2 mb-4">{error}</p>}

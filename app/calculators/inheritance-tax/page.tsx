@@ -185,7 +185,7 @@ export default function InheritanceTaxCalculator() {
     <div className="py-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">상속세 계산기</h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 상속재산에 대한 상속세를 각종 공제를 적용하여 계산합니다.
+        2025년 기준 상속재산에 대한 상속세를 각종 공제를 적용하여 계산합니다.
       </p>
 
       {/* 입력 영역 */}

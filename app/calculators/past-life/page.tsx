@@ -188,6 +188,19 @@ export default function PastLifeTest() {
   const [day, setDay] = useState("");
   const [result, setResult] = useState<PastLife | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!result) return;
+    const text = `[전생 테스트] ${result.emoji} ${result.name}\n시대: ${result.era} / 지역: ${result.region}\n${result.personality}\n현생 영향: ${result.influence}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   const handleCalculate = () => {
     const y = parseInt(year);
@@ -278,7 +291,15 @@ export default function PastLifeTest() {
           <div className="bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 rounded-xl p-8 text-white text-center">
             <p className="text-purple-200 text-sm mb-2">&#x2B50; 당신의 전생은... &#x2B50;</p>
             <div className="text-6xl mb-4">{result.emoji}</div>
-            <h2 className="text-3xl font-bold mb-2">{result.name}</h2>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <h2 className="text-3xl font-bold">{result.name}</h2>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-purple-300 rounded hover:bg-white/20 transition-colors text-purple-200"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
             <div className="flex justify-center gap-4 text-purple-200 text-sm">
               <span>&#x1F4C5; {result.era}</span>
               <span>&#x1F30D; {result.region}</span>

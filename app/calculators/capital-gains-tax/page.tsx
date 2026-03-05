@@ -204,7 +204,7 @@ export default function CapitalGainsTaxCalculator() {
         양도소득세 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 부동산 양도소득세를 장기보유특별공제를 적용하여 계산합니다.
+        2025년 기준 부동산 양도소득세를 장기보유특별공제를 적용하여 계산합니다.
       </p>
 
       {/* 입력 영역 */}

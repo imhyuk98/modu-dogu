@@ -157,7 +157,7 @@ export default function GpaCalculator() {
         <h2 className="text-sm font-medium text-gray-700 mb-4">과목 입력</h2>
 
         {/* 헤더 - 모바일에서는 숨김 */}
-        <div className="hidden sm:grid sm:grid-cols-[1fr_80px_100px_50px_36px] gap-2 mb-2 text-xs text-gray-400 px-1">
+        <div className="hidden sm:grid sm:grid-cols-[1fr_80px_100px_50px_40px] gap-2 mb-2 text-xs text-gray-400 px-1">
           <span>과목명</span>
           <span>학점</span>
           <span>성적</span>
@@ -169,7 +169,7 @@ export default function GpaCalculator() {
           {subjects.map((subject, idx) => (
             <div
               key={subject.id}
-              className="grid grid-cols-[1fr_80px_100px_50px_36px] gap-2 items-center"
+              className="grid grid-cols-[1fr_80px_100px_50px_40px] gap-2 items-center"
             >
               <input
                 type="text"
@@ -219,7 +219,7 @@ export default function GpaCalculator() {
               </label>
               <button
                 onClick={() => removeSubject(subject.id)}
-                className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="과목 삭제"
               >
                 <svg

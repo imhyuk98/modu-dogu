@@ -111,6 +111,7 @@ function getDuration(startDate: Date, today: Date) {
 export default function CoupleDdayCalculator() {
   const [startDateStr, setStartDateStr] = useState("");
   const [calculated, setCalculated] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -129,6 +130,31 @@ export default function CoupleDdayCalculator() {
 
   const handleCalculate = () => {
     if (isValid) setCalculated(true);
+  };
+
+  const handleReset = () => {
+    setStartDateStr("");
+    setCalculated(false);
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!isValid || !calculated) return;
+    const durationText = duration
+      ? `${duration.years > 0 ? `${duration.years}년 ` : ""}${duration.months > 0 ? `${duration.months}개월 ` : ""}${duration.days}일`
+      : "";
+    const text = `함께한 지 ${daysTogether.toLocaleString()}일 (${durationText})`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleCalculate();
   };
 
   return (
@@ -154,6 +180,7 @@ export default function CoupleDdayCalculator() {
               setStartDateStr(e.target.value);
               setCalculated(false);
             }}
+            onKeyDown={handleKeyDown}
             className="flex-1 px-4 py-3 border border-pink-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
           />
           <button
@@ -162,6 +189,12 @@ export default function CoupleDdayCalculator() {
             className="px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
           >
             계산하기
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            초기화
           </button>
         </div>
         {startDateStr && !isValid && (
@@ -178,9 +211,17 @@ export default function CoupleDdayCalculator() {
           <div className="bg-gradient-to-br from-pink-500 to-red-500 rounded-xl p-8 mb-6 text-center text-white shadow-lg">
             <div className="text-6xl mb-4">&#x1F497;</div>
             <p className="text-pink-100 text-sm mb-1">함께한 지</p>
-            <p className="text-5xl font-extrabold mb-2">
-              {daysTogether.toLocaleString()}일
-            </p>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <p className="text-5xl font-extrabold">
+                {daysTogether.toLocaleString()}일
+              </p>
+              <button
+                onClick={handleCopy}
+                className="text-xs px-2 py-1 border border-pink-200 rounded hover:bg-white/20 transition-colors text-pink-100"
+              >
+                {copied ? "복사됨!" : "복사"}
+              </button>
+            </div>
             {duration && (
               <p className="text-pink-100 text-lg">
                 {duration.years > 0 && `${duration.years}년 `}

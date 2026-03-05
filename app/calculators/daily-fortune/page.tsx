@@ -717,6 +717,14 @@ export default function DailyFortune() {
     setCopied(false);
   };
 
+  const handleReset = () => {
+    setSelectedZodiac(null);
+    setActiveZodiac(null);
+    setResult(null);
+    setBirthYear("");
+    setCopied(false);
+  };
+
   const handleShare = async () => {
     if (!result || selectedZodiac === null) return;
     const z = 띠목록[selectedZodiac];
@@ -964,8 +972,8 @@ export default function DailyFortune() {
             </div>
           </div>
 
-          {/* Share Button */}
-          <div className="flex justify-center">
+          {/* Share & Reset Buttons */}
+          <div className="flex justify-center gap-3">
             <button
               onClick={handleShare}
               className={`px-6 py-3 rounded-xl font-medium text-sm transition-all ${
@@ -975,6 +983,12 @@ export default function DailyFortune() {
               }`}
             >
               {copied ? "&#x2705; 클립보드에 복사되었습니다!" : "&#x1F4CB; 결과 공유하기"}
+            </button>
+            <button
+              onClick={handleReset}
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              초기화
             </button>
           </div>
 

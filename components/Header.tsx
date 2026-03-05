@@ -158,7 +158,7 @@ function MobileSection({
             <Link
               key={item.href}
               href={item.href}
-              className="block px-2 py-1.5 text-sm text-gray-600 hover:text-blue-600 rounded"
+              className="block px-2 py-2.5 text-sm text-gray-600 hover:text-blue-600 rounded"
               onClick={onClose}
             >
               {item.title}

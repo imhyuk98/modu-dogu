@@ -161,7 +161,7 @@ export default function BrokerageFeeCalculator() {
         부동산 중개수수료 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2024년 기준 매매, 전세, 월세 거래의 중개수수료(복비)를 계산합니다.
+        2025년 기준 매매, 전세, 월세 거래의 중개수수료(복비)를 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -348,7 +348,7 @@ export default function BrokerageFeeCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            2024년 매매 중개수수료 요율표
+            2025년 매매 중개수수료 요율표
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -373,7 +373,7 @@ export default function BrokerageFeeCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            2024년 전세/월세 중개수수료 요율표
+            2025년 전세/월세 중개수수료 요율표
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
