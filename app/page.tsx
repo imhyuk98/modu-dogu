@@ -88,6 +88,12 @@ const games: Item[] = [
   { title: "반응속도 테스트", description: "화면이 초록색으로 바뀌는 순간 클릭! 반응 속도를 측정합니다.", href: "/tools/reaction-test", emoji: "\u26A1" },
   { title: "기억력 테스트", description: "카드 뒤집기 게임으로 기억력을 테스트합니다.", href: "/tools/memory-game", emoji: "\uD83C\uDFAE" },
   { title: "색맹 테스트", description: "이시하라 스타일의 색각 검사로 색각 이상 여부를 확인합니다.", href: "/tools/color-blind-test", emoji: "\uD83C\uDFA8" },
+  { title: "2048", description: "같은 숫자 타일을 합쳐 2048을 만드는 중독성 퍼즐 게임입니다.", href: "/tools/game-2048", emoji: "\uD83C\uDFAE" },
+  { title: "스도쿠", description: "9x9 그리드에 1~9 숫자를 채우는 클래식 숫자 퍼즐입니다.", href: "/tools/sudoku", emoji: "\uD83E\uDDE9" },
+  { title: "블록 탈출", description: "블록을 밀어서 빨간 블록을 탈출시키는 퍼즐 게임입니다.", href: "/tools/block-escape", emoji: "\uD83D\uDE97" },
+  { title: "지뢰찾기", description: "숨겨진 지뢰를 피해 안전한 칸을 모두 열어보세요!", href: "/tools/minesweeper", emoji: "\uD83D\uDCA3" },
+  { title: "스네이크 게임", description: "사과를 먹고 뱀을 성장시키는 클래식 아케이드 게임입니다.", href: "/tools/snake-game", emoji: "\uD83D\uDC0D" },
+  { title: "오목", description: "가로, 세로, 대각선으로 5개를 먼저 놓으면 승리! AI 대전 지원.", href: "/tools/omok", emoji: "\u26AB" },
 ];
 
 const allSections = [

@@ -66,6 +66,12 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "bomb-game": { title: "폭탄 돌리기", href: "/tools/bomb-game", category: "게임" },
   "updown-game": { title: "업다운 게임", href: "/tools/updown-game", category: "게임" },
   "random-pick": { title: "랜덤 지목", href: "/tools/random-pick", category: "게임" },
+  "game-2048": { title: "2048 게임", href: "/tools/game-2048", category: "게임" },
+  sudoku: { title: "스도쿠", href: "/tools/sudoku", category: "게임" },
+  "block-escape": { title: "블록 탈출", href: "/tools/block-escape", category: "게임" },
+  minesweeper: { title: "지뢰찾기", href: "/tools/minesweeper", category: "게임" },
+  "snake-game": { title: "스네이크 게임", href: "/tools/snake-game", category: "게임" },
+  omok: { title: "오목", href: "/tools/omok", category: "게임" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -134,6 +140,12 @@ const relatedMap: Record<string, string[]> = {
   "bomb-game": ["updown-game", "liar-game", "random-pick", "drinking-games"],
   "updown-game": ["bomb-game", "random-number", "liar-game", "drinking-games"],
   "random-pick": ["random-roulette", "truth-or-dare", "ladder-game", "drinking-games"],
+  "game-2048": ["sudoku", "minesweeper", "block-escape", "snake-game"],
+  sudoku: ["game-2048", "minesweeper", "block-escape", "omok"],
+  "block-escape": ["game-2048", "sudoku", "minesweeper", "omok"],
+  minesweeper: ["game-2048", "sudoku", "snake-game", "block-escape"],
+  "snake-game": ["game-2048", "minesweeper", "reaction-test", "memory-game"],
+  omok: ["sudoku", "block-escape", "ladder-game", "game-2048"],
   scientific: ["percent", "unit-converter", "ratio", "gpa"],
 };
 

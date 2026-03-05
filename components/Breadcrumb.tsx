@@ -62,6 +62,12 @@ const categoryMap: Record<string, { label: string; href?: string }> = {
   "reaction-test": { label: "게임" },
   "memory-game": { label: "게임" },
   "color-blind-test": { label: "게임" },
+  "game-2048": { label: "게임" },
+  sudoku: { label: "게임" },
+  "block-escape": { label: "게임" },
+  minesweeper: { label: "게임" },
+  "snake-game": { label: "게임" },
+  omok: { label: "게임" },
   // Converters
   "image-converter": { label: "변환기" },
   "csv-json": { label: "변환기" },
@@ -144,6 +150,12 @@ const titleMap: Record<string, string> = {
   "bomb-game": "폭탄 돌리기",
   "updown-game": "업다운 게임",
   "random-pick": "랜덤 지목",
+  "game-2048": "2048",
+  sudoku: "스도쿠",
+  "block-escape": "블록 탈출",
+  minesweeper: "지뢰찾기",
+  "snake-game": "스네이크 게임",
+  omok: "오목",
 };
 
 export default function Breadcrumb() {

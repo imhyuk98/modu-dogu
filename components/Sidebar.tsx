@@ -80,6 +80,12 @@ const categories = [
       { title: "반응속도 테스트", href: "/tools/reaction-test" },
       { title: "기억력 테스트", href: "/tools/memory-game" },
       { title: "색맹 테스트", href: "/tools/color-blind-test" },
+      { title: "2048", href: "/tools/game-2048" },
+      { title: "스도쿠", href: "/tools/sudoku" },
+      { title: "블록 탈출", href: "/tools/block-escape" },
+      { title: "지뢰찾기", href: "/tools/minesweeper" },
+      { title: "스네이크", href: "/tools/snake-game" },
+      { title: "오목", href: "/tools/omok" },
     ],
   },
   {
