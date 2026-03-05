@@ -174,7 +174,7 @@ export default function Home() {
   };
 
   // Gather all favorite items
-  const allItems = [...calculators, ...realEstateCalcs, ...funCalcs, ...tools];
+  const allItems = [...calculators, ...realEstateCalcs, ...funCalcs, ...tools, ...games];
   const favItems = allItems.filter((i) => favorites.includes(i.href));
 
   const hasSearchResults = search

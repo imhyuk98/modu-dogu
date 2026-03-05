@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface Purchase {
@@ -40,9 +40,8 @@ function calculateAveragePrice(purchases: Purchase[]): AveragePriceResult | null
   return { averagePrice, totalAmount, totalQuantity, purchases: purchaseDetails };
 }
 
-let nextId = 3;
-
 export default function AveragePriceCalculator() {
+  const nextIdRef = useRef(3);
   const [purchases, setPurchases] = useState<Purchase[]>([
     { id: 1, price: "", quantity: "" },
     { id: 2, price: "", quantity: "" },
@@ -77,7 +76,7 @@ export default function AveragePriceCalculator() {
   };
 
   const addPurchase = () => {
-    setPurchases((prev) => [...prev, { id: nextId++, price: "", quantity: "" }]);
+    setPurchases((prev) => [...prev, { id: nextIdRef.current++, price: "", quantity: "" }]);
   };
 
   const removePurchase = (id: number) => {
@@ -92,8 +91,8 @@ export default function AveragePriceCalculator() {
 
   const handleReset = () => {
     setPurchases([
-      { id: nextId++, price: "", quantity: "" },
-      { id: nextId++, price: "", quantity: "" },
+      { id: nextIdRef.current++, price: "", quantity: "" },
+      { id: nextIdRef.current++, price: "", quantity: "" },
     ]);
     setResult(null);
   };

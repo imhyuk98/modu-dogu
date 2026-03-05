@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 const 천간 = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
@@ -144,9 +144,11 @@ export default function SajuCalculator() {
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   // 선택된 일이 해당 월의 최대일을 초과하면 조정
-  if (day > daysInMonth) {
-    setDay(daysInMonth);
-  }
+  useEffect(() => {
+    if (day > daysInMonth) {
+      setDay(daysInMonth);
+    }
+  }, [day, daysInMonth]);
 
   const handleCalculate = () => {
     setResult(calculateSaju(year, month, day, hour));

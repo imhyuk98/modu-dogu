@@ -157,7 +157,10 @@ export default function NicknameGenerator() {
             return (
               <button
                 key={s}
-                onClick={() => setStyle(s)}
+                onClick={() => {
+                  setStyle(s);
+                  setMaxLen(s === "game" ? 10 : 4);
+                }}
                 className={`p-4 rounded-xl border-2 transition-all text-center ${
                   isActive
                     ? `${cfg.activeBg} ${cfg.activeText} border-transparent shadow-md scale-105`

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "range" | "multiple" | "lotto";
@@ -31,9 +31,8 @@ function LottoBall({ number, size = "normal" }: { number: number; size?: "normal
   );
 }
 
-let historyId = 0;
-
 export default function RandomNumberGenerator() {
+  const historyIdRef = useRef(0);
   const [mode, setMode] = useState<Mode>("range");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [copied, setCopied] = useState(false);
@@ -55,8 +54,8 @@ export default function RandomNumberGenerator() {
   const [lottoBonus, setLottoBonus] = useState<number | null>(null);
 
   const addHistory = (label: string, numbers: number[], bonus?: number) => {
-    historyId++;
-    setHistory((prev) => [{ id: historyId, label, numbers, bonus }, ...prev].slice(0, 5));
+    historyIdRef.current++;
+    setHistory((prev) => [{ id: historyIdRef.current, label, numbers, bonus }, ...prev].slice(0, 5));
   };
 
   const generateRange = () => {

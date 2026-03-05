@@ -80,6 +80,7 @@ export default function InflationCalculator() {
     if (!a || a <= 0) { setError("금액을 입력해주세요"); return; }
     if (!r || r <= 0) { setError("물가상승률을 입력해주세요"); return; }
     if (!y || y <= 0) { setError("기간을 입력해주세요"); return; }
+    if (y > 100) { setError("기간은 100년 이하로 입력해주세요"); return; }
     setError("");
     setResult(calculateInflation(a, r, y));
   };

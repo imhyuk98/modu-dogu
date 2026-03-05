@@ -64,7 +64,7 @@ const categories = [
       { title: "오늘의 운세", href: "/calculators/daily-fortune" },
       { title: "커플 D-day", href: "/calculators/couple-dday" },
       { title: "심리테스트", href: "/tools/psychology-test" },
-      { title: "MBTI 검사기", href: "/tools/mbti-test" },
+      { title: "MBTI 성격유형 검사", href: "/tools/mbti-test" },
     ],
   },
   {
@@ -116,7 +116,7 @@ export default function Sidebar({ type }: { type: "calculators" | "tools" }) {
   const pathname = usePathname();
 
   // Show current type's categories first
-  const toolLabels = ["변환기", "도구"];
+  const toolLabels = ["변환기", "도구", "게임"];
   const sorted = type === "tools"
     ? [...categories].sort((a, b) => {
         const aIsTool = toolLabels.includes(a.label) ? -1 : 0;

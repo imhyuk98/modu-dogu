@@ -22,7 +22,14 @@
       "Bash(node:*)",
       "WebFetch(domain:knowingasset.com)",
       "WebFetch(domain:www.dailyest.co.kr)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(grep:*)",
+      "Bash(echo Total <url> entries in sitemap::*)",
+      "Bash(do:*)",
+      "Bash(test:*)",
+      "Bash(ls:*)",
+      "Bash(read f:*)",
+      "WebFetch(domain:vibe-revenue.pages.dev)"
     ]
   }
 }

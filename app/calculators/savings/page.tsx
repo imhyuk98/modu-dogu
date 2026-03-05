@@ -98,7 +98,7 @@ export default function SavingsCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">세율</label>
           <div className="flex gap-3">
-            {[["15.4", "일반과세 (15.4%)"], ["9.5", "비과세종합저축 (9.5%)"], ["0", "비과세 (0%)"]].map(([v, l]) => (
+            {[["15.4", "일반과세 (15.4%)"], ["9.5", "세금우대 (9.5%)"], ["0", "비과세 (0%)"]].map(([v, l]) => (
               <button key={v} onClick={() => setTaxRate(v)}
                 className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-colors ${taxRate === v ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
                 {l}

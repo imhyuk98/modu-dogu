@@ -25,28 +25,31 @@ function calculateLottoTax(amount: number): LottoTaxResult {
 
   let incomeTax = 0;
 
-  // 3억 이하 구간: 소득세 20%
+  const nonTaxable = 2_000_000;
   const threshold = 300_000_000;
+  const taxableAmount = amount - nonTaxable;
+
   if (amount <= threshold) {
-    incomeTax = amount * 0.2;
+    // 200만원 초과 ~ 3억원 이하: 소득세 20%
+    incomeTax = taxableAmount * 0.2;
   } else {
-    // 3억 이하분: 20%
-    incomeTax = threshold * 0.2;
-    // 3억 초과분: 30%
+    // 200만원 초과 ~ 3억원 구간: 20%
+    incomeTax = (threshold - nonTaxable) * 0.2;
+    // 3억원 초과분: 30%
     incomeTax += (amount - threshold) * 0.3;
   }
 
   // 지방소득세: 소득세의 10%
   const localIncomeTax = incomeTax * 0.1;
-  const totalTax = incomeTax + localIncomeTax;
+  const totalTax = Math.floor(incomeTax + localIncomeTax);
   const netAmount = amount - totalTax;
 
   return {
     winningAmount: amount,
     incomeTax: Math.floor(incomeTax),
     localIncomeTax: Math.floor(localIncomeTax),
-    totalTax: Math.floor(totalTax),
-    netAmount: Math.ceil(netAmount),
+    totalTax,
+    netAmount,
   };
 }
 

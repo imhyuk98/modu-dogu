@@ -10,6 +10,47 @@ interface HistoryEntry {
   result: string;
 }
 
+// 함수 호출에서 매칭되는 괄호 내용을 추출하여 치환하는 헬퍼
+function replaceFunc(
+  str: string,
+  funcName: string,
+  callback: (inner: string) => string
+): string {
+  let result = str;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const idx = result.indexOf(funcName + "(");
+    if (idx === -1) break;
+    // funcName 앞에 알파벳이 있으면 다른 함수의 일부이므로 건너뛰기
+    if (idx > 0 && /[a-zA-Z]/.test(result[idx - 1])) {
+      // 이 위치를 지나서 다음 매칭을 찾기 위해 임시 치환
+      const before = result.slice(0, idx + funcName.length);
+      const after = result.slice(idx + funcName.length);
+      const subResult = replaceFunc(after, funcName, callback);
+      result = before + subResult;
+      break;
+    }
+    const openIdx = idx + funcName.length; // '(' 위치
+    let depth = 0;
+    let closeIdx = -1;
+    for (let i = openIdx; i < result.length; i++) {
+      if (result[i] === "(") depth++;
+      else if (result[i] === ")") {
+        depth--;
+        if (depth === 0) {
+          closeIdx = i;
+          break;
+        }
+      }
+    }
+    if (closeIdx === -1) break; // 매칭되는 닫는 괄호 없음
+    const inner = result.slice(openIdx + 1, closeIdx);
+    const replacement = callback(inner);
+    result = result.slice(0, idx) + replacement + result.slice(closeIdx + 1);
+  }
+  return result;
+}
+
 // 안전한 수식 평가 함수
 function safeEval(expr: string, angleMode: AngleMode): number {
   // 수식 전처리
@@ -17,7 +58,7 @@ function safeEval(expr: string, angleMode: AngleMode): number {
     .replace(/×/g, "*")
     .replace(/÷/g, "/")
     .replace(/π/g, `(${Math.PI})`)
-    .replace(/e(?![x])/g, `(${Math.E})`);
+    .replace(/(?<!\d\.?)e(?![x\d])/g, `(${Math.E})`);
 
   // 팩토리얼 처리
   processed = processed.replace(/(\d+)!/g, (_, n) => {
@@ -32,30 +73,27 @@ function safeEval(expr: string, angleMode: AngleMode): number {
 
   // 삼각함수 처리 (역순으로 처리 — asin, acos, atan을 먼저)
   if (angleMode === "DEG") {
-    processed = processed
-      .replace(/asin\(([^)]+)\)/g, (_, v) => `(${fromRad(Math.asin(safeEval(v, angleMode)))})`)
-      .replace(/acos\(([^)]+)\)/g, (_, v) => `(${fromRad(Math.acos(safeEval(v, angleMode)))})`)
-      .replace(/atan\(([^)]+)\)/g, (_, v) => `(${fromRad(Math.atan(safeEval(v, angleMode)))})`)
-      .replace(/sin\(([^)]+)\)/g, (_, v) => `(${Math.sin(toRad(safeEval(v, angleMode)))})`)
-      .replace(/cos\(([^)]+)\)/g, (_, v) => `(${Math.cos(toRad(safeEval(v, angleMode)))})`)
-      .replace(/tan\(([^)]+)\)/g, (_, v) => `(${Math.tan(toRad(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "asin", (v) => `(${fromRad(Math.asin(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "acos", (v) => `(${fromRad(Math.acos(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "atan", (v) => `(${fromRad(Math.atan(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "sin", (v) => `(${Math.sin(toRad(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "cos", (v) => `(${Math.cos(toRad(safeEval(v, angleMode)))})`);
+    processed = replaceFunc(processed, "tan", (v) => `(${Math.tan(toRad(safeEval(v, angleMode)))})`);
   } else {
-    processed = processed
-      .replace(/asin\(([^)]+)\)/g, (_, v) => `(${Math.asin(safeEval(v, angleMode))})`)
-      .replace(/acos\(([^)]+)\)/g, (_, v) => `(${Math.acos(safeEval(v, angleMode))})`)
-      .replace(/atan\(([^)]+)\)/g, (_, v) => `(${Math.atan(safeEval(v, angleMode))})`)
-      .replace(/sin\(([^)]+)\)/g, (_, v) => `(${Math.sin(safeEval(v, angleMode))})`)
-      .replace(/cos\(([^)]+)\)/g, (_, v) => `(${Math.cos(safeEval(v, angleMode))})`)
-      .replace(/tan\(([^)]+)\)/g, (_, v) => `(${Math.tan(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "asin", (v) => `(${Math.asin(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "acos", (v) => `(${Math.acos(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "atan", (v) => `(${Math.atan(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "sin", (v) => `(${Math.sin(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "cos", (v) => `(${Math.cos(safeEval(v, angleMode))})`);
+    processed = replaceFunc(processed, "tan", (v) => `(${Math.tan(safeEval(v, angleMode))})`);
   }
 
   // 로그/지수 함수 처리
-  processed = processed
-    .replace(/log\(([^)]+)\)/g, (_, v) => `(${Math.log10(safeEval(v, angleMode))})`)
-    .replace(/ln\(([^)]+)\)/g, (_, v) => `(${Math.log(safeEval(v, angleMode))})`)
-    .replace(/sqrt\(([^)]+)\)/g, (_, v) => `(${Math.sqrt(safeEval(v, angleMode))})`)
-    .replace(/cbrt\(([^)]+)\)/g, (_, v) => `(${Math.cbrt(safeEval(v, angleMode))})`)
-    .replace(/abs\(([^)]+)\)/g, (_, v) => `(${Math.abs(safeEval(v, angleMode))})`);
+  processed = replaceFunc(processed, "log", (v) => `(${Math.log10(safeEval(v, angleMode))})`);
+  processed = replaceFunc(processed, "ln", (v) => `(${Math.log(safeEval(v, angleMode))})`);
+  processed = replaceFunc(processed, "sqrt", (v) => `(${Math.sqrt(safeEval(v, angleMode))})`);
+  processed = replaceFunc(processed, "cbrt", (v) => `(${Math.cbrt(safeEval(v, angleMode))})`);
+  processed = replaceFunc(processed, "abs", (v) => `(${Math.abs(safeEval(v, angleMode))})`);
 
   // 거듭제곱 처리
   processed = processed.replace(/\^/g, "**");

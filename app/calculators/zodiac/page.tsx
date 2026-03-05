@@ -26,7 +26,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["용띠", "원숭이띠", "소띠"],
     badMatch: ["말띠", "양띠", "토끼띠"],
-    celebrities: ["이순신 (1545)", "세종대왕 (1397)", "BTS 슈가 (1993)"],
+    celebrities: ["셰익스피어 (1564)", "마라도나 (1960)", "마크 저커버그 (1984)"],
   },
   {
     name: "소",
@@ -40,7 +40,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["뱀띠", "닭띠", "쥐띠"],
     badMatch: ["양띠", "말띠", "개띠"],
-    celebrities: ["오바마 (1961)", "메시 (1987)", "한석규 (1964)"],
+    celebrities: ["오바마 (1961)", "호날두 (1985)", "BTS 정국 (1997)"],
   },
   {
     name: "호랑이",
@@ -54,7 +54,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["말띠", "개띠", "돼지띠"],
     badMatch: ["원숭이띠", "뱀띠", "호랑이띠"],
-    celebrities: ["김연아 (1990)", "손흥민 (1992)", "톰 크루즈 (1962)"],
+    celebrities: ["톰 크루즈 (1962)", "디카프리오 (1974)", "유아인 (1986)"],
   },
   {
     name: "토끼",
@@ -68,7 +68,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["양띠", "돼지띠", "개띠"],
     badMatch: ["닭띠", "쥐띠", "용띠"],
-    celebrities: ["아인슈타인 (1879)", "앤젤리나 졸리 (1975)", "아이유 (1993)"],
+    celebrities: ["아인슈타인 (1879)", "앤젤리나 졸리 (1975)", "이민호 (1987)"],
   },
   {
     name: "용",
@@ -82,7 +82,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["쥐띠", "원숭이띠", "닭띠"],
     badMatch: ["개띠", "토끼띠", "용띠"],
-    celebrities: ["브루스 리 (1940)", "존 레논 (1940)", "BTS RM (1994)"],
+    celebrities: ["브루스 리 (1940)", "존 레논 (1940)", "리한나 (1988)"],
   },
   {
     name: "뱀",
@@ -96,7 +96,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["소띠", "닭띠", "원숭이띠"],
     badMatch: ["호랑이띠", "돼지띠", "뱀띠"],
-    celebrities: ["간디 (1869)", "테일러 스위프트 (1989)", "공유 (1979)"],
+    celebrities: ["간디 (1869)", "테일러 스위프트 (1989)", "JK 롤링 (1965)"],
   },
   {
     name: "말",
@@ -110,7 +110,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["호랑이띠", "개띠", "양띠"],
     badMatch: ["쥐띠", "소띠", "말띠"],
-    celebrities: ["칭기즈칸 (1162)", "폴 매카트니 (1942)", "전지현 (1981)"],
+    celebrities: ["칭기즈칸 (1162)", "폴 매카트니 (1942)", "김연아 (1990)"],
   },
   {
     name: "양",
@@ -124,7 +124,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["토끼띠", "말띠", "돼지띠"],
     badMatch: ["소띠", "개띠", "쥐띠"],
-    celebrities: ["미켈란젤로 (1475)", "스티브 잡스 (1955)", "윤아 (1990)"],
+    celebrities: ["미켈란젤로 (1475)", "스티브 잡스 (1955)", "공유 (1979)"],
   },
   {
     name: "원숭이",
@@ -138,7 +138,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["쥐띠", "용띠", "뱀띠"],
     badMatch: ["호랑이띠", "돼지띠", "원숭이띠"],
-    celebrities: ["레오나르도 다빈치 (1452)", "윌 스미스 (1968)", "송중기 (1985)"],
+    celebrities: ["레오나르도 다빈치 (1452)", "윌 스미스 (1968)", "손흥민 (1992)"],
   },
   {
     name: "닭",
@@ -152,7 +152,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["소띠", "뱀띠", "용띠"],
     badMatch: ["토끼띠", "닭띠", "개띠"],
-    celebrities: ["베토벤 (1770)", "빌 게이츠 (1955)", "블랙핑크 제니 (1996)"],
+    celebrities: ["밥 말리 (1945)", "전지현 (1981)", "아이유 (1993)"],
   },
   {
     name: "개",
@@ -166,7 +166,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["호랑이띠", "말띠", "토끼띠"],
     badMatch: ["용띠", "양띠", "소띠"],
-    celebrities: ["소크라테스 (BC 470)", "마이클 잭슨 (1958)", "송혜교 (1981)"],
+    celebrities: ["빌 클린턴 (1946)", "마이클 잭슨 (1958)", "BTS RM (1994)"],
   },
   {
     name: "돼지",
@@ -180,7 +180,7 @@ const ZODIAC_ANIMALS: ZodiacAnimal[] = [
     ],
     goodMatch: ["토끼띠", "양띠", "호랑이띠"],
     badMatch: ["뱀띠", "원숭이띠", "돼지띠"],
-    celebrities: ["헨리 포드 (1863)", "아놀드 슈워제네거 (1947)", "박서준 (1988)"],
+    celebrities: ["헨리 포드 (1863)", "슈워제네거 (1947)", "BTS 뷔 (1995)"],
   },
 ];
 

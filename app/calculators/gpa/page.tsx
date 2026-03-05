@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 function useCopyToClipboard() {
@@ -60,10 +60,8 @@ const GRADES_43: Record<string, number> = {
   "F": 0.0,
 };
 
-let nextId = 6;
-
-function createSubject(): Subject {
-  return { id: nextId++, name: "", credits: 3, grade: "A+", isPF: false };
+function createSubject(idRef: React.MutableRefObject<number>): Subject {
+  return { id: idRef.current++, name: "", credits: 3, grade: "A+", isPF: false };
 }
 
 function initialSubjects(): Subject[] {
@@ -77,6 +75,7 @@ function initialSubjects(): Subject[] {
 }
 
 export default function GpaCalculator() {
+  const nextIdRef = useRef(6);
   const [scale, setScale] = useState<"4.5" | "4.3">("4.5");
   const [subjects, setSubjects] = useState<Subject[]>(initialSubjects);
   const { copied, handleCopy } = useCopyToClipboard();
@@ -93,7 +92,7 @@ export default function GpaCalculator() {
   );
 
   const addSubject = () => {
-    setSubjects((prev) => [...prev, createSubject()]);
+    setSubjects((prev) => [...prev, createSubject(nextIdRef)]);
   };
 
   const removeSubject = (id: number) => {
@@ -101,7 +100,7 @@ export default function GpaCalculator() {
   };
 
   const resetAll = () => {
-    nextId = 6;
+    nextIdRef.current = 6;
     setSubjects(initialSubjects());
     setScale("4.5");
   };
@@ -190,6 +189,8 @@ export default function GpaCalculator() {
                 <option value={1}>1학점</option>
                 <option value={2}>2학점</option>
                 <option value={3}>3학점</option>
+                <option value={4}>4학점</option>
+                <option value={5}>5학점</option>
               </select>
               <select
                 value={subject.grade}

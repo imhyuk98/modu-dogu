@@ -152,13 +152,10 @@ export default function RandomRoulette() {
         requestAnimationFrame(animate);
       } else {
         currentRotationRef.current = current;
-        // Determine winner: arrow is at the top (270 degrees / -90 degrees)
-        // The roulette rotates clockwise, so we need to find which slice is at the top
+        // Determine winner: arrow is at the top (270 degrees in canvas coordinates)
+        // Canvas 0° = right, 90° = bottom, 180° = left, 270° = top
         const normalizedAngle = ((current % 360) + 360) % 360;
-        // Arrow points right (0 degrees), items go clockwise
-        // The slice at the arrow: we need to find which slice occupies angle 0 (right side)
-        // Since canvas 0 is right, and arrow is at top (-90deg), adjust:
-        const arrowAngle = (360 - normalizedAngle) % 360;
+        const arrowAngle = ((270 - normalizedAngle) % 360 + 360) % 360;
         const sliceAngle = 360 / items.length;
         const winnerIndex = Math.floor(arrowAngle / sliceAngle) % items.length;
 

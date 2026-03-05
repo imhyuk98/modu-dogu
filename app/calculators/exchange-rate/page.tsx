@@ -106,7 +106,8 @@ export default function ExchangeRateCalculator() {
         setFromAmount(formatResult(result, fromCurrency));
       }
     }
-  }, [rates, fromCurrency, toCurrency, convert, lastEdited, fromAmount, toAmount]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rates, fromCurrency, toCurrency, convert, lastEdited]);
 
   const formatResult = (num: number, currency: string): string => {
     if (num === 0) return "0";

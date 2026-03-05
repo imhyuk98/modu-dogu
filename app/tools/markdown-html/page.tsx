@@ -190,7 +190,7 @@ function processTable(lines: string[]): string {
       ? `<tbody>${bodyRows.map((row) => `<tr>${row.map((c) => `<td>${processInline(c)}</td>`).join("")}</tr>`).join("")}</tbody>`
       : "";
 
-  return `<table>${thead}${tbody}</table></div>`;
+  return `<table>${thead}${tbody}</table>`;
 }
 
 // ── Sample Markdown ─────────────────────────────────────────────
