@@ -111,6 +111,7 @@ export default function BMICalculator() {
                 onClick={() => handleCopy(`BMI: ${result.bmi} (${result.category})`)}
                 className="text-sm text-blue-200 hover:text-white transition-colors"
                 title="복사"
+                aria-label="결과 복사"
               >
                 {copied ? "복사됨!" : "복사"}
               </button>

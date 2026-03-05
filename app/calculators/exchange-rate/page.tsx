@@ -273,6 +273,7 @@ export default function ExchangeRateCalculator() {
             onClick={handleSwap}
             className="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-lg font-bold"
             title="통화 바꾸기"
+            aria-label="통화 바꾸기"
           >
             ↔
           </button>
