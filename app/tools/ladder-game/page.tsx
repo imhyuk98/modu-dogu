@@ -147,6 +147,7 @@ export default function LadderGamePage() {
   );
 
   /* ─── Draw Canvas ─── */
+  // upTo now supports fractional values for smooth interpolation between path points
   const drawLadder = useCallback(
     (
       highlightPaths?: { path: { x: number; y: number }[]; color: string; upTo?: number }[]
@@ -194,38 +195,70 @@ export default function LadderGamePage() {
         ctx.stroke();
       }
 
-      // Draw highlighted paths
+      // Draw highlighted paths (supports fractional upTo for smooth interpolation)
       if (highlightPaths) {
         for (const hp of highlightPaths) {
+          if (hp.upTo !== undefined && hp.upTo < 0) continue; // not started yet
+
           ctx.strokeStyle = hp.color;
           ctx.lineWidth = 4;
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
           ctx.beginPath();
-          const limit = hp.upTo !== undefined ? hp.upTo + 1 : hp.path.length;
-          for (let i = 0; i < Math.min(limit, hp.path.length); i++) {
+
+          // Fractional upTo: draw full segments up to floor, then lerp to fractional part
+          const rawUpTo = hp.upTo !== undefined ? hp.upTo : hp.path.length - 1;
+          const clampedUpTo = Math.min(rawUpTo, hp.path.length - 1);
+          const floorIdx = Math.floor(clampedUpTo);
+          const frac = clampedUpTo - floorIdx;
+
+          for (let i = 0; i <= floorIdx && i < hp.path.length; i++) {
             const px = sx(hp.path[i].x);
             const py = sy(hp.path[i].y);
             if (i === 0) ctx.moveTo(px, py);
             else ctx.lineTo(px, py);
           }
+
+          // Interpolate to fractional position
+          let ballX: number;
+          let ballY: number;
+          if (frac > 0 && floorIdx + 1 < hp.path.length) {
+            const p0 = hp.path[floorIdx];
+            const p1 = hp.path[floorIdx + 1];
+            const lx = p0.x + (p1.x - p0.x) * frac;
+            const ly = p0.y + (p1.y - p0.y) * frac;
+            ctx.lineTo(sx(lx), sy(ly));
+            ballX = sx(lx);
+            ballY = sy(ly);
+          } else {
+            const pt = hp.path[Math.min(floorIdx, hp.path.length - 1)];
+            ballX = sx(pt.x);
+            ballY = sy(pt.y);
+          }
           ctx.stroke();
 
-          // Draw current dot
-          if (limit > 0 && limit <= hp.path.length) {
-            const last = hp.path[Math.min(limit - 1, hp.path.length - 1)];
-            ctx.fillStyle = hp.color;
-            ctx.beginPath();
-            ctx.arc(sx(last.x), sy(last.y), 6, 0, Math.PI * 2);
-            ctx.fill();
-          }
+          // Draw ball marker with glow
+          ctx.save();
+          ctx.shadowColor = hp.color;
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = hp.color;
+          ctx.beginPath();
+          ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
+          ctx.fill();
+          // Inner white highlight
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = "rgba(255,255,255,0.5)";
+          ctx.beginPath();
+          ctx.arc(ballX - 2, ballY - 2, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         }
       }
     },
     [participants.length, rungs, totalRows]
   );
 
-  /* ─── Animate single path ─── */
+  /* ─── Animate single path (time-based, ~2.5s duration) ─── */
   const animatePath = useCallback(
     (playerIdx: number) => {
       if (animating) return;
@@ -237,23 +270,27 @@ export default function LadderGamePage() {
       setAllResults(null);
       setShowAllPaths(false);
 
-      let frame = 0;
-      const speed = 2; // points per frame
+      const duration = 2500; // ms
+      const maxIdx = path.length - 1;
+      const startTime = performance.now();
 
-      const step = () => {
-        frame += 1;
-        const currentIdx = Math.min(frame * speed, path.length - 1);
-        setAnimIdx(currentIdx);
+      const step = (now: number) => {
+        const elapsed = now - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        // Ease-in-out for smooth feel
+        const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const currentIdx = eased * maxIdx;
+
+        setAnimIdx(Math.floor(currentIdx));
 
         drawLadder([
           { path, color: COLORS[playerIdx % COLORS.length], upTo: currentIdx },
         ]);
 
-        if (currentIdx < path.length - 1) {
+        if (t < 1) {
           animFrameRef.current = requestAnimationFrame(step);
         } else {
           setAnimating(false);
-          // Show result
           setAllResults({ [playerIdx]: endCol });
         }
       };
@@ -263,22 +300,70 @@ export default function LadderGamePage() {
     [animating, tracePath, drawLadder]
   );
 
-  /* ─── Show all results ─── */
+  /* ─── Show all results (staggered animation) ─── */
   const showAll = useCallback(() => {
     if (animating) return;
+    setAnimating(true);
+    setSelectedPlayer(null);
+    setAllResults(null);
+    setShowAllPaths(true);
+
     const mapping: Record<number, number> = {};
-    const paths: { path: { x: number; y: number }[]; color: string }[] = [];
+    const pathData: { path: { x: number; y: number }[]; color: string; endCol: number }[] = [];
 
     for (let i = 0; i < participants.length; i++) {
       const { path, endCol } = tracePath(i);
       mapping[i] = endCol;
-      paths.push({ path, color: COLORS[i % COLORS.length] });
+      pathData.push({ path, color: COLORS[i % COLORS.length], endCol });
     }
 
-    setAllResults(mapping);
-    setShowAllPaths(true);
-    setSelectedPlayer(null);
-    drawLadder(paths);
+    const duration = 2500; // ms per path
+    const stagger = 200; // ms between each player start
+    const totalDuration = duration + stagger * (participants.length - 1);
+    const startTime = performance.now();
+
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+
+      const highlightPaths: { path: { x: number; y: number }[]; color: string; upTo: number }[] = [];
+
+      for (let i = 0; i < pathData.length; i++) {
+        const playerStart = i * stagger;
+        const playerElapsed = elapsed - playerStart;
+        if (playerElapsed < 0) {
+          // Not started yet - don't draw
+          highlightPaths.push({ path: pathData[i].path, color: pathData[i].color, upTo: -1 });
+          continue;
+        }
+        const t = Math.min(playerElapsed / duration, 1);
+        const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const maxIdx = pathData[i].path.length - 1;
+        highlightPaths.push({
+          path: pathData[i].path,
+          color: pathData[i].color,
+          upTo: eased * maxIdx,
+        });
+      }
+
+      drawLadder(highlightPaths);
+
+      if (elapsed < totalDuration) {
+        animFrameRef.current = requestAnimationFrame(step);
+      } else {
+        // Final frame: draw all paths fully
+        drawLadder(
+          pathData.map((pd) => ({
+            path: pd.path,
+            color: pd.color,
+            upTo: pd.path.length - 1,
+          }))
+        );
+        setAnimating(false);
+        setAllResults(mapping);
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(step);
   }, [animating, participants.length, tracePath, drawLadder]);
 
   /* ─── Canvas sizing ─── */

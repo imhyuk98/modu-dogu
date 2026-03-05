@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
+// ── Pure game logic (unchanged) ──────────────────────────────────────────────
+
 type Grid = number[][];
 
 function createEmptyGrid(): Grid {
@@ -123,20 +125,233 @@ function getTileFontSize(value: number): string {
   return "text-lg sm:text-xl";
 }
 
-function initGrid(): Grid {
-  let grid = createEmptyGrid();
-  grid = addRandomTile(grid);
-  grid = addRandomTile(grid);
+// ── Tile animation types & helpers ───────────────────────────────────────────
+
+interface Tile {
+  id: number;
+  value: number;
+  row: number;
+  col: number;
+  isNew?: boolean;
+  isMerged?: boolean;
+}
+
+/**
+ * Detailed slide-left that tracks per-tile movements.
+ * Operates on tiles whose coords have already been rotated so
+ * the desired direction maps to "left".
+ */
+function slideLeftDetailed(
+  tiles: Tile[]
+): { movedTiles: Tile[]; score: number; moved: boolean } {
+  const movedTiles: Tile[] = [];
+  let score = 0;
+  let moved = false;
+
+  for (let r = 0; r < 4; r++) {
+    const rowTiles = tiles
+      .filter((t) => t.row === r)
+      .sort((a, b) => a.col - b.col);
+
+    let writeCol = 0;
+    let i = 0;
+    while (i < rowTiles.length) {
+      const current = rowTiles[i];
+      if (i + 1 < rowTiles.length && current.value === rowTiles[i + 1].value) {
+        const next = rowTiles[i + 1];
+        const mergedValue = current.value * 2;
+        score += mergedValue;
+        // Both tiles slide to writeCol (CSS transition animates them)
+        movedTiles.push({ ...current, col: writeCol });
+        movedTiles.push({ ...next, col: writeCol });
+        i += 2;
+      } else {
+        movedTiles.push({ ...current, col: writeCol });
+        i++;
+      }
+      writeCol++;
+    }
+  }
+
+  // Detect whether anything actually moved
+  for (const mt of movedTiles) {
+    const orig = tiles.find((t) => t.id === mt.id);
+    if (orig && (orig.row !== mt.row || orig.col !== mt.col)) {
+      moved = true;
+      break;
+    }
+  }
+  // Merges also count as a move
+  const posCount = new Map<string, number>();
+  for (const t of movedTiles) {
+    const k = `${t.row},${t.col}`;
+    posCount.set(k, (posCount.get(k) || 0) + 1);
+  }
+  for (const count of posCount.values()) {
+    if (count > 1) { moved = true; break; }
+  }
+
+  return { movedTiles, score, moved };
+}
+
+/**
+ * Perform a directional move on tile objects by rotating coordinates,
+ * sliding left, and rotating back.
+ */
+function moveTiles(
+  tiles: Tile[],
+  direction: "left" | "right" | "up" | "down"
+): { movedTiles: Tile[]; score: number; moved: boolean } {
+  const rotations: Record<string, number> = { left: 0, down: 1, right: 2, up: 3 };
+  const times = rotations[direction];
+
+  const rotateCoordsForward = (t: Tile, n: number): Tile => {
+    let { row, col } = t;
+    for (let i = 0; i < n; i++) {
+      const newRow = col;
+      const newCol = 3 - row;
+      row = newRow;
+      col = newCol;
+    }
+    return { ...t, row, col };
+  };
+
+  const rotateCoordsBack = (t: Tile, n: number): Tile => {
+    return rotateCoordsForward(t, (4 - n) % 4);
+  };
+
+  const rotatedTiles = tiles.map((t) => rotateCoordsForward(t, times));
+  const result = slideLeftDetailed(rotatedTiles);
+
+  return {
+    movedTiles: result.movedTiles.map((t) => rotateCoordsBack(t, times)),
+    score: result.score,
+    moved: result.moved,
+  };
+}
+
+/** Convert a Grid to Tile[], assigning fresh ids */
+function gridToTiles(grid: Grid, idCounter: { current: number }): Tile[] {
+  const tiles: Tile[] = [];
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      if (grid[r][c] !== 0) {
+        tiles.push({ id: idCounter.current++, value: grid[r][c], row: r, col: c, isNew: true });
+      }
+    }
+  }
+  return tiles;
+}
+
+/** Convert Tile[] back to Grid (for canMove / hasWon checks) */
+function tilesToGrid(tiles: Tile[]): Grid {
+  const grid = createEmptyGrid();
+  for (const t of tiles) {
+    grid[t.row][t.col] = t.value;
+  }
   return grid;
 }
 
+/** Find a random empty cell and add a new tile */
+function addRandomTileToList(tiles: Tile[], idCounter: { current: number }): Tile[] {
+  const occupied = new Set<string>();
+  for (const t of tiles) occupied.add(`${t.row},${t.col}`);
+
+  const empty: [number, number][] = [];
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      if (!occupied.has(`${r},${c}`)) empty.push([r, c]);
+    }
+  }
+  if (empty.length === 0) return tiles;
+
+  const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+  const value = Math.random() < 0.9 ? 2 : 4;
+
+  return [...tiles, { id: idCounter.current++, value, row: r, col: c, isNew: true }];
+}
+
+// ── Constants ────────────────────────────────────────────────────────────────
+
+const ANIM_DURATION = 150;
+const NEW_TILE_DELAY = 100;
+
+// ── CSS for the board ────────────────────────────────────────────────────────
+// Uses a CSS custom property --g (gap) so that both the background grid
+// and the absolutely-positioned tiles share the exact same spacing.
+// Tile position formula: translate(col * (100% + --g) / 4, row * (100% + --g) / 4)
+// Tile size formula: (100% - 3 * --g) / 4
+
+const boardCSS = `
+.board-2048 {
+  --g: 8px;
+  --p: 10px;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: #9ca3af;
+  border-radius: 12px;
+  padding: var(--p);
+}
+@media (min-width: 640px) {
+  .board-2048 { --g: 10px; --p: 12px; }
+}
+.board-2048-bg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--g);
+}
+.board-2048-cell {
+  aspect-ratio: 1;
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+.board-2048-tiles {
+  position: absolute;
+  inset: var(--p);
+}
+.tile-2048 {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 700;
+  width:  calc((100% - 3 * var(--g)) / 4);
+  height: calc((100% - 3 * var(--g)) / 4);
+  transition: transform ${ANIM_DURATION}ms ease-in-out;
+}
+.tile-2048-new {
+  animation: t2048pop ${NEW_TILE_DELAY}ms ease-out;
+}
+.tile-2048-merged {
+  animation: t2048merge 150ms ease-out;
+}
+@keyframes t2048pop {
+  0%   { opacity: 0; transform: var(--tx) scale(0); }
+  100% { opacity: 1; transform: var(--tx) scale(1); }
+}
+@keyframes t2048merge {
+  0%   { transform: var(--tx) scale(1); }
+  50%  { transform: var(--tx) scale(1.15); }
+  100% { transform: var(--tx) scale(1); }
+}
+`;
+
+// ── Component ────────────────────────────────────────────────────────────────
+
 export default function Game2048() {
-  const [grid, setGrid] = useState<Grid>(() => initGrid());
+  const idCounterRef = useRef(1);
+  const [tiles, setTiles] = useState<Tile[]>(() => {
+    const grid = addRandomTile(addRandomTile(createEmptyGrid()));
+    return gridToTiles(grid, idCounterRef);
+  });
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [won, setWon] = useState(false);
   const [keepPlaying, setKeepPlaying] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
@@ -157,31 +372,69 @@ export default function Game2048() {
 
   const handleMove = useCallback(
     (direction: "left" | "right" | "up" | "down") => {
-      if (gameOver) return;
+      if (gameOver || isAnimating) return;
       if (won && !keepPlaying) return;
 
-      const result = move(grid, direction);
+      const currentTiles = tiles.map((t) => ({ ...t, isNew: false, isMerged: false }));
+      const result = moveTiles(currentTiles, direction);
       if (!result.moved) return;
 
-      const newGrid = addRandomTile(result.grid);
-      const newScore = score + result.score;
+      setIsAnimating(true);
 
-      setGrid(newGrid);
-      setScore(newScore);
-      updateBestScore(newScore);
+      // Phase 1: Update tile positions -- CSS transition slides them over ANIM_DURATION ms.
+      // Both tiles in a merge pair slide to the same cell; they overlap briefly.
+      setTiles(result.movedTiles.map((t) => ({ ...t, isNew: false, isMerged: false })));
 
-      if (!keepPlaying && hasWon(newGrid)) {
-        setWon(true);
-        return;
-      }
+      // Phase 2: After the slide finishes, resolve merges and spawn a new tile.
+      setTimeout(() => {
+        const posMap = new Map<string, Tile[]>();
+        for (const t of result.movedTiles) {
+          const key = `${t.row},${t.col}`;
+          if (!posMap.has(key)) posMap.set(key, []);
+          posMap.get(key)!.push(t);
+        }
 
-      if (!canMove(newGrid)) {
-        setGameOver(true);
-      }
+        const survivors: Tile[] = [];
+        for (const [, group] of posMap) {
+          if (group.length === 2) {
+            // Two tiles merged: replace with one tile of doubled value
+            survivors.push({
+              id: idCounterRef.current++,
+              value: group[0].value * 2,
+              row: group[0].row,
+              col: group[0].col,
+              isNew: false,
+              isMerged: true,
+            });
+          } else {
+            survivors.push({ ...group[0], isNew: false, isMerged: false });
+          }
+        }
+
+        const withNew = addRandomTileToList(survivors, idCounterRef);
+        const newScore = score + result.score;
+
+        setTiles(withNew);
+        setScore(newScore);
+        updateBestScore(newScore);
+
+        const grid = tilesToGrid(withNew);
+        if (!keepPlaying && hasWon(grid)) {
+          setWon(true);
+          setIsAnimating(false);
+          return;
+        }
+        if (!canMove(grid)) {
+          setGameOver(true);
+        }
+
+        setTimeout(() => setIsAnimating(false), NEW_TILE_DELAY);
+      }, ANIM_DURATION);
     },
-    [grid, score, gameOver, won, keepPlaying, updateBestScore]
+    [tiles, score, gameOver, won, keepPlaying, isAnimating, updateBestScore]
   );
 
+  // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const dirMap: Record<string, "left" | "right" | "up" | "down"> = {
@@ -200,6 +453,7 @@ export default function Game2048() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleMove]);
 
+  // Touch / swipe controls
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
@@ -247,11 +501,14 @@ export default function Game2048() {
   }, [handleMove]);
 
   const newGame = () => {
-    setGrid(initGrid());
+    idCounterRef.current = 1;
+    const grid = addRandomTile(addRandomTile(createEmptyGrid()));
+    setTiles(gridToTiles(grid, idCounterRef));
     setScore(0);
     setGameOver(false);
     setWon(false);
     setKeepPlaying(false);
+    setIsAnimating(false);
   };
 
   const handleKeepPlaying = () => {
@@ -261,6 +518,8 @@ export default function Game2048() {
 
   return (
     <div className="py-4">
+      <style>{boardCSS}</style>
+
       <h1 className="text-2xl font-bold text-gray-900 mb-2">
         {"\uD83C\uDFAE"} 2048 게임
       </h1>
@@ -296,18 +555,43 @@ export default function Game2048() {
 
       {/* Game Board */}
       <div className="relative" ref={boardRef}>
-        <div className="bg-gray-400 rounded-xl p-3 sm:p-4 inline-block w-full max-w-[400px]">
-          <div className="grid grid-cols-4 gap-2 sm:gap-3">
-            {grid.flat().map((value, i) => (
-              <div
-                key={i}
-                className={`aspect-square flex items-center justify-center rounded-lg font-bold transition-all duration-100 ${getTileColor(
-                  value
-                )} ${getTileFontSize(value)}`}
-              >
-                {value > 0 ? value : ""}
-              </div>
+        <div className="board-2048">
+          {/* Background: 4x4 empty gray cells */}
+          <div className="board-2048-bg">
+            {Array.from({ length: 16 }).map((_, i) => (
+              <div key={i} className="board-2048-cell" />
             ))}
+          </div>
+
+          {/* Tile layer: absolutely positioned, animated tiles */}
+          <div className="board-2048-tiles">
+            {tiles.map((tile) => {
+              // Position: col * (100% + gap) / 4, row * (100% + gap) / 4
+              // Uses CSS var(--g) so it stays in sync with the background grid gap.
+              const tx = `calc(${tile.col} * (100% + var(--g)) / 4)`;
+              const ty = `calc(${tile.row} * (100% + var(--g)) / 4)`;
+              const transform = `translate(${tx}, ${ty})`;
+
+              const colorClass = getTileColor(tile.value);
+              const fontClass = getTileFontSize(tile.value);
+              let animClass = "";
+              if (tile.isNew) animClass = "tile-2048-new";
+              else if (tile.isMerged) animClass = "tile-2048-merged";
+
+              return (
+                <div
+                  key={tile.id}
+                  className={`tile-2048 ${colorClass} ${fontClass} ${animClass}`}
+                  style={{
+                    transform,
+                    "--tx": transform,
+                    zIndex: tile.isMerged ? 2 : 1,
+                  } as React.CSSProperties}
+                >
+                  {tile.value}
+                </div>
+              );
+            })}
           </div>
         </div>
 
