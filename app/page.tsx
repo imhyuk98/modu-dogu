@@ -37,6 +37,7 @@ const calculators: Item[] = [
   { title: "부가세 계산기", description: "공급가액에서 부가세를 계산하거나, 합계금액에서 역산합니다.", href: "/calculators/vat", emoji: "\uD83E\uDDFE" },
   { title: "로또 세금 계산기", description: "로또 당첨금에서 세금을 공제한 실수령액을 계산합니다.", href: "/calculators/lotto-tax", emoji: "\uD83C\uDFB0" },
   { title: "전월세 전환 계산기", description: "전세를 월세로, 월세를 전세로 전환할 때 적정 금액을 계산합니다.", href: "/calculators/rent-conversion", emoji: "\uD83C\uDFE0" },
+  { title: "공학용 계산기", description: "삼각함수, 로그, 지수, 팩토리얼 등 공학용 계산을 합니다.", href: "/calculators/scientific", emoji: "\uD83D\uDD2C" },
 ];
 
 const realEstateCalcs: Item[] = [

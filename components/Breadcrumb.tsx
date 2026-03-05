@@ -38,6 +38,7 @@ const categoryMap: Record<string, { label: string; href?: string }> = {
   alcohol: { label: "생활 계산기" },
   "annual-leave": { label: "생활 계산기" },
   gpa: { label: "생활 계산기" },
+  scientific: { label: "생활 계산기" },
   // Fun
   "mbti-compatibility": { label: "재미/운세" },
   "name-compatibility": { label: "재미/운세" },
@@ -103,6 +104,7 @@ const titleMap: Record<string, string> = {
   alcohol: "음주 측정기",
   "annual-leave": "연차 계산기",
   gpa: "학점 계산기",
+  scientific: "공학용 계산기",
   "mbti-compatibility": "MBTI 궁합",
   "name-compatibility": "이름 궁합",
   constellation: "별자리 계산기",

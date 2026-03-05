@@ -60,6 +60,7 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "mbti-test": { title: "MBTI 성격유형 검사", href: "/tools/mbti-test", category: "재미" },
   "ladder-game": { title: "사다리 타기", href: "/tools/ladder-game", category: "도구" },
   "drinking-games": { title: "술게임 모음", href: "/tools/drinking-games", category: "재미" },
+  scientific: { title: "공학용 계산기", href: "/calculators/scientific", category: "생활" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -123,6 +124,7 @@ const relatedMap: Record<string, string[]> = {
   "mbti-test": ["mbti-compatibility", "psychology-test", "name-compatibility", "blood-type"],
   "ladder-game": ["random-roulette", "random-number", "timer", "nickname-generator"],
   "drinking-games": ["random-roulette", "ladder-game", "random-number", "nickname-generator"],
+  scientific: ["percent", "unit-converter", "ratio", "gpa"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

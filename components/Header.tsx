@@ -41,6 +41,7 @@ const lifeCalcs = [
   { title: "음주 측정기", href: "/calculators/alcohol" },
   { title: "연차 계산기", href: "/calculators/annual-leave" },
   { title: "학점 계산기", href: "/calculators/gpa" },
+  { title: "공학용 계산기", href: "/calculators/scientific" },
 ];
 
 const funCalcs = [
