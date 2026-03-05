@@ -107,8 +107,8 @@ export default function UnitConverter() {
   const displayResult = inputVal !== 0 ? (Math.round(converted * 10000) / 10000).toLocaleString("ko-KR", { maximumFractionDigits: 4 }) : "0";
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">단위 변환기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">단위 변환기</h1>
       <p className="text-gray-500 mb-8">길이, 무게, 온도, 넓이, 부피를 간편하게 변환합니다.</p>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -120,11 +120,11 @@ export default function UnitConverter() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">변환할 값</label>
           <input type="number" step="any" value={value} onChange={(e) => setValue(e.target.value)} placeholder="0"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            className="calc-input calc-input-lg" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -144,13 +144,13 @@ export default function UnitConverter() {
         </div>
         <div className="mt-4">
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="calc-card overflow-hidden">
         <div className="bg-blue-600 text-white p-6 text-center">
           <p className="text-blue-100 text-sm mb-1">변환 결과</p>
           <div className="flex items-center justify-center gap-2">

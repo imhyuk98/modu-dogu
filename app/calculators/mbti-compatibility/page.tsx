@@ -223,14 +223,14 @@ export default function MbtiCompatibilityPage() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">MBTI 궁합 테스트</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">MBTI 궁합 테스트</h1>
       <p className="text-gray-500 mb-8">
         나와 상대의 MBTI를 선택하고 궁합 점수를 확인해 보세요.
       </p>
 
       {/* 나의 MBTI */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">나의 MBTI</h2>
         <div className="grid grid-cols-4 gap-2">
           {MBTI_TYPES.map((type) => (
@@ -255,7 +255,7 @@ export default function MbtiCompatibilityPage() {
       </div>
 
       {/* 상대 MBTI */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">상대 MBTI</h2>
         <div className="grid grid-cols-4 gap-2">
           {MBTI_TYPES.map((type) => (
@@ -290,7 +290,7 @@ export default function MbtiCompatibilityPage() {
         </button>
         <button
           onClick={handleReset}
-          className="px-6 py-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+          className="calc-btn-secondary"
         >
           초기화
         </button>
@@ -298,7 +298,7 @@ export default function MbtiCompatibilityPage() {
 
       {/* 결과 */}
       {result && myMbti && partnerMbti && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8">
+        <div className="calc-card overflow-hidden mb-8">
           {/* 점수 헤더 */}
           <div className="bg-gradient-to-r from-blue-50 to-pink-50 p-8 text-center">
             <div className="flex items-center justify-center gap-4 mb-6">

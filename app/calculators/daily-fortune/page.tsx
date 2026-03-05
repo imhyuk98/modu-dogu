@@ -780,10 +780,10 @@ export default function DailyFortune() {
   ];
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       {/* Header with Date */}
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">오늘의 운세</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">오늘의 운세</h1>
         <p className="text-gray-500 mb-3">
           나의 띠로 오늘의 운세를 확인하세요. 매일 새로운 운세가 제공됩니다.
         </p>
@@ -814,7 +814,7 @@ export default function DailyFortune() {
 
       {/* Zodiac Grid Selection */}
       {mode === "select" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-sm font-medium text-gray-700 mb-3">나의 띠를 선택하세요</h2>
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
             {띠목록.map((z, i) => (
@@ -837,7 +837,7 @@ export default function DailyFortune() {
 
       {/* Year Input */}
       {mode === "year" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-sm font-medium text-gray-700 mb-3">출생년도를 입력하세요</h2>
           <div className="flex gap-3 max-w-sm">
             <input
@@ -900,7 +900,7 @@ export default function DailyFortune() {
 
           {/* Fortune Cards */}
           {fortuneCards.map((item, idx) => (
-            <div key={item.label} className="bg-white rounded-xl border border-gray-200 p-5">
+            <div key={item.label} className="calc-card p-5">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-gray-900">
                   {item.emoji} {item.label}
@@ -986,7 +986,7 @@ export default function DailyFortune() {
             </button>
             <button
               onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="calc-btn-secondary"
             >
               초기화
             </button>

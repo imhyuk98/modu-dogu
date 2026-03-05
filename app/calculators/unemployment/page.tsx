@@ -1,34 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { calculateUnemployment, type UnemploymentResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 export default function UnemploymentCalculator() {
-  const [age, setAge] = useState("");
-  const [years, setYears] = useState("");
-  const [pay, setPay] = useState("");
-  const [result, setResult] = useState<UnemploymentResult | null>(null);
-  const [error, setError] = useState("");
+  const [age, setAge] = useState("35");
+  const [years, setYears] = useState("3");
+  const [pay, setPay] = useState("3,000,000");
   const [copied, setCopied] = useState(false);
 
-  const handleCalculate = () => {
+  const result = useMemo(() => {
     const a = parseInt(age, 10);
     const y = parseInt(years, 10);
     const p = parseInt(pay.replace(/,/g, ""), 10);
-    if (!a || a <= 0) { setError("나이를 입력해주세요"); return; }
-    if (!p || p <= 0) { setError("월급을 입력해주세요"); return; }
-    if (y < 0) { setError("근속연수를 올바르게 입력해주세요"); return; }
-    setError("");
-    setResult(calculateUnemployment(a, y || 0, p));
-  };
+    if (!a || a <= 0 || !p || p <= 0) return null;
+    if (y < 0) return null;
+    return calculateUnemployment(a, y || 0, p);
+  }, [age, years, pay]);
 
   const handleReset = () => {
-    setAge("");
-    setYears("");
-    setPay("");
-    setResult(null);
-    setError("");
+    setAge("35");
+    setYears("3");
+    setPay("3,000,000");
     setCopied(false);
   };
 
@@ -44,29 +38,28 @@ export default function UnemploymentCalculator() {
   const handlePayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPay(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
-    setError("");
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">실업급여 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">실업급여 계산기</h1>
       <p className="text-gray-500 mb-8">나이, 근속연수, 평균 월급을 입력하면 예상 실업급여를 계산합니다.</p>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">나이</label>
             <div className="relative">
-              <input type="number" value={age} onChange={(e) => { setAge(e.target.value); setError(""); }} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="35"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="number" value={age} onChange={(e) => { setAge(e.target.value); }} placeholder="35"
+                className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">세</span>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">근속연수</label>
             <div className="relative">
-              <input type="number" value={years} onChange={(e) => { setYears(e.target.value); setError(""); }} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="3"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="number" value={years} onChange={(e) => { setYears(e.target.value); }} placeholder="3"
+                className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">년</span>
             </div>
           </div>
@@ -75,27 +68,22 @@ export default function UnemploymentCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">퇴직 전 3개월 평균 월급 (세전)</label>
           <div className="relative">
-            <input type="text" value={pay} onChange={handlePayChange} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 3,000,000"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="text" value={pay} onChange={handlePayChange} placeholder="예: 3,000,000"
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3">
-          <button onClick={handleCalculate}
-            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            계산하기
-          </button>
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">예상 총 수급액</p>
             <div className="flex items-center justify-center gap-2">
@@ -236,6 +224,20 @@ export default function UnemploymentCalculator() {
         </div>
       </section>
           <RelatedTools current="unemployment" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">예상 총 수급액</p>
+              <p className="text-lg font-extrabold text-blue-600">{fmt(result.totalAmount)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">
+              {copied ? "복사됨!" : "복사"}
+            </button>
+          </div>
+        </div>
+      )}
 </div>
   );
 }

@@ -187,14 +187,14 @@ export default function SajuCalculator() {
   const totalOh = result ? Object.values(result.오행비율).reduce((a, b) => a + b, 0) : 0;
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">사주팔자 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">사주팔자 계산기</h1>
       <p className="text-gray-500 mb-8">
         생년월일과 태어난 시간을 입력하면 사주팔자와 오행 분석 결과를 확인할 수 있습니다.
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">출생년도</label>
@@ -254,7 +254,7 @@ export default function SajuCalculator() {
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -317,7 +317,7 @@ export default function SajuCalculator() {
           </div>
 
           {/* 오행 비율 */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">오행 분석</h2>
             <div className="space-y-3">
               {(["목", "화", "토", "금", "수"] as const).map((oh) => {
@@ -345,7 +345,7 @@ export default function SajuCalculator() {
           </div>
 
           {/* 일간 성격 분석 */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-2">
               일간 성격 분석 - {천간한자[result.일간]} {천간[result.일간]}일간
             </h2>
@@ -353,7 +353,7 @@ export default function SajuCalculator() {
           </div>
 
           {/* 오행 과다/부족 분석 */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-3">오행 균형 분석</h2>
             <div className="space-y-3">
               {(["목", "화", "토", "금", "수"] as const).map((oh) => {

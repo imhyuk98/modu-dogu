@@ -131,8 +131,8 @@ export default function RandomNumberGenerator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         랜덤 숫자 생성기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -158,7 +158,7 @@ export default function RandomNumberGenerator() {
 
       {/* 모드1: 숫자 범위 */}
       {mode === "range" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -168,7 +168,7 @@ export default function RandomNumberGenerator() {
                 type="number"
                 value={rangeMin}
                 onChange={(e) => setRangeMin(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -179,7 +179,7 @@ export default function RandomNumberGenerator() {
                 type="number"
                 value={rangeMax}
                 onChange={(e) => setRangeMax(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function RandomNumberGenerator() {
 
       {/* 모드2: 여러 개 뽑기 */}
       {mode === "multiple" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -213,7 +213,7 @@ export default function RandomNumberGenerator() {
                 type="number"
                 value={multiMin}
                 onChange={(e) => setMultiMin(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -224,7 +224,7 @@ export default function RandomNumberGenerator() {
                 type="number"
                 value={multiMax}
                 onChange={(e) => setMultiMax(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div className="col-span-2 sm:col-span-1">
@@ -236,7 +236,7 @@ export default function RandomNumberGenerator() {
                 value={multiCount}
                 onChange={(e) => setMultiCount(e.target.value)}
                 min={1}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
           </div>
@@ -284,7 +284,7 @@ export default function RandomNumberGenerator() {
 
       {/* 모드3: 로또 */}
       {mode === "lotto" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="text-center mb-4">
             <p className="text-gray-600 mb-4">
               1~45 중 6개의 번호와 보너스 번호 1개를 자동으로 생성합니다.
@@ -352,7 +352,7 @@ export default function RandomNumberGenerator() {
 
       {/* 히스토리 */}
       {history.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+        <div className="calc-card p-5 mb-6">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <span>&#x1F4CB;</span> 최근 기록
           </h3>

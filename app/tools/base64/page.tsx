@@ -103,8 +103,8 @@ export default function Base64Tool() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         Base64 인코더/디코더
       </h1>
       <p className="text-gray-500 mb-8">
@@ -112,7 +112,7 @@ export default function Base64Tool() {
       </p>
 
       {/* 도구 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* 모드 선택 */}
         <div className="flex gap-2 mb-6">
           <button
@@ -175,13 +175,13 @@ export default function Base64Tool() {
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleConvert}
-            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="calc-btn-primary"
           >
             변환하기
           </button>
           <button
             onClick={handleClear}
-            className="px-6 py-3 border border-gray-300 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             지우기
           </button>

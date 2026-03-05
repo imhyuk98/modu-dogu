@@ -140,7 +140,7 @@ function DropdownMenu({
         </svg>
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg py-2 min-w-[200px] z-50">
+        <div className="absolute top-full left-0 mt-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-lg py-2 min-w-[200px] z-50">
           {children}
         </div>
       )}
@@ -200,14 +200,14 @@ export default function Header() {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50">
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-blue-600">
           계산기나라
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-5 text-sm text-gray-600">
+        <nav className="hidden md:flex items-center gap-5 text-sm text-[var(--muted)]">
           <Link href="/" className="hover:text-blue-600 transition-colors">
             홈
           </Link>
@@ -313,7 +313,8 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Mobile hamburger */}
+        <div className="flex items-center gap-1 md:hidden">
+          {/* Mobile hamburger */}
         <button
           className="md:hidden p-2 text-gray-600 hover:text-blue-600"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -328,12 +329,13 @@ export default function Header() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           )}
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
+        <div className="md:hidden border-t border-[var(--card-border)] bg-[var(--card-bg)] max-h-[80vh] overflow-y-auto">
           <Link
             href="/"
             className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"

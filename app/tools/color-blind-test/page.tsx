@@ -287,8 +287,8 @@ export default function ColorBlindTest() {
 
   if (phase === "intro") {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           색맹 테스트 (색각 검사)
         </h1>
         <p className="text-gray-500 mb-8">
@@ -296,7 +296,7 @@ export default function ColorBlindTest() {
           숫자를 찾아보세요.
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="font-semibold text-gray-900 mb-3">검사 안내</h2>
           <ul className="text-gray-600 space-y-2 text-sm list-disc pl-5">
             <li>총 10문제가 출제됩니다</li>
@@ -318,7 +318,7 @@ export default function ColorBlindTest() {
         <div className="text-center">
           <button
             onClick={handleStart}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-lg"
+            className="calc-btn-primary px-8 py-3 text-lg"
           >
             검사 시작하기
           </button>
@@ -365,13 +365,13 @@ export default function ColorBlindTest() {
   if (phase === "result") {
     const result = getResult();
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           색맹 테스트 결과
         </h1>
         <p className="text-gray-500 mb-8">10문제 검사 결과입니다.</p>
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-8 text-center">
             <p className="text-blue-100 text-sm mb-1">검사 결과</p>
             <p className={`text-3xl font-bold mb-2 ${result.verdictColor}`}>
@@ -454,7 +454,7 @@ export default function ColorBlindTest() {
               setCurrentQ(0);
               setAnswers([]);
             }}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-lg"
+            className="calc-btn-primary px-8 py-3 text-lg"
           >
             다시 검사하기
           </button>
@@ -468,7 +468,7 @@ export default function ColorBlindTest() {
   // Test phase
   const q = questions[currentQ];
   return (
-    <div className="py-4">
+    <div className="py-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">색맹 테스트</h1>
         <p className="text-sm text-gray-500">
@@ -486,7 +486,7 @@ export default function ColorBlindTest() {
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <p className="text-center text-gray-700 mb-4 font-medium">
           아래 원 안에 보이는 숫자를 선택하세요
         </p>

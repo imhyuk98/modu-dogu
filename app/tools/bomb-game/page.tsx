@@ -85,8 +85,8 @@ export default function BombGamePage() {
   };
 
   return (
-    <div className="py-4 max-w-2xl mx-auto px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">💣 폭탄 돌리기</h1>
+    <div className="py-6 max-w-2xl mx-auto px-4">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">💣 폭탄 돌리기</h1>
       <p className="text-gray-500 mb-6">
         랜덤 타이머로 긴장감 넘치는 폭탄 돌리기! 폭탄을 피해라!
       </p>

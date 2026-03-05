@@ -233,14 +233,14 @@ export default function NameCompatibilityPage() {
     : "text-pink-400";
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">이름 궁합 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">이름 궁합 계산기</h1>
       <p className="text-gray-500 mb-8">
         두 사람의 이름을 입력하면 한글 획수를 기반으로 궁합을 계산합니다.
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="flex-1 w-full">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -253,7 +253,7 @@ export default function NameCompatibilityPage() {
               onKeyDown={handleKeyDown}
               placeholder="예: 홍길동"
               maxLength={10}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="calc-input calc-input-lg text-center"
             />
           </div>
 
@@ -270,7 +270,7 @@ export default function NameCompatibilityPage() {
               onKeyDown={handleKeyDown}
               placeholder="예: 김철수"
               maxLength={10}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="calc-input calc-input-lg text-center"
             />
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function NameCompatibilityPage() {
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -294,7 +294,7 @@ export default function NameCompatibilityPage() {
 
       {/* 결과 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-8">
+        <div className="calc-card overflow-hidden mb-8">
           {/* 궁합 퍼센트 */}
           <div className="bg-gradient-to-r from-pink-50 to-red-50 p-8 text-center relative overflow-hidden">
             {/* 배경 하트 데코 */}

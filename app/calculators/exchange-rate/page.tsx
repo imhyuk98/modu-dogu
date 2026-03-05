@@ -205,9 +205,9 @@ export default function ExchangeRateCalculator() {
 
   if (loading) {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">환율 계산기</h1>
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">환율 계산기</h1>
+        <div className="calc-card p-12 text-center">
           <div className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
           <p className="text-gray-500">환율 데이터를 불러오는 중...</p>
         </div>
@@ -217,9 +217,9 @@ export default function ExchangeRateCalculator() {
 
   if (error) {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">환율 계산기</h1>
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">환율 계산기</h1>
+        <div className="calc-card p-12 text-center">
           <p className="text-red-500 font-medium mb-2">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -233,14 +233,14 @@ export default function ExchangeRateCalculator() {
   }
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">환율 계산기</h1>
       <p className="text-gray-500 mb-8">
         실시간 환율 기반으로 주요 외화 간 환율을 계산합니다.
       </p>
 
       {/* 환율 변환기 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* From */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -263,7 +263,7 @@ export default function ExchangeRateCalculator() {
               value={fromAmount}
               onChange={handleFromAmountChange}
               placeholder="금액 입력"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 calc-input calc-input-lg text-right"
             />
           </div>
         </div>
@@ -302,7 +302,7 @@ export default function ExchangeRateCalculator() {
               value={toAmount}
               onChange={handleToAmountChange}
               placeholder="금액 입력"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 calc-input calc-input-lg text-right"
             />
           </div>
         </div>
@@ -334,16 +334,28 @@ export default function ExchangeRateCalculator() {
         <div className="flex justify-center mt-4">
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
         </div>
       </div>
 
+      {rates && toAmount && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{fromAmount} {fromCurrency}</p>
+              <p className="text-lg font-extrabold text-blue-600">{toAmount} {toCurrency}</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+
       {/* 주요 환율 현황 */}
       {rates && rates["KRW"] && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
               주요 환율 현황 (원화 기준)

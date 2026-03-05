@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { calculateBAC, type AlcoholResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
@@ -14,40 +14,29 @@ const DRINK_PRESETS = [
 
 export default function AlcoholCalculator() {
   const [gender, setGender] = useState<"male" | "female">("male");
-  const [weight, setWeight] = useState("");
-  const [hours, setHours] = useState("");
-  const [drinks, setDrinks] = useState<Record<string, number>>({});
-  const [result, setResult] = useState<AlcoholResult | null>(null);
-  const [error, setError] = useState("");
+  const [weight, setWeight] = useState("70");
+  const [hours, setHours] = useState("1");
+  const [drinks, setDrinks] = useState<Record<string, number>>({ soju: 7 });
   const [copied, setCopied] = useState(false);
 
-  const handleCalculate = () => {
-    setError("");
+  const result = useMemo<AlcoholResult | null>(() => {
     const w = parseFloat(weight);
-    if (!weight || !w || w <= 0) {
-      setError("체중을 입력해주세요.");
-      return;
-    }
+    if (!w || w <= 0) return null;
 
     const drinkList = DRINK_PRESETS.filter((p) => (drinks[p.type] || 0) > 0).map((p) => ({
       type: p.type, volume: p.volume, percent: p.percent, count: drinks[p.type] || 0,
     }));
-    if (drinkList.length === 0) {
-      setError("음주량을 1잔 이상 입력해주세요.");
-      return;
-    }
+    if (drinkList.length === 0) return null;
 
     const h = parseFloat(hours);
-    setResult(calculateBAC(gender, w, drinkList, h || 0));
-  };
+    return calculateBAC(gender, w, drinkList, h || 0);
+  }, [gender, weight, hours, drinks]);
 
   const handleReset = () => {
     setGender("male");
     setWeight("");
     setHours("");
     setDrinks({});
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -73,11 +62,11 @@ export default function AlcoholCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">음주 측정기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">음주 측정기</h1>
       <p className="text-gray-500 mb-8">음주량과 시간을 입력하면 예상 혈중알코올농도를 계산합니다.</p>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
@@ -93,9 +82,8 @@ export default function AlcoholCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">체중</label>
             <div className="relative">
-              <input type="number" value={weight} onChange={(e) => { setWeight(e.target.value); setError(""); }} placeholder="70"
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="70"
+                className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">kg</span>
             </div>
           </div>
@@ -123,27 +111,21 @@ export default function AlcoholCalculator() {
           <label className="block text-sm font-medium text-gray-700 mb-1">음주 후 경과 시간</label>
           <div className="relative">
             <input type="number" step="0.5" value={hours} onChange={(e) => setHours(e.target.value)} placeholder="0"
-              onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">시간</span>
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3">
-          <button onClick={handleCalculate}
-            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            계산하기
-          </button>
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className={`p-6 text-center ${result.canDrive ? "bg-green-600" : "bg-red-600"} text-white`}>
             <p className="text-sm opacity-80 mb-1">예상 혈중알코올농도</p>
             <div className="flex items-center justify-center gap-2">
@@ -169,6 +151,18 @@ export default function AlcoholCalculator() {
               <span className="text-sm text-gray-600">완전 분해 예상 시간</span>
               <span className="text-sm font-medium text-gray-900">약 {result.soberHours}시간 후</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">예상 혈중알코올농도</p>
+              <p className={`text-lg font-extrabold ${result.canDrive ? "text-green-600" : "text-red-600"}`}>{result.bac.toFixed(3)}%</p>
+            </div>
+            <button onClick={() => handleCopy(`혈중알코올농도: ${result.bac.toFixed(3)}% (${result.status})`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

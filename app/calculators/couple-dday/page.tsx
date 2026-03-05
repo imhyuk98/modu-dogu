@@ -158,8 +158,8 @@ export default function CoupleDdayCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         <span className="text-pink-500">&#x1F497;</span> 커플 D-day 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -181,7 +181,7 @@ export default function CoupleDdayCalculator() {
               setCalculated(false);
             }}
             onKeyDown={handleKeyDown}
-            className="flex-1 px-4 py-3 border border-pink-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
+            className="calc-input calc-input-lg"
           />
           <button
             onClick={handleCalculate}
@@ -192,7 +192,7 @@ export default function CoupleDdayCalculator() {
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>

@@ -1,41 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { calculateRetirement, type RetirementResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 export default function RetirementCalculator() {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [pay, setPay] = useState("");
+  const [startDate, setStartDate] = useState("2023-03-01");
+  const [endDate, setEndDate] = useState("2026-03-01");
+  const [pay, setPay] = useState("9,000,000");
   const [days, setDays] = useState("90");
-  const [result, setResult] = useState<RetirementResult | null>(null);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const handleCalculate = () => {
-    if (!startDate) { setError("입사일을 입력해주세요"); return; }
-    if (!endDate) { setError("퇴사일을 입력해주세요"); return; }
+  const result = useMemo(() => {
+    if (!startDate || !endDate) return null;
     const payNum = parseInt(pay.replace(/,/g, ""), 10);
     const daysNum = parseInt(days, 10);
-    if (!payNum || payNum <= 0) { setError("급여를 입력해주세요"); return; }
-    if (!daysNum || daysNum <= 0) { setError("총 일수를 입력해주세요"); return; }
-
+    if (!payNum || payNum <= 0 || !daysNum || daysNum <= 0) return null;
     const start = new Date(startDate);
     const end = new Date(endDate);
-    if (end <= start) { setError("퇴사일은 입사일 이후여야 합니다"); return; }
-
-    setError("");
-    setResult(calculateRetirement(start, end, payNum, daysNum));
-  };
+    if (end <= start) return null;
+    return calculateRetirement(start, end, payNum, daysNum);
+  }, [startDate, endDate, pay, days]);
 
   const handleReset = () => {
-    setStartDate("");
-    setEndDate("");
-    setPay("");
+    setStartDate("2023-03-01");
+    setEndDate("2026-03-01");
+    setPay("9,000,000");
     setDays("90");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -51,27 +42,26 @@ export default function RetirementCalculator() {
   const handlePayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setPay(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
-    setError("");
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">퇴직금 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">퇴직금 계산기</h1>
       <p className="text-gray-500 mb-8">
         입사일, 퇴사일, 최근 3개월 급여를 입력하면 퇴직금을 자동으로 계산합니다.
       </p>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">입사일</label>
-            <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); setError(""); }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); }}
+              className="calc-input" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">퇴사일</label>
-            <input type="date" value={endDate} onChange={(e) => { setEndDate(e.target.value); setError(""); }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="date" value={endDate} onChange={(e) => { setEndDate(e.target.value); }}
+              className="calc-input" />
           </div>
         </div>
 
@@ -80,8 +70,8 @@ export default function RetirementCalculator() {
             최근 3개월 총 급여 (세전)
           </label>
           <div className="relative">
-            <input type="text" value={pay} onChange={handlePayChange} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 9,000,000"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="text" value={pay} onChange={handlePayChange} placeholder="예: 9,000,000"
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
           </div>
           <p className="text-xs text-gray-400 mt-1">퇴사일 직전 3개월간의 총 급여(세전)를 입력하세요.</p>
@@ -92,28 +82,23 @@ export default function RetirementCalculator() {
             최근 3개월 총 일수
           </label>
           <div className="relative">
-            <input type="number" value={days} onChange={(e) => { setDays(e.target.value); setError(""); }} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="90"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="number" value={days} onChange={(e) => { setDays(e.target.value); }} placeholder="90"
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">일</span>
           </div>
           <p className="text-xs text-gray-400 mt-1">보통 89~92일 (3개월의 실제 달력 일수)</p>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3">
-          <button onClick={handleCalculate}
-            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            계산하기
-          </button>
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">예상 퇴직금</p>
             <div className="flex items-center justify-center gap-2">
@@ -217,6 +202,20 @@ export default function RetirementCalculator() {
         </div>
       </section>
           <RelatedTools current="retirement" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">예상 퇴직금</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.retirementPay)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">
+              {copied ? "복사됨!" : "복사"}
+            </button>
+          </div>
+        </div>
+      )}
 </div>
   );
 }

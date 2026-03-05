@@ -19,7 +19,7 @@ const apartmentTable = [
 
 export default function PyeongCalculator() {
   const [mode, setMode] = useState<"toSqm" | "toPyeong">("toSqm");
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState("30");
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async (text: string) => {
@@ -76,15 +76,15 @@ export default function PyeongCalculator() {
       : [33, 59, 84, 101, 115, 135, 165, 198];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">평수 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">평수 계산기</h1>
       <p className="text-gray-500 mb-8">
         평(坪)과 제곱미터(㎡)를 간편하게 변환합니다. 아파트, 오피스텔, 상가
         면적 확인에 활용하세요.
       </p>
 
       {/* 변환 모드 토글 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="flex rounded-lg border border-gray-200 overflow-hidden mb-6">
           <button
             onClick={() => {
@@ -124,7 +124,7 @@ export default function PyeongCalculator() {
             value={inputValue}
             onChange={handleInputChange}
             placeholder={inputPlaceholder}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="calc-input calc-input-lg"
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
             {inputUnit}
@@ -137,7 +137,7 @@ export default function PyeongCalculator() {
             <button
               key={val}
               onClick={() => setInputValue(String(val))}
-              className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+              className="calc-preset"
             >
               {val}
               {inputUnit}
@@ -146,7 +146,7 @@ export default function PyeongCalculator() {
         </div>
         <div className="mt-4">
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
@@ -154,7 +154,7 @@ export default function PyeongCalculator() {
 
       {/* 결과 영역 */}
       {hasValue && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">변환 결과</p>
             <div className="flex items-center justify-center gap-2">
@@ -206,8 +206,20 @@ export default function PyeongCalculator() {
         </div>
       )}
 
+      {hasValue && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">변환 결과</p>
+              <p className="text-lg font-extrabold text-blue-600">{mainResult.toFixed(2)} {mainUnit}</p>
+            </div>
+            <button onClick={() => handleCopy(`${mainResult.toFixed(2)} ${mainUnit}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+
       {/* 아파트 면적 빠른 변환표 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           아파트 면적 빠른 변환표
         </h2>
@@ -252,7 +264,7 @@ export default function PyeongCalculator() {
       </div>
 
       {/* 공급면적 vs 전용면적 설명 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
           공급면적 vs 전용면적
         </h2>

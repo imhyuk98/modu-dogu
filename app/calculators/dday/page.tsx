@@ -1,48 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { calculateDday, calculateDateDiff, type DdayResult, type DateDiffResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "dday" | "diff";
 
+function getDefaultTargetDate(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 100);
+  return d.toISOString().split("T")[0];
+}
+
+function getDefaultStartDate(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 1);
+  return d.toISOString().split("T")[0];
+}
+
+function getTodayStr(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
 export default function DdayCalculator() {
   const [mode, setMode] = useState<Mode>("dday");
-  const [targetDate, setTargetDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [ddayResult, setDdayResult] = useState<DdayResult | null>(null);
-  const [diffResult, setDiffResult] = useState<DateDiffResult | null>(null);
-  const [error, setError] = useState("");
+  const [targetDate, setTargetDate] = useState(getDefaultTargetDate);
+  const [startDate, setStartDate] = useState(getDefaultStartDate);
+  const [endDate, setEndDate] = useState(getTodayStr);
   const [copied, setCopied] = useState(false);
 
-  const handleDday = () => {
-    setError("");
-    if (!targetDate) {
-      setError("목표 날짜를 입력해주세요.");
-      return;
-    }
+  const ddayResult = useMemo<DdayResult | null>(() => {
+    if (!targetDate) return null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    setDdayResult(calculateDday(new Date(targetDate), today));
-  };
+    return calculateDday(new Date(targetDate), today);
+  }, [targetDate]);
 
-  const handleDiff = () => {
-    setError("");
-    if (!startDate || !endDate) {
-      setError("시작 날짜와 종료 날짜를 모두 입력해주세요.");
-      return;
-    }
-    setDiffResult(calculateDateDiff(new Date(startDate), new Date(endDate)));
-  };
+  const diffResult = useMemo<DateDiffResult | null>(() => {
+    if (!startDate || !endDate) return null;
+    return calculateDateDiff(new Date(startDate), new Date(endDate));
+  }, [startDate, endDate]);
 
   const handleReset = () => {
     setTargetDate("");
     setStartDate("");
     setEndDate("");
-    setDdayResult(null);
-    setDiffResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -66,13 +68,13 @@ export default function DdayCalculator() {
   const fmt = (n: number) => n.toLocaleString("ko-KR");
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">날짜 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">날짜 계산기</h1>
       <p className="text-gray-500 mb-8">D-day 카운트다운 또는 두 날짜 사이의 차이를 계산합니다.</p>
 
       <div className="flex gap-3 mb-6">
         {([["dday", "D-day 계산"], ["diff", "날짜 차이 계산"]] as const).map(([v, l]) => (
-          <button key={v} onClick={() => { setMode(v); setDdayResult(null); setDiffResult(null); setError(""); }}
+          <button key={v} onClick={() => { setMode(v); }}
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${mode === v ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
             {l}
           </button>
@@ -80,47 +82,36 @@ export default function DdayCalculator() {
       </div>
 
       {mode === "dday" ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+        <div className="calc-card p-6 mb-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">목표 날짜</label>
-            <input type="date" value={targetDate} onChange={(e) => { setTargetDate(e.target.value); setError(""); }}
-              onKeyDown={(e) => { if (e.key === "Enter") handleDday(); }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)}
+              className="calc-input calc-input-lg" />
           </div>
-          {error && mode === "dday" && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <div className="flex gap-3">
-            <button onClick={handleDday}
-              className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-              계산하기
-            </button>
             <button onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              className="calc-btn-secondary">
               초기화
             </button>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+        <div className="calc-card p-6 mb-6 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">시작 날짜</label>
-              <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); setError(""); }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                className="calc-input calc-input-lg" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">종료 날짜</label>
-              <input type="date" value={endDate} onChange={(e) => { setEndDate(e.target.value); setError(""); }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+                className="calc-input calc-input-lg" />
             </div>
           </div>
-          {error && mode === "diff" && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <div className="flex gap-3">
-            <button onClick={handleDiff}
-              className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-              계산하기
-            </button>
             <button onClick={handleReset}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              className="calc-btn-secondary">
               초기화
             </button>
           </div>
@@ -128,7 +119,7 @@ export default function DdayCalculator() {
       )}
 
       {ddayResult && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">{ddayResult.isPast ? "지난 날" : "남은 날"}</p>
             <div className="flex items-center justify-center gap-2">
@@ -162,7 +153,7 @@ export default function DdayCalculator() {
       )}
 
       {diffResult && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">두 날짜 사이</p>
             <div className="flex items-center justify-center gap-2">
@@ -180,6 +171,29 @@ export default function DdayCalculator() {
             <p className="text-gray-600">
               {diffResult.years}년 {diffResult.months}개월 {diffResult.days}일
             </p>
+          </div>
+        </div>
+      )}
+
+      {mode === "dday" && ddayResult && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{ddayResult.isPast ? "지난 날" : "남은 날"}</p>
+              <p className="text-lg font-extrabold text-blue-600">D{ddayResult.diffDays === 0 ? "-Day" : ddayResult.diffDays > 0 ? `-${ddayResult.diffDays}` : `+${Math.abs(ddayResult.diffDays)}`}</p>
+            </div>
+            <button onClick={() => handleCopy(`D${ddayResult.diffDays === 0 ? "-Day" : ddayResult.diffDays > 0 ? `-${ddayResult.diffDays}` : `+${Math.abs(ddayResult.diffDays)}`}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {mode === "diff" && diffResult && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">두 날짜 사이</p>
+              <p className="text-lg font-extrabold text-blue-600">{fmt(diffResult.totalDays)}일</p>
+            </div>
+            <button onClick={() => handleCopy(`${fmt(diffResult.totalDays)}일`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

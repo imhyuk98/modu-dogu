@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface CapitalGainsTaxResult {
@@ -134,12 +134,11 @@ function calculateCapitalGainsTax(
 }
 
 export default function CapitalGainsTaxCalculator() {
-  const [acquisitionPrice, setAcquisitionPrice] = useState("");
-  const [sellingPrice, setSellingPrice] = useState("");
-  const [expenses, setExpenses] = useState("");
-  const [holdingYears, setHoldingYears] = useState("");
+  const [acquisitionPrice, setAcquisitionPrice] = useState("300,000,000");
+  const [sellingPrice, setSellingPrice] = useState("500,000,000");
+  const [expenses, setExpenses] = useState("10,000,000");
+  const [holdingYears, setHoldingYears] = useState("5");
   const [isOneHousehold, setIsOneHousehold] = useState(false);
-  const [result, setResult] = useState<CapitalGainsTaxResult | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -165,28 +164,21 @@ export default function CapitalGainsTaxCalculator() {
   const parseAmount = (val: string) =>
     parseInt(val.replace(/,/g, ""), 10) || 0;
 
-  const handleCalculate = () => {
+  const result = useMemo(() => {
     const acq = parseAmount(acquisitionPrice);
     const sell = parseAmount(sellingPrice);
     const exp = parseAmount(expenses);
     const years = parseInt(holdingYears, 10) || 0;
-    if (acq <= 0 || sell <= 0) {
-      setError("취득가액과 양도가액을 입력해주세요");
-      return;
-    }
-    setError("");
-    setResult(
-      calculateCapitalGainsTax(acq, sell, exp, years, isOneHousehold)
-    );
-  };
+    if (acq <= 0 || sell <= 0) return null;
+    return calculateCapitalGainsTax(acq, sell, exp, years, isOneHousehold);
+  }, [acquisitionPrice, sellingPrice, expenses, holdingYears, isOneHousehold]);
 
   const handleReset = () => {
-    setAcquisitionPrice("");
-    setSellingPrice("");
-    setExpenses("");
-    setHoldingYears("");
+    setAcquisitionPrice("300,000,000");
+    setSellingPrice("500,000,000");
+    setExpenses("10,000,000");
+    setHoldingYears("5");
     setIsOneHousehold(false);
-    setResult(null);
     setError("");
     setCopied(false);
   };
@@ -199,8 +191,8 @@ export default function CapitalGainsTaxCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         양도소득세 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -208,7 +200,7 @@ export default function CapitalGainsTaxCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -219,9 +211,9 @@ export default function CapitalGainsTaxCalculator() {
                 type="text"
                 value={acquisitionPrice}
                 onChange={handleInputChange(setAcquisitionPrice)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
+
                 placeholder="예: 300,000,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -237,9 +229,9 @@ export default function CapitalGainsTaxCalculator() {
                 type="text"
                 value={sellingPrice}
                 onChange={handleInputChange(setSellingPrice)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
+
                 placeholder="예: 500,000,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -259,7 +251,7 @@ export default function CapitalGainsTaxCalculator() {
                 value={expenses}
                 onChange={handleInputChange(setExpenses)}
                 placeholder="예: 10,000,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -276,7 +268,7 @@ export default function CapitalGainsTaxCalculator() {
                 value={holdingYears}
                 onChange={handleInputChange(setHoldingYears, true)}
                 placeholder="예: 5"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 년
@@ -317,14 +309,8 @@ export default function CapitalGainsTaxCalculator() {
 
         <div className="flex gap-3">
           <button
-            onClick={handleCalculate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -333,7 +319,7 @@ export default function CapitalGainsTaxCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">양도소득세 합계 (지방소득세 포함)</p>
             <div className="flex items-center justify-center gap-2">
@@ -473,6 +459,18 @@ export default function CapitalGainsTaxCalculator() {
       </section>
 
       <RelatedTools current="capital-gains-tax" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">양도소득세 합계</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.total)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

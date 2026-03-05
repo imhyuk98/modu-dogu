@@ -190,8 +190,8 @@ export default function CsvJsonConverter() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         CSV JSON 변환기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -223,7 +223,7 @@ export default function CsvJsonConverter() {
       </div>
 
       {/* 옵션 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div className="calc-card p-4 mb-6">
         <div className="flex flex-wrap items-center gap-6">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700">
@@ -264,7 +264,7 @@ export default function CsvJsonConverter() {
       {/* 입출력 영역 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {/* 입력 */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="calc-card p-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             {mode === "csv-to-json" ? "CSV 입력" : "JSON 입력"}
           </label>
@@ -281,7 +281,7 @@ export default function CsvJsonConverter() {
         </div>
 
         {/* 출력 */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="calc-card p-4">
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-medium text-gray-700">
               {mode === "csv-to-json" ? "JSON 출력" : "CSV 출력"}
@@ -331,7 +331,7 @@ export default function CsvJsonConverter() {
       <div className="flex justify-center mb-12">
         <button
           onClick={handleConvert}
-          className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-base"
+          className="calc-btn-primary text-base"
         >
           변환하기
         </button>

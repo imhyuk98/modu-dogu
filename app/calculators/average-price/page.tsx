@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface Purchase {
@@ -43,10 +43,9 @@ function calculateAveragePrice(purchases: Purchase[]): AveragePriceResult | null
 export default function AveragePriceCalculator() {
   const nextIdRef = useRef(3);
   const [purchases, setPurchases] = useState<Purchase[]>([
-    { id: 1, price: "", quantity: "" },
-    { id: 2, price: "", quantity: "" },
+    { id: 1, price: "10,000", quantity: "100" },
+    { id: 2, price: "8,000", quantity: "100" },
   ]);
-  const [result, setResult] = useState<AveragePriceResult | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -75,6 +74,8 @@ export default function AveragePriceCalculator() {
     );
   };
 
+  const result = useMemo(() => calculateAveragePrice(purchases), [purchases]);
+
   const addPurchase = () => {
     setPurchases((prev) => [...prev, { id: nextIdRef.current++, price: "", quantity: "" }]);
   };
@@ -84,22 +85,16 @@ export default function AveragePriceCalculator() {
     setPurchases((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const handleCalculate = () => {
-    const r = calculateAveragePrice(purchases);
-    setResult(r);
-  };
-
   const handleReset = () => {
     setPurchases([
       { id: nextIdRef.current++, price: "", quantity: "" },
       { id: nextIdRef.current++, price: "", quantity: "" },
     ]);
-    setResult(null);
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         물타기 계산기 (평균단가 계산)
       </h1>
       <p className="text-gray-500 mb-8">
@@ -107,7 +102,7 @@ export default function AveragePriceCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="space-y-4">
           {purchases.map((purchase, index) => (
             <div key={purchase.id} className="flex items-end gap-3">
@@ -126,7 +121,7 @@ export default function AveragePriceCalculator() {
                       handleNumberInput(purchase.id, "price", e.target.value)
                     }
                     placeholder="매수가"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="calc-input"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
                     원
@@ -145,7 +140,7 @@ export default function AveragePriceCalculator() {
                       handleNumberInput(purchase.id, "quantity", e.target.value)
                     }
                     placeholder="수량"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="calc-input"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
                     주
@@ -175,14 +170,8 @@ export default function AveragePriceCalculator() {
 
         <div className="flex gap-3 mt-4">
           <button
-            onClick={handleCalculate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -191,7 +180,7 @@ export default function AveragePriceCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">평균단가</p>
             <div className="flex items-center justify-center gap-2">
@@ -280,6 +269,18 @@ export default function AveragePriceCalculator() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">평균단가</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.averagePrice)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

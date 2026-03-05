@@ -492,8 +492,8 @@ export default function TimerStopwatchPage() {
   const [activeTab, setActiveTab] = useState<Tab>("timer");
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         타이머 & 스톱워치
       </h1>
       <p className="text-gray-500 mb-8">
@@ -502,7 +502,7 @@ export default function TimerStopwatchPage() {
       </p>
 
       {/* Tool area */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* Tabs */}
         <div className="flex border-b border-gray-200 mb-6">
           <button

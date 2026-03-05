@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type Tab = "basic" | "ratio" | "discount" | "change";
@@ -10,31 +10,21 @@ export default function PercentCalculator() {
   const [copied, setCopied] = useState(false);
 
   // Tab 1: 기본 퍼센트
-  const [basicA, setBasicA] = useState("");
-  const [basicB, setBasicB] = useState("");
-  const [basicResult, setBasicResult] = useState<number | null>(null);
+  const [basicA, setBasicA] = useState("50000");
+  const [basicB, setBasicB] = useState("15");
 
   // Tab 2: 비율 계산
-  const [ratioA, setRatioA] = useState("");
-  const [ratioB, setRatioB] = useState("");
-  const [ratioResult, setRatioResult] = useState<number | null>(null);
+  const [ratioA, setRatioA] = useState("30");
+  const [ratioB, setRatioB] = useState("200");
 
   // Tab 3: 할인/인상
-  const [discountPrice, setDiscountPrice] = useState("");
-  const [discountRate, setDiscountRate] = useState("");
+  const [discountPrice, setDiscountPrice] = useState("50000");
+  const [discountRate, setDiscountRate] = useState("30");
   const [isDiscount, setIsDiscount] = useState(true);
-  const [discountResult, setDiscountResult] = useState<{
-    finalPrice: number;
-    difference: number;
-  } | null>(null);
 
   // Tab 4: 증감률
-  const [changeBefore, setChangeBefore] = useState("");
-  const [changeAfter, setChangeAfter] = useState("");
-  const [changeResult, setChangeResult] = useState<{
-    rate: number;
-    amount: number;
-  } | null>(null);
+  const [changeBefore, setChangeBefore] = useState("1000");
+  const [changeAfter, setChangeAfter] = useState("1500");
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
 
@@ -56,52 +46,41 @@ export default function PercentCalculator() {
     return raw;
   };
 
-  // Auto-calculate on input change
-  useEffect(() => {
+  // Auto-calculate with useMemo
+  const basicResult = useMemo(() => {
     const a = parseNumber(basicA);
     const b = parseNumber(basicB);
-    if (!isNaN(a) && !isNaN(b)) {
-      setBasicResult(a * b / 100);
-    } else {
-      setBasicResult(null);
-    }
+    if (!isNaN(a) && !isNaN(b)) return a * b / 100;
+    return null;
   }, [basicA, basicB]);
 
-  useEffect(() => {
+  const ratioResult = useMemo(() => {
     const a = parseNumber(ratioA);
     const b = parseNumber(ratioB);
-    if (!isNaN(a) && !isNaN(b) && b !== 0) {
-      setRatioResult((a / b) * 100);
-    } else {
-      setRatioResult(null);
-    }
+    if (!isNaN(a) && !isNaN(b) && b !== 0) return (a / b) * 100;
+    return null;
   }, [ratioA, ratioB]);
 
-  useEffect(() => {
+  const discountResult = useMemo(() => {
     const price = parseNumber(discountPrice);
     const rate = parseNumber(discountRate);
     if (!isNaN(price) && !isNaN(rate)) {
       const diff = price * rate / 100;
-      if (isDiscount) {
-        setDiscountResult({ finalPrice: price - diff, difference: diff });
-      } else {
-        setDiscountResult({ finalPrice: price + diff, difference: diff });
-      }
-    } else {
-      setDiscountResult(null);
+      if (isDiscount) return { finalPrice: price - diff, difference: diff };
+      return { finalPrice: price + diff, difference: diff };
     }
+    return null;
   }, [discountPrice, discountRate, isDiscount]);
 
-  useEffect(() => {
+  const changeResult = useMemo(() => {
     const before = parseNumber(changeBefore);
     const after = parseNumber(changeAfter);
     if (!isNaN(before) && !isNaN(after) && before !== 0) {
       const amount = after - before;
       const rate = (amount / before) * 100;
-      setChangeResult({ rate, amount });
-    } else {
-      setChangeResult(null);
+      return { rate, amount };
     }
+    return null;
   }, [changeBefore, changeAfter]);
 
   const handleCopy = async (text: string) => {
@@ -121,10 +100,10 @@ export default function PercentCalculator() {
     }
   };
 
-  const handleResetBasic = () => { setBasicA(""); setBasicB(""); setBasicResult(null); };
-  const handleResetRatio = () => { setRatioA(""); setRatioB(""); setRatioResult(null); };
-  const handleResetDiscount = () => { setDiscountPrice(""); setDiscountRate(""); setIsDiscount(true); setDiscountResult(null); };
-  const handleResetChange = () => { setChangeBefore(""); setChangeAfter(""); setChangeResult(null); };
+  const handleResetBasic = () => { setBasicA(""); setBasicB(""); };
+  const handleResetRatio = () => { setRatioA(""); setRatioB(""); };
+  const handleResetDiscount = () => { setDiscountPrice(""); setDiscountRate(""); setIsDiscount(true); };
+  const handleResetChange = () => { setChangeBefore(""); setChangeAfter(""); };
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "basic", label: "A의 B%는?" },
@@ -134,8 +113,8 @@ export default function PercentCalculator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         퍼센트 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -161,7 +140,7 @@ export default function PercentCalculator() {
 
       {/* Tab 1: 기본 퍼센트 */}
       {activeTab === "basic" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             A의 B%는 얼마?
           </h2>
@@ -175,7 +154,7 @@ export default function PercentCalculator() {
                 value={basicA}
                 onChange={(e) => setBasicA(formatInput(e.target.value, true))}
                 placeholder="예: 50000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -188,7 +167,7 @@ export default function PercentCalculator() {
                   value={basicB}
                   onChange={(e) => setBasicB(formatInput(e.target.value, true))}
                   placeholder="예: 15"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="calc-input calc-input-lg"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   %
@@ -196,18 +175,8 @@ export default function PercentCalculator() {
               </div>
             </div>
             <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  const a = parseNumber(basicA);
-                  const b = parseNumber(basicB);
-                  if (!isNaN(a) && !isNaN(b)) setBasicResult(a * b / 100);
-                }}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                계산하기
-              </button>
               <button onClick={handleResetBasic}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                className="calc-btn-secondary">
                 초기화
               </button>
             </div>
@@ -237,7 +206,7 @@ export default function PercentCalculator() {
 
       {/* Tab 2: 비율 계산 */}
       {activeTab === "ratio" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             A는 B의 몇 %?
           </h2>
@@ -251,7 +220,7 @@ export default function PercentCalculator() {
                 value={ratioA}
                 onChange={(e) => setRatioA(formatInput(e.target.value, true))}
                 placeholder="예: 30"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -263,22 +232,12 @@ export default function PercentCalculator() {
                 value={ratioB}
                 onChange={(e) => setRatioB(formatInput(e.target.value, true))}
                 placeholder="예: 200"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  const a = parseNumber(ratioA);
-                  const b = parseNumber(ratioB);
-                  if (!isNaN(a) && !isNaN(b) && b !== 0) setRatioResult((a / b) * 100);
-                }}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                계산하기
-              </button>
               <button onClick={handleResetRatio}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                className="calc-btn-secondary">
                 초기화
               </button>
             </div>
@@ -308,7 +267,7 @@ export default function PercentCalculator() {
 
       {/* Tab 3: 할인/인상 계산 */}
       {activeTab === "discount" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             할인/인상 계산
           </h2>
@@ -323,7 +282,7 @@ export default function PercentCalculator() {
                   value={discountPrice}
                   onChange={(e) => setDiscountPrice(formatInput(e.target.value, true))}
                   placeholder="예: 50000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="calc-input calc-input-lg"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   원
@@ -365,7 +324,7 @@ export default function PercentCalculator() {
                   value={discountRate}
                   onChange={(e) => setDiscountRate(formatInput(e.target.value, true))}
                   placeholder="예: 30"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="calc-input calc-input-lg"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   %
@@ -374,25 +333,8 @@ export default function PercentCalculator() {
             </div>
 
             <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  const price = parseNumber(discountPrice);
-                  const rate = parseNumber(discountRate);
-                  if (!isNaN(price) && !isNaN(rate)) {
-                    const diff = price * rate / 100;
-                    if (isDiscount) {
-                      setDiscountResult({ finalPrice: price - diff, difference: diff });
-                    } else {
-                      setDiscountResult({ finalPrice: price + diff, difference: diff });
-                    }
-                  }
-                }}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                계산하기
-              </button>
               <button onClick={handleResetDiscount}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                className="calc-btn-secondary">
                 초기화
               </button>
             </div>
@@ -429,7 +371,7 @@ export default function PercentCalculator() {
 
       {/* Tab 4: 증감률 계산 */}
       {activeTab === "change" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             증감률 계산
           </h2>
@@ -443,7 +385,7 @@ export default function PercentCalculator() {
                 value={changeBefore}
                 onChange={(e) => setChangeBefore(formatInput(e.target.value, true))}
                 placeholder="예: 1000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -455,26 +397,12 @@ export default function PercentCalculator() {
                 value={changeAfter}
                 onChange={(e) => setChangeAfter(formatInput(e.target.value, true))}
                 placeholder="예: 1500"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  const before = parseNumber(changeBefore);
-                  const after = parseNumber(changeAfter);
-                  if (!isNaN(before) && !isNaN(after) && before !== 0) {
-                    const amount = after - before;
-                    const rate = (amount / before) * 100;
-                    setChangeResult({ rate, amount });
-                  }
-                }}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                계산하기
-              </button>
               <button onClick={handleResetChange}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                className="calc-btn-secondary">
                 초기화
               </button>
             </div>
@@ -514,6 +442,52 @@ export default function PercentCalculator() {
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 모바일 하단 고정 결과 바 */}
+      {activeTab === "basic" && basicResult !== null && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{basicA}의 {basicB}%</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(Math.round(basicResult * 100) / 100)}</p>
+            </div>
+            <button onClick={() => handleCopy(String(Math.round(basicResult * 100) / 100))} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {activeTab === "ratio" && ratioResult !== null && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{ratioA}은(는) {ratioB}의</p>
+              <p className="text-lg font-extrabold text-blue-600">{(Math.round(ratioResult * 100) / 100).toLocaleString("ko-KR")}%</p>
+            </div>
+            <button onClick={() => handleCopy(`${(Math.round(ratioResult * 100) / 100).toLocaleString("ko-KR")}%`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {activeTab === "discount" && discountResult !== null && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{isDiscount ? "할인된 가격" : "인상된 가격"}</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(Math.round(discountResult.finalPrice))}원</p>
+            </div>
+            <button onClick={() => handleCopy(`${formatNumber(Math.round(discountResult.finalPrice))}원`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {activeTab === "change" && changeResult !== null && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">증감률</p>
+              <p className="text-lg font-extrabold text-blue-600">{changeResult.rate >= 0 ? "+" : ""}{(Math.round(changeResult.rate * 100) / 100).toLocaleString("ko-KR")}%</p>
+            </div>
+            <button onClick={() => handleCopy(`${changeResult.rate >= 0 ? "+" : ""}${(Math.round(changeResult.rate * 100) / 100).toLocaleString("ko-KR")}%`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
         </div>
       )}
 

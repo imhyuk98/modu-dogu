@@ -310,8 +310,8 @@ export default function TypingTestPage() {
   }, [currentSentence, userInput]);
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         타자 속도 측정기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -319,7 +319,7 @@ export default function TypingTestPage() {
       </p>
 
       {/* Tool area */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* Difficulty selector + best record */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div className="flex gap-2">
@@ -490,7 +490,7 @@ export default function TypingTestPage() {
               <div className="text-center">
                 <button
                   onClick={handleReset}
-                  className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                  className="calc-btn-primary"
                 >
                   다시 도전
                 </button>

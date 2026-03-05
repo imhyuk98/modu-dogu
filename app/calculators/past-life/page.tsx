@@ -223,8 +223,8 @@ export default function PastLifeTest() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">전생 테스트</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">전생 테스트</h1>
       <p className="text-gray-500 mb-8">
         생년월일을 입력하고 전생에서 어떤 삶을 살았는지 알아보세요!
       </p>
@@ -306,7 +306,7 @@ export default function PastLifeTest() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-3">&#x1F4D6; 전생 스토리</h3>
             <p className="text-gray-600 leading-relaxed">{result.personality}</p>
           </div>

@@ -345,8 +345,8 @@ export default function ChosungQuizPage() {
       : "bg-red-500";
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
+    <div className="max-w-2xl mx-auto px-4 py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight text-center">
         초성 퀴즈
       </h1>
       <p className="text-gray-500 text-center mb-8">
@@ -355,7 +355,7 @@ export default function ChosungQuizPage() {
 
       {/* ── MENU ── */}
       {state === "menu" && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
+        <div className="calc-card p-6 space-y-6">
           {/* Game Mode */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -417,7 +417,7 @@ export default function ChosungQuizPage() {
                       next[i] = e.target.value;
                       setPlayerNames(next);
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="calc-input w-full"
                     placeholder={`플레이어 ${i + 1} 이름`}
                   />
                 ))}
@@ -560,7 +560,7 @@ export default function ChosungQuizPage() {
           </div>
 
           {/* Chosung display */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
+          <div className="calc-card p-8 text-center">
             <div className="flex justify-center items-center gap-3 mb-4">
               {[...currentChosung].map((ch, i) => (
                 <div
@@ -682,7 +682,7 @@ export default function ChosungQuizPage() {
 
           {/* Current scores */}
           {scores.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="calc-card p-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">현재 점수</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {scores.map((s, i) => (
@@ -713,7 +713,7 @@ export default function ChosungQuizPage() {
 
       {/* ── RESULT ── */}
       {state === "result" && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6">
+        <div className="calc-card p-6 space-y-6">
           <h2 className="text-2xl font-bold text-gray-900 text-center">
             게임 결과
           </h2>

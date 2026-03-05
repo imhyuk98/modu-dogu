@@ -45,8 +45,8 @@ export default function UpDownGamePage() {
   };
 
   return (
-    <div className="py-4 max-w-2xl mx-auto px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">🔢 업다운 게임</h1>
+    <div className="py-6 max-w-2xl mx-auto px-4">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">🔢 업다운 게임</h1>
       <p className="text-gray-500 mb-6">
         1~100 사이의 숫자를 맞춰라! 맞추는 사람이 벌칙!
       </p>

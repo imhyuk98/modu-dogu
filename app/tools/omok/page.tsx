@@ -259,7 +259,7 @@ export default function OmokPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1 text-center">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-1 text-center tracking-tight">
         <span role="img" aria-label="black circle">&#x26AB;</span> 오목
       </h1>
       <p className="text-gray-500 text-center mb-6">

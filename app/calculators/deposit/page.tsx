@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type TaxType = "normal" | "taxFree" | "taxFavored";
@@ -43,12 +43,10 @@ function calculateDeposit(
 }
 
 export default function DepositCalculator() {
-  const [principal, setPrincipal] = useState("");
-  const [rate, setRate] = useState("");
-  const [months, setMonths] = useState("");
+  const [principal, setPrincipal] = useState("10,000,000");
+  const [rate, setRate] = useState("3.5");
+  const [months, setMonths] = useState("12");
   const [taxType, setTaxType] = useState<TaxType>("normal");
-  const [result, setResult] = useState<DepositResult | null>(null);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -63,30 +61,24 @@ export default function DepositCalculator() {
     } else {
       setter("");
     }
-    setError("");
   };
 
   const parseNumber = (value: string) =>
     parseInt(value.replace(/,/g, ""), 10) || 0;
 
-  const handleCalculate = () => {
+  const result = useMemo(() => {
     const p = parseNumber(principal);
     const r = parseFloat(rate);
     const m = parseInt(months.replace(/,/g, ""), 10);
-    if (!p || p <= 0) { setError("예치금액을 입력해주세요"); return; }
-    if (!r || r <= 0) { setError("연이율을 입력해주세요"); return; }
-    if (!m || m <= 0) { setError("예치기간을 입력해주세요"); return; }
-    setError("");
-    setResult(calculateDeposit(p, r, m, taxType));
-  };
+    if (!p || p <= 0 || !r || r <= 0 || !m || m <= 0) return null;
+    return calculateDeposit(p, r, m, taxType);
+  }, [principal, rate, months, taxType]);
 
   const handleReset = () => {
-    setPrincipal("");
-    setRate("");
-    setMonths("");
+    setPrincipal("10,000,000");
+    setRate("3.5");
+    setMonths("12");
     setTaxType("normal");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -101,8 +93,8 @@ export default function DepositCalculator() {
   const quickMonths = [6, 12, 24, 36];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         예금이자 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -110,7 +102,7 @@ export default function DepositCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 예치금액 */}
           <div>
@@ -122,9 +114,8 @@ export default function DepositCalculator() {
                 type="text"
                 value={principal}
                 onChange={(e) => handleNumberInput(e.target.value, setPrincipal)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 10,000,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -137,7 +128,7 @@ export default function DepositCalculator() {
                   onClick={() => {
                     setPrincipal((amt * 10000).toLocaleString("ko-KR"));
                   }}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {amt.toLocaleString()}만원
                 </button>
@@ -157,11 +148,9 @@ export default function DepositCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setRate(v);
-                  setError("");
                 }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 3.5"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 %
@@ -172,7 +161,7 @@ export default function DepositCalculator() {
                 <button
                   key={r}
                   onClick={() => setRate(r.toString())}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {r}%
                 </button>
@@ -192,11 +181,9 @@ export default function DepositCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9]/g, "");
                   setMonths(v);
-                  setError("");
                 }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 12"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 개월
@@ -207,7 +194,7 @@ export default function DepositCalculator() {
                 <button
                   key={m}
                   onClick={() => setMonths(m.toString())}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {m}개월
                 </button>
@@ -245,17 +232,10 @@ export default function DepositCalculator() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3 mt-6">
           <button
-            onClick={handleCalculate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -264,7 +244,7 @@ export default function DepositCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">세후 수령액</p>
             <div className="flex items-center justify-center gap-2">
@@ -403,6 +383,20 @@ export default function DepositCalculator() {
       </section>
 
       <RelatedTools current="deposit" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">세후 수령액</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.totalAmount)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">
+              {copied ? "복사됨!" : "복사"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

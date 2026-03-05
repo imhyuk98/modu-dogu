@@ -221,10 +221,10 @@ export default function TelepathyGamePage() {
     attempts > 0 ? Math.round((successes / attempts) * 100) : 0;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
           텔레파시 게임
         </h1>
         <p className="text-gray-500 mt-2">

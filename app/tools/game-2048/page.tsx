@@ -517,10 +517,10 @@ export default function Game2048() {
   };
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <style>{boardCSS}</style>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         {"\uD83C\uDFAE"} 2048 게임
       </h1>
       <p className="text-gray-500 mb-6">

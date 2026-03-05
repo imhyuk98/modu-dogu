@@ -37,19 +37,19 @@ export default function RatioCalculator() {
   };
 
   // Tab 1: 비율 단순화
-  const [simplifyA, setSimplifyA] = useState("");
-  const [simplifyB, setSimplifyB] = useState("");
+  const [simplifyA, setSimplifyA] = useState("1920");
+  const [simplifyB, setSimplifyB] = useState("1080");
 
   // Tab 2: 비례식 풀기
   const [unknown, setUnknown] = useState<UnknownPosition>("D");
-  const [propA, setPropA] = useState("");
-  const [propB, setPropB] = useState("");
-  const [propC, setPropC] = useState("");
+  const [propA, setPropA] = useState("3");
+  const [propB, setPropB] = useState("5");
+  const [propC, setPropC] = useState("12");
   const [propD, setPropD] = useState("");
 
   // Tab 3: 화면 비율
-  const [aspectW, setAspectW] = useState("");
-  const [aspectH, setAspectH] = useState("");
+  const [aspectW, setAspectW] = useState("1920");
+  const [aspectH, setAspectH] = useState("1080");
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "simplify", label: "비율 단순화" },
@@ -134,8 +134,8 @@ export default function RatioCalculator() {
   }
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">비율 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">비율 계산기</h1>
       <p className="text-gray-500 mb-8">
         비율 단순화, 비례식 풀기, 화면 비율 계산을 간편하게 할 수 있습니다.
       </p>
@@ -159,7 +159,7 @@ export default function RatioCalculator() {
 
       {/* ══════════ Tab 1: 비율 단순화 ══════════ */}
       {activeTab === "simplify" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             비율 단순화
           </h2>
@@ -174,7 +174,7 @@ export default function RatioCalculator() {
               value={simplifyA}
               onChange={(e) => setSimplifyA(e.target.value)}
               placeholder="예: 1920"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 calc-input calc-input-lg text-center"
             />
             <span className="text-xl font-bold text-gray-400">:</span>
             <input
@@ -182,12 +182,12 @@ export default function RatioCalculator() {
               value={simplifyB}
               onChange={(e) => setSimplifyB(e.target.value)}
               placeholder="예: 1080"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 calc-input calc-input-lg text-center"
             />
           </div>
           <div className="mt-4">
             <button onClick={() => { setSimplifyA(""); setSimplifyB(""); }}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              className="calc-btn-secondary">
               초기화
             </button>
           </div>
@@ -220,7 +220,7 @@ export default function RatioCalculator() {
 
       {/* ══════════ Tab 2: 비례식 풀기 ══════════ */}
       {activeTab === "proportion" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             비례식 풀기
           </h2>
@@ -253,7 +253,7 @@ export default function RatioCalculator() {
           {/* 입력 필드 */}
           <div className="mb-4">
             <button onClick={() => { setPropA(""); setPropB(""); setPropC(""); setPropD(""); setUnknown("D"); }}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              className="calc-btn-secondary">
               초기화
             </button>
           </div>
@@ -323,7 +323,7 @@ export default function RatioCalculator() {
 
       {/* ══════════ Tab 3: 화면 비율 계산 ══════════ */}
       {activeTab === "aspect" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             화면 비율 계산
           </h2>
@@ -340,7 +340,7 @@ export default function RatioCalculator() {
                   setAspectW(String(p.w));
                   setAspectH(String(p.h));
                 }}
-                className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                className="calc-preset"
               >
                 {p.label}
               </button>
@@ -350,7 +350,7 @@ export default function RatioCalculator() {
           {/* 입력 */}
           <div className="mb-4">
             <button onClick={() => { setAspectW(""); setAspectH(""); }}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              className="calc-btn-secondary">
               초기화
             </button>
           </div>
@@ -364,7 +364,7 @@ export default function RatioCalculator() {
                 value={aspectW}
                 onChange={(e) => setAspectW(e.target.value)}
                 placeholder="1920"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg text-center"
               />
             </div>
             <button
@@ -383,7 +383,7 @@ export default function RatioCalculator() {
                 value={aspectH}
                 onChange={(e) => setAspectH(e.target.value)}
                 placeholder="1080"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg text-center"
               />
             </div>
           </div>
@@ -436,6 +436,41 @@ export default function RatioCalculator() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Mobile sticky bar */}
+      {activeTab === "simplify" && simplifyResult && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">단순화된 비율</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNum(simplifyResult.a)} : {formatNum(simplifyResult.b)}</p>
+            </div>
+            <button onClick={() => handleCopy(`${formatNum(simplifyResult.a)} : ${formatNum(simplifyResult.b)}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {activeTab === "proportion" && proportionResult && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">비례식 결과</p>
+              <p className="text-lg font-extrabold text-blue-600">{unknown} = {formatNum(proportionResult.result)}</p>
+            </div>
+            <button onClick={() => handleCopy(`${unknown} = ${formatNum(proportionResult.result)}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
+      {activeTab === "aspect" && aspectResult && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">화면 비율</p>
+              <p className="text-lg font-extrabold text-blue-600">{aspectResult.ratioW} : {aspectResult.ratioH}</p>
+            </div>
+            <button onClick={() => handleCopy(`${aspectResult.ratioW} : ${aspectResult.ratioH}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
         </div>
       )}
 
@@ -681,7 +716,7 @@ function PropInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="w-full px-3 py-3 border border-gray-300 rounded-lg text-lg text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="calc-input calc-input-lg text-center"
         />
       )}
 </div>

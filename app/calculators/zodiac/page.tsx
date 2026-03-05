@@ -272,8 +272,8 @@ export default function ZodiacCalculator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         띠 계산기 (12간지)
       </h1>
       <p className="text-gray-500 mb-8">
@@ -281,7 +281,7 @@ export default function ZodiacCalculator() {
       </p>
 
       {/* Input */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           출생년도
         </label>
@@ -295,7 +295,7 @@ export default function ZodiacCalculator() {
               placeholder="예: 1995"
               min={1}
               max={2100}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="calc-input calc-input-lg"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
               년
@@ -309,7 +309,7 @@ export default function ZodiacCalculator() {
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -326,7 +326,7 @@ export default function ZodiacCalculator() {
                 setResult(calculateZodiac(y));
                 setTimeout(() => setShowAnimation(false), 1000);
               }}
-              className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-purple-50 hover:border-purple-300 transition-colors"
+              className="calc-preset"
             >
               {y}년
             </button>
@@ -338,7 +338,7 @@ export default function ZodiacCalculator() {
       {result && (
         <div className="space-y-6">
           {/* Main result card */}
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="calc-card overflow-hidden">
             <div
               className="text-center p-8"
               style={{
@@ -412,7 +412,7 @@ export default function ZodiacCalculator() {
           </div>
 
           {/* Personality */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <span className="text-xl">{result.animal.emoji}</span>
               {result.animal.name}띠 성격 특성
@@ -434,7 +434,7 @@ export default function ZodiacCalculator() {
 
           {/* Compatibility */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="calc-card p-6">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="text-red-500 text-lg">&#10084;&#65039;</span>
                 잘 맞는 띠
@@ -456,7 +456,7 @@ export default function ZodiacCalculator() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="calc-card p-6">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="text-lg">&#9889;</span>
                 주의할 띠
@@ -480,7 +480,7 @@ export default function ZodiacCalculator() {
           </div>
 
           {/* Famous people */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <span className="text-lg">&#11088;</span>
               같은 {result.animal.name}띠 유명인
@@ -498,7 +498,7 @@ export default function ZodiacCalculator() {
           </div>
 
           {/* All 12 animals quick view */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h3 className="font-semibold text-gray-900 mb-4">12지지 한눈에 보기</h3>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {ZODIAC_ANIMALS.map((animal, i) => {

@@ -85,8 +85,8 @@ export default function QrCodeGenerator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         QR 코드 생성기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -94,7 +94,7 @@ export default function QrCodeGenerator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* 탭 */}
         <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1">
           {tabs.map((tab) => (
@@ -127,7 +127,7 @@ export default function QrCodeGenerator() {
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="예: https://example.com"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="calc-input calc-input-lg"
             />
           </div>
         )}
@@ -144,7 +144,7 @@ export default function QrCodeGenerator() {
                 value={ssid}
                 onChange={(e) => setSsid(e.target.value)}
                 placeholder="Wi-Fi 이름"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -156,7 +156,7 @@ export default function QrCodeGenerator() {
                 value={wifiPassword}
                 onChange={(e) => setWifiPassword(e.target.value)}
                 placeholder="Wi-Fi 비밀번호"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -194,7 +194,7 @@ export default function QrCodeGenerator() {
                 value={emailAddress}
                 onChange={(e) => setEmailAddress(e.target.value)}
                 placeholder="example@email.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -206,7 +206,7 @@ export default function QrCodeGenerator() {
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
                 placeholder="이메일 제목 (선택)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
             </div>
             <div>
@@ -272,7 +272,7 @@ export default function QrCodeGenerator() {
         <div className="mt-6 flex gap-3">
           <button
             onClick={handleGenerate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex-1 calc-btn-primary"
           >
             생성하기
           </button>
@@ -301,7 +301,7 @@ export default function QrCodeGenerator() {
 
       {/* 결과 영역 */}
       {qrUrl && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="flex flex-col items-center">
             <img
               src={qrUrl}
@@ -312,7 +312,7 @@ export default function QrCodeGenerator() {
             />
             <button
               onClick={handleDownload}
-              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="calc-btn-primary"
             >
               다운로드
             </button>

@@ -577,8 +577,8 @@ export default function PsychologyTestPage() {
   const c = currentTest ? colorMap[currentTest.color] : colorMap.purple;
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         <span>&#x1F52E;</span> 심리테스트
       </h1>
       <p className="text-gray-500 mb-8">
@@ -720,7 +720,7 @@ export default function PsychologyTestPage() {
 
                 {/* 어울리는 직업 (personality only) */}
                 {result.jobs.length > 0 && (
-                  <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+                  <div className="calc-card p-5 mb-6">
                     <h3 className="font-semibold text-gray-800 mb-3">
                       &#x1F4BC; 어울리는 직업
                     </h3>

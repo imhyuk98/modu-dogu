@@ -426,8 +426,8 @@ export default function LadderGamePage() {
   }, []);
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         사다리 타기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -438,7 +438,7 @@ export default function LadderGamePage() {
       {!ladderReady && (
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Participants */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="font-semibold text-gray-800 mb-4">
               참가자 입력 (최소 2명, 최대 8명)
             </h2>
@@ -481,7 +481,7 @@ export default function LadderGamePage() {
           </div>
 
           {/* Results */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="font-semibold text-gray-800 mb-4">
               결과 입력 (참가자 수와 동일)
             </h2>
@@ -505,7 +505,7 @@ export default function LadderGamePage() {
           </div>
 
           {/* Density */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="font-semibold text-gray-800 mb-4">
               가로선 수
             </h2>

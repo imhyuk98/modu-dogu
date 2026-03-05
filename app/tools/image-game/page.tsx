@@ -289,15 +289,15 @@ export default function ImageGamePage() {
   // Setup phase
   if (gamePhase === "setup") {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           🎴 이미지 게임
         </h1>
         <p className="text-gray-500 mb-8">
           &quot;가장 ~할 것 같은 사람은?&quot; 질문에 투표하며 즐기는 술자리/모임 게임!
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">👥 참가자 등록</h2>
           <p className="text-sm text-gray-500 mb-4">함께 게임할 사람들의 이름을 입력하세요 (최소 2명)</p>
 
@@ -308,7 +308,7 @@ export default function ImageGamePage() {
               onChange={(e) => setNewPlayerName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") addPlayer(); }}
               placeholder="이름 입력"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="calc-input calc-input-lg flex-1"
               maxLength={10}
             />
             <button
@@ -357,7 +357,7 @@ export default function ImageGamePage() {
         </div>
 
         {/* 게임 설명 */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="calc-card p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-3">🎯 게임 방법</h2>
           <ol className="space-y-2 text-gray-600 text-sm list-decimal list-inside">
             <li>참가자 이름을 등록합니다</li>
@@ -426,9 +426,9 @@ export default function ImageGamePage() {
 
   // Game phases: question / vote / result
   return (
-    <div className="py-4">
+    <div className="py-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-900">🎴 이미지 게임</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">🎴 이미지 게임</h1>
         <button
           onClick={backToSetup}
           className="text-sm text-gray-500 hover:text-gray-700 underline"
@@ -534,7 +534,7 @@ export default function ImageGamePage() {
       )}
 
       {gamePhase === "vote" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             🗳️ 투표 중...
           </h3>
@@ -571,7 +571,7 @@ export default function ImageGamePage() {
       {gamePhase === "result" && (() => {
         const { winners, maxVotes } = getWinner();
         return (
-          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+          <div className="calc-card p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               📊 투표 결과
             </h3>
@@ -622,7 +622,7 @@ export default function ImageGamePage() {
       })()}
 
       {/* Players bar */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div className="calc-card p-4 mb-6">
         <p className="text-sm text-gray-500 mb-2">참가자 ({players.length}명)</p>
         <div className="flex flex-wrap gap-2">
           {players.map((name) => (

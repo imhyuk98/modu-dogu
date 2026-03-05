@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface YearlyData {
@@ -51,11 +51,9 @@ function calculateInflation(
 }
 
 export default function InflationCalculator() {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("10,000,000");
   const [rate, setRate] = useState("3");
-  const [years, setYears] = useState("");
-  const [result, setResult] = useState<InflationResult | null>(null);
-  const [error, setError] = useState("");
+  const [years, setYears] = useState("10");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -67,30 +65,23 @@ export default function InflationCalculator() {
     } else {
       setter("");
     }
-    setError("");
   };
 
   const parseNumber = (value: string) =>
     parseInt(value.replace(/,/g, ""), 10) || 0;
 
-  const handleCalculate = () => {
+  const result = useMemo<InflationResult | null>(() => {
     const a = parseNumber(amount);
     const r = parseFloat(rate);
     const y = parseInt(years.replace(/,/g, ""), 10);
-    if (!a || a <= 0) { setError("금액을 입력해주세요"); return; }
-    if (!r || r <= 0) { setError("물가상승률을 입력해주세요"); return; }
-    if (!y || y <= 0) { setError("기간을 입력해주세요"); return; }
-    if (y > 100) { setError("기간은 100년 이하로 입력해주세요"); return; }
-    setError("");
-    setResult(calculateInflation(a, r, y));
-  };
+    if (!a || a <= 0 || !r || r <= 0 || !y || y <= 0 || y > 100) return null;
+    return calculateInflation(a, r, y);
+  }, [amount, rate, years]);
 
   const handleReset = () => {
     setAmount("");
     setRate("3");
     setYears("");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -105,8 +96,8 @@ export default function InflationCalculator() {
   const quickYears = [5, 10, 20, 30];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         인플레이션 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -114,7 +105,7 @@ export default function InflationCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 현재 금액 */}
           <div className="sm:col-span-2">
@@ -126,9 +117,8 @@ export default function InflationCalculator() {
                 type="text"
                 value={amount}
                 onChange={(e) => handleNumberInput(e.target.value, setAmount)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 10,000,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -141,7 +131,7 @@ export default function InflationCalculator() {
                   onClick={() =>
                     setAmount((amt * 10000).toLocaleString("ko-KR"))
                   }
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {amt.toLocaleString()}만원
                 </button>
@@ -161,11 +151,9 @@ export default function InflationCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setRate(v);
-                  setError("");
-                }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
+                              }}
                 placeholder="예: 3"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 %
@@ -176,7 +164,7 @@ export default function InflationCalculator() {
                 <button
                   key={r}
                   onClick={() => setRate(r.toString())}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {r}%
                 </button>
@@ -196,11 +184,9 @@ export default function InflationCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9]/g, "");
                   setYears(v);
-                  setError("");
-                }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
+                              }}
                 placeholder="예: 10"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 년
@@ -211,7 +197,7 @@ export default function InflationCalculator() {
                 <button
                   key={y}
                   onClick={() => setYears(y.toString())}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {y}년
                 </button>
@@ -220,17 +206,10 @@ export default function InflationCalculator() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3 mt-6">
           <button
-            onClick={handleCalculate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -242,7 +221,7 @@ export default function InflationCalculator() {
         <div className="space-y-6 mb-6">
           {/* 요약 카드 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="calc-card p-6">
               <p className="text-sm text-gray-500 mb-1">
                 {result.years}년 후 같은 물건 가격
               </p>
@@ -259,7 +238,7 @@ export default function InflationCalculator() {
                 {result.years}년 후에는 이 가격이 됩니다
               </p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="calc-card p-6">
               <p className="text-sm text-gray-500 mb-1">
                 현재 돈의 {result.years}년 후 실질 구매력
               </p>
@@ -352,6 +331,18 @@ export default function InflationCalculator() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{result.years}년 후 실질 구매력</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.realValue)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

@@ -94,8 +94,8 @@ export default function BloodTypeCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         아기 혈액형 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -103,7 +103,7 @@ export default function BloodTypeCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* 아빠 혈액형 */}
           <div>
@@ -172,7 +172,7 @@ export default function BloodTypeCalculator() {
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -181,7 +181,7 @@ export default function BloodTypeCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-6 text-center">
             <p className="text-pink-100 text-sm mb-1">아빠 {father}형 + 엄마 {mother}형</p>
             <div className="flex items-center justify-center gap-2">

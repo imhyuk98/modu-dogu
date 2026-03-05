@@ -210,8 +210,8 @@ export default function ImageConverter() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         이미지 변환기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -261,7 +261,7 @@ export default function ImageConverter() {
 
       {/* Uploaded Files Preview */}
       {uploadedFiles.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-900">
               업로드된 이미지 ({uploadedFiles.length}개)
@@ -302,7 +302,7 @@ export default function ImageConverter() {
 
       {/* Conversion Options */}
       {uploadedFiles.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="font-semibold text-gray-900 mb-4">변환 설정</h2>
 
           {/* Output Format */}
@@ -375,7 +375,7 @@ export default function ImageConverter() {
           <button
             onClick={handleConvert}
             disabled={isConverting}
-            className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="w-full calc-btn-primary disabled:bg-blue-300 disabled:cursor-not-allowed"
           >
             {isConverting ? "변환 중..." : "변환하기"}
           </button>
@@ -384,7 +384,7 @@ export default function ImageConverter() {
 
       {/* Converted Results */}
       {convertedFiles.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-900">
               변환 결과 ({convertedFiles.length}개)

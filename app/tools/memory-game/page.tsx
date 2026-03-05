@@ -208,15 +208,15 @@ export default function MemoryGame() {
 
   if (phase === "select") {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           기억력 테스트 (카드 뒤집기)
         </h1>
         <p className="text-gray-500 mb-8">
           카드를 뒤집어 같은 그림의 짝을 맞추세요! 난이도를 선택하여 시작합니다.
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="font-semibold text-gray-900 mb-4">난이도 선택</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {(Object.entries(DIFFICULTIES) as [Difficulty, DifficultyConfig][]).map(
@@ -246,7 +246,7 @@ export default function MemoryGame() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="font-semibold text-gray-900 mb-3">게임 방법</h2>
           <ol className="text-gray-600 space-y-2 text-sm list-decimal pl-5">
             <li>게임 시작 시 2초간 모든 카드가 공개됩니다</li>
@@ -282,15 +282,15 @@ export default function MemoryGame() {
     const best = bestRecords[difficulty];
 
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           기억력 테스트 결과
         </h1>
         <p className="text-gray-500 mb-8">
           축하합니다! 모든 카드 짝을 맞추었습니다!
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-green-500 text-white p-8 text-center">
             <p className="text-6xl mb-3">{"\uD83C\uDF89"}</p>
             <p className="text-green-100 text-sm mb-1">등급</p>
@@ -354,7 +354,7 @@ export default function MemoryGame() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={() => startGame(difficulty)}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-lg"
+            className="calc-btn-primary px-8 py-3 text-lg"
           >
             같은 난이도로 다시 하기
           </button>
@@ -375,7 +375,7 @@ export default function MemoryGame() {
   const config = DIFFICULTIES[difficulty];
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">기억력 테스트</h1>
         <div className="flex items-center gap-4 text-sm text-gray-500">

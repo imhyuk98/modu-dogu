@@ -146,8 +146,8 @@ export default function TruthOrDarePage() {
   }, [usedDare]);
 
   return (
-    <div className="py-4 max-w-2xl mx-auto px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">🎯 진실 or 도전</h1>
+    <div className="py-6 max-w-2xl mx-auto px-4">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">🎯 진실 or 도전</h1>
       <p className="text-gray-500 mb-6">
         진실을 말할까, 도전을 받을까? 50개 이상의 질문과 미션!
       </p>

@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import ScrollToTop from "@/components/ScrollToTop";
+import FloatingButtons from "@/components/FloatingButtons";
 import Breadcrumb from "@/components/Breadcrumb";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import TrackVisit from "@/components/TrackVisit";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -62,8 +58,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="stylesheet" as="style" crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <Script
           async
@@ -80,7 +80,8 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <ScrollToTop />
+        <FloatingButtons />
+        <TrackVisit />
       </body>
     </html>
   );

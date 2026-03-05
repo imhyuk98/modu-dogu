@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { convertJeonseToMonthly, convertMonthlyToJeonse } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
@@ -8,12 +8,11 @@ type Mode = "toMonthly" | "toJeonse";
 
 export default function RentConversionCalculator() {
   const [mode, setMode] = useState<Mode>("toMonthly");
-  const [jeonse, setJeonse] = useState("");
-  const [newDeposit, setNewDeposit] = useState("");
-  const [monthlyRent, setMonthlyRent] = useState("");
-  const [currentDeposit, setCurrentDeposit] = useState("");
+  const [jeonse, setJeonse] = useState("300,000,000");
+  const [newDeposit, setNewDeposit] = useState("50,000,000");
+  const [monthlyRent, setMonthlyRent] = useState("800,000");
+  const [currentDeposit, setCurrentDeposit] = useState("50,000,000");
   const [convRate, setConvRate] = useState("4.5");
-  const [result, setResult] = useState<{ monthlyRent: number; deposit: number } | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -25,44 +24,28 @@ export default function RentConversionCalculator() {
     setError("");
   };
 
-  const handleCalculate = () => {
+  const result = useMemo(() => {
     const rate = parseFloat(convRate);
-    if (!rate || rate <= 0) {
-      setError("전환율을 입력해주세요");
-      return;
-    }
+    if (!rate || rate <= 0) return null;
     if (mode === "toMonthly") {
       const j = parseNum(jeonse);
       const d = parseNum(newDeposit);
-      if (!j) {
-        setError("전세 보증금을 입력해주세요");
-        return;
-      }
-      if (j <= d) {
-        setError("전세 보증금이 변경 후 보증금보다 커야 합니다");
-        return;
-      }
-      setError("");
-      setResult(convertJeonseToMonthly(j, d, rate));
+      if (!j || j <= d) return null;
+      return convertJeonseToMonthly(j, d, rate);
     } else {
       const d = parseNum(currentDeposit);
       const r = parseNum(monthlyRent);
-      if (!r) {
-        setError("월세를 입력해주세요");
-        return;
-      }
-      setError("");
-      setResult(convertMonthlyToJeonse(d, r, rate));
+      if (!r) return null;
+      return convertMonthlyToJeonse(d, r, rate);
     }
-  };
+  }, [mode, jeonse, newDeposit, monthlyRent, currentDeposit, convRate]);
 
   const handleReset = () => {
-    setJeonse("");
-    setNewDeposit("");
-    setMonthlyRent("");
-    setCurrentDeposit("");
+    setJeonse("300,000,000");
+    setNewDeposit("50,000,000");
+    setMonthlyRent("800,000");
+    setCurrentDeposit("50,000,000");
     setConvRate("4.5");
-    setResult(null);
     setError("");
     setCopied(false);
   };
@@ -78,16 +61,16 @@ export default function RentConversionCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">전월세 전환 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">전월세 전환 계산기</h1>
       <p className="text-gray-500 mb-8">전세를 월세로, 월세를 전세로 전환할 때 적정 금액을 계산합니다.</p>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">전환 방향</label>
           <div className="flex gap-3">
             {([["toMonthly", "전세 → 월세"], ["toJeonse", "월세 → 전세"]] as const).map(([v, l]) => (
-              <button key={v} onClick={() => { setMode(v); setResult(null); }}
+              <button key={v} onClick={() => { setMode(v); }}
                 className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${mode === v ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}>
                 {l}
               </button>
@@ -100,16 +83,16 @@ export default function RentConversionCalculator() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">전세 보증금</label>
               <div className="relative">
-                <input type="text" value={jeonse} onChange={(e) => fmtInput(e, setJeonse)} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 300,000,000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={jeonse} onChange={(e) => fmtInput(e, setJeonse)} placeholder="예: 300,000,000"
+                  className="calc-input calc-input-lg" />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">변경 후 보증금</label>
               <div className="relative">
-                <input type="text" value={newDeposit} onChange={(e) => fmtInput(e, setNewDeposit)} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 50,000,000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={newDeposit} onChange={(e) => fmtInput(e, setNewDeposit)} placeholder="예: 50,000,000"
+                  className="calc-input calc-input-lg" />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
               </div>
             </div>
@@ -119,16 +102,16 @@ export default function RentConversionCalculator() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">현재 보증금</label>
               <div className="relative">
-                <input type="text" value={currentDeposit} onChange={(e) => fmtInput(e, setCurrentDeposit)} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 50,000,000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={currentDeposit} onChange={(e) => fmtInput(e, setCurrentDeposit)} placeholder="예: 50,000,000"
+                  className="calc-input calc-input-lg" />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">현재 월세</label>
               <div className="relative">
-                <input type="text" value={monthlyRent} onChange={(e) => fmtInput(e, setMonthlyRent)} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 800,000"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <input type="text" value={monthlyRent} onChange={(e) => fmtInput(e, setMonthlyRent)} placeholder="예: 800,000"
+                  className="calc-input calc-input-lg" />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
               </div>
             </div>
@@ -139,7 +122,7 @@ export default function RentConversionCalculator() {
           <label className="block text-sm font-medium text-gray-700 mb-1">전월세 전환율</label>
           <div className="relative">
             <input type="number" step="0.1" value={convRate} onChange={(e) => setConvRate(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
           </div>
           <p className="text-xs text-gray-400 mt-1">2025년 법정 전환율 상한: 한국은행 기준금리 + 2%</p>
@@ -148,19 +131,15 @@ export default function RentConversionCalculator() {
         {error && <p className="text-red-500 text-sm mt-2 mb-4">{error}</p>}
 
         <div className="flex gap-3">
-          <button onClick={handleCalculate}
-            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            계산하기
-          </button>
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             {mode === "toMonthly" ? (
               <>
@@ -321,7 +300,19 @@ export default function RentConversionCalculator() {
           </div>
         </div>
       </section>
-          <RelatedTools current="rent-conversion" />
+      <RelatedTools current="rent-conversion" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{mode === "toMonthly" ? "전환 후 월세" : "전환 후 전세"}</p>
+              <p className="text-lg font-extrabold text-blue-600">{mode === "toMonthly" ? `${fmt(result.monthlyRent)}원/월` : `${fmt(result.deposit)}원`}</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+          </div>
+        </div>
+      )}
 </div>
   );
 }

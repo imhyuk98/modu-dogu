@@ -297,13 +297,13 @@ export default function ScientificCalculator() {
   );
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">공학용 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">공학용 계산기</h1>
       <p className="text-gray-500 mb-6">
         삼각함수, 로그, 지수, 팩토리얼 등 공학용 계산을 할 수 있습니다.
       </p>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6 max-w-md mx-auto">
+      <div className="calc-card overflow-hidden mb-6 max-w-md mx-auto">
         {/* 모드 토글 */}
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           <div className="flex gap-2">
@@ -444,7 +444,7 @@ export default function ScientificCalculator() {
       </div>
 
       {/* SEO 콘텐츠 */}
-      <section className="bg-white rounded-xl border border-gray-200 p-6">
+      <section className="calc-card p-6">
         <h2 className="text-lg font-bold text-gray-900 mb-4">공학용 계산기 사용법</h2>
         <div className="space-y-4 text-sm text-gray-600">
           <div>

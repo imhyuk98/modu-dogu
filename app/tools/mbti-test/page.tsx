@@ -355,8 +355,8 @@ export default function MbtiTestPage() {
   const progress = ((currentQ + 1) / questions.length) * 100;
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         MBTI 성격유형 검사
       </h1>
       <p className="text-gray-500 mb-8">
@@ -377,7 +377,7 @@ export default function MbtiTestPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 text-left">
+          <div className="calc-card p-6 mb-6 text-left">
             <h3 className="font-semibold text-gray-800 mb-3">검사 안내</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>&#x2022; 총 20문항 (약 3~5분 소요)</li>
@@ -488,7 +488,7 @@ export default function MbtiTestPage() {
             </div>
 
             {/* Axes breakdown */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div className="calc-card p-6 mb-6">
               <h3 className="font-semibold text-gray-800 mb-4">
                 축별 분석 결과
               </h3>

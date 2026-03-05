@@ -118,8 +118,8 @@ export default function CharacterCountPage() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">글자수 세기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">글자수 세기</h1>
       <p className="text-gray-500 mb-8">
         텍스트를 입력하면 글자수, 단어수, 바이트 수를 실시간으로 계산합니다.
       </p>
@@ -129,7 +129,7 @@ export default function CharacterCountPage() {
         {statCards.map((card, idx) => (
           <div
             key={card.label}
-            className="bg-white rounded-xl border border-gray-200 p-4 text-center relative group"
+            className="calc-card p-4 text-center relative group"
           >
             <div className="flex items-center justify-center gap-1">
               <p className="text-2xl font-bold text-blue-600">
@@ -151,7 +151,7 @@ export default function CharacterCountPage() {
       </div>
 
       {/* 텍스트 입력 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <textarea
           ref={textareaRef}
           value={text}
@@ -164,13 +164,13 @@ export default function CharacterCountPage() {
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleClear}
-            className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
           <button
             onClick={handleCopy}
-            className="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="calc-btn-primary"
           >
             {copiedText ? "복사됨!" : "복사하기"}
           </button>
@@ -178,7 +178,7 @@ export default function CharacterCountPage() {
       </div>
 
       {/* 글자수 제한 체크 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-3">글자수 제한 체크</h2>
         <div className="flex gap-3 items-center mb-4">
           <input
@@ -186,7 +186,7 @@ export default function CharacterCountPage() {
             value={charLimit}
             onChange={(e) => setCharLimit(e.target.value)}
             placeholder="최대 글자수 입력"
-            className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 calc-input"
           />
           <span className="text-sm text-gray-500 whitespace-nowrap">자</span>
         </div>

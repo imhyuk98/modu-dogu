@@ -254,7 +254,7 @@ export default function MinesweeperPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-1">💣 지뢰찾기</h1>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-1 tracking-tight">💣 지뢰찾기</h1>
       <p className="text-center text-gray-500 mb-6">클래식 지뢰찾기를 온라인으로 즐기세요!</p>
 
       {/* Difficulty selector */}

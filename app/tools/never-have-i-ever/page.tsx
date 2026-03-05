@@ -235,7 +235,7 @@ export default function NeverHaveIEverPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-center tracking-tight">
         손병호 게임
       </h1>
       <p className="text-gray-500 text-center text-sm">

@@ -334,7 +334,7 @@ ${html}
   );
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       {/* Prose-like styles for preview */}
       <style>{`
         .prose-preview h1 { font-size: 2em; font-weight: 700; margin: 0.8em 0 0.4em; color: #111827; }
@@ -362,7 +362,7 @@ ${html}
         .prose-preview tr:nth-child(even) td { background: #f9fafb; }
       `}</style>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         Markdown HTML 변환기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -400,7 +400,7 @@ ${html}
       </div>
 
       {/* Editor + Output */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-10">
+      <div className="calc-card overflow-hidden mb-10">
         {/* Input */}
         <div className="border-b border-gray-200">
           <div className="px-4 py-2 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -461,7 +461,7 @@ ${html}
         <h2 className="text-xl font-bold text-gray-900 mb-4">
           마크다운(Markdown)이란?
         </h2>
-        <div className="bg-white rounded-xl border border-gray-200 p-6 text-gray-700 leading-relaxed space-y-3">
+        <div className="calc-card p-6 text-gray-700 leading-relaxed space-y-3">
           <p>
             마크다운(Markdown)은 2004년 <strong>존 그루버(John Gruber)</strong>가
             만든 경량 마크업 언어입니다. 일반 텍스트로 서식이 있는 문서를 작성할 수
@@ -481,7 +481,7 @@ ${html}
         <h2 className="text-xl font-bold text-gray-900 mb-4">
           마크다운 문법 가이드
         </h2>
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-left">
@@ -594,7 +594,7 @@ ${html}
           ].map((item) => (
             <div
               key={item.title}
-              className="bg-white rounded-xl border border-gray-200 p-5"
+              className="calc-card p-5"
             >
               <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
@@ -631,7 +631,7 @@ ${html}
           ].map((faq, i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-gray-200 p-5"
+              className="calc-card p-5"
             >
               <h3 className="font-semibold text-gray-900 mb-2">{faq.q}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>

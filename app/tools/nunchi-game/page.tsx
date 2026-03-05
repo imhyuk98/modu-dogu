@@ -260,7 +260,7 @@ export default function NunchiGamePage() {
   if (phase === "setup") {
     return (
       <div className="max-w-xl mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-2">눈치 게임</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-2 tracking-tight">눈치 게임</h1>
         <p className="text-gray-500 text-center mb-6 text-sm">
           타이밍 싸움! 눈치껏 숫자를 외치세요
         </p>

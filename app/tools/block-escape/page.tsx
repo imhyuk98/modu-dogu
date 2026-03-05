@@ -402,7 +402,7 @@ export default function BlockEscapePage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       {/* Title */}
-      <h1 className="text-2xl font-bold text-center mb-1">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-center mb-1 tracking-tight">
         <span role="img" aria-label="car">🚗</span> 블록 탈출
       </h1>
       <p className="text-center text-gray-500 mb-6">

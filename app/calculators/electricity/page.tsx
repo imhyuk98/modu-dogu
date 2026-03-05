@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type Season = "other" | "summer" | "winter";
@@ -144,29 +144,21 @@ function calculateElectricity(
 }
 
 export default function ElectricityCalculator() {
-  const [usage, setUsage] = useState("");
+  const [usage, setUsage] = useState("350");
   const [season, setSeason] = useState<Season>("other");
   const [housingType, setHousingType] = useState<HousingType>("low");
-  const [result, setResult] = useState<ElectricityResult | null>(null);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const handleCalculate = () => {
+  const result = useMemo<ElectricityResult | null>(() => {
     const kwh = parseInt(usage.replace(/,/g, ""), 10);
-    if (!kwh || kwh <= 0) {
-      setError("사용량을 입력해주세요");
-      return;
-    }
-    setError("");
-    setResult(calculateElectricity(kwh, season, housingType));
-  };
+    if (!kwh || kwh <= 0) return null;
+    return calculateElectricity(kwh, season, housingType);
+  }, [usage, season, housingType]);
 
   const handleReset = () => {
     setUsage("");
     setSeason("other");
     setHousingType("low");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -184,11 +176,6 @@ export default function ElectricityCalculator() {
     } else {
       setUsage("");
     }
-    setError("");
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleCalculate();
   };
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -196,8 +183,8 @@ export default function ElectricityCalculator() {
   const quickAmounts = [100, 200, 300, 400, 500, 700];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         전기요금 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -205,7 +192,7 @@ export default function ElectricityCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* 주택 유형 */}
         <label className="block text-sm font-medium text-gray-700 mb-2">
           주택 유형
@@ -263,29 +250,20 @@ export default function ElectricityCalculator() {
               type="text"
               value={usage}
               onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
               placeholder="예: 350"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="calc-input calc-input-lg"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
               kWh
             </span>
           </div>
           <button
-            onClick={handleCalculate}
-            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+            className="calc-btn-secondary whitespace-nowrap"
           >
             초기화
           </button>
         </div>
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
         {/* 빠른 선택 */}
         <div className="flex flex-wrap gap-2 mt-4">
           {quickAmounts.map((amount) => (
@@ -293,9 +271,8 @@ export default function ElectricityCalculator() {
               key={amount}
               onClick={() => {
                 setUsage(amount.toLocaleString("ko-KR"));
-                setResult(calculateElectricity(amount, season, housingType));
               }}
-              className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+              className="calc-preset"
             >
               {amount}kWh
             </button>
@@ -305,7 +282,7 @@ export default function ElectricityCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           {/* 합계 하이라이트 */}
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">월 전기요금 합계</p>
@@ -406,6 +383,18 @@ export default function ElectricityCalculator() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">월 전기요금</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.total)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

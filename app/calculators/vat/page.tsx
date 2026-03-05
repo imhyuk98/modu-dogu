@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type Mode = "supply" | "total";
@@ -34,9 +34,7 @@ function calculateVat(amount: number, mode: Mode): VatResult {
 
 export default function VatCalculator() {
   const [mode, setMode] = useState<Mode>("supply");
-  const [amount, setAmount] = useState("");
-  const [result, setResult] = useState<VatResult | null>(null);
-  const [error, setError] = useState("");
+  const [amount, setAmount] = useState("1,000,000");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -48,23 +46,16 @@ export default function VatCalculator() {
     } else {
       setAmount("");
     }
-    setError("");
   };
 
-  const handleCalculate = () => {
+  const result = useMemo<VatResult | null>(() => {
     const num = parseInt(amount.replace(/,/g, ""), 10);
-    if (!num || num <= 0) {
-      setError("금액을 입력해주세요");
-      return;
-    }
-    setError("");
-    setResult(calculateVat(num, mode));
-  };
+    if (!num || num <= 0) return null;
+    return calculateVat(num, mode);
+  }, [amount, mode]);
 
   const handleReset = () => {
     setAmount("");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -81,8 +72,6 @@ export default function VatCalculator() {
   const switchMode = (newMode: Mode) => {
     setMode(newMode);
     setAmount("");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -96,8 +85,8 @@ export default function VatCalculator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         부가세 계산기 (부가가치세)
       </h1>
       <p className="text-gray-500 mb-8">
@@ -129,7 +118,7 @@ export default function VatCalculator() {
       </div>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {mode === "supply" ? "공급가액 (부가세 별도)" : "합계금액 (부가세 포함)"}
         </label>
@@ -139,33 +128,24 @@ export default function VatCalculator() {
               type="text"
               value={amount}
               onChange={handleInputChange}
-              onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
               placeholder={
                 mode === "supply"
                   ? "예: 1,000,000"
                   : "예: 1,100,000"
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="calc-input calc-input-lg"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
               원
             </span>
           </div>
           <button
-            onClick={handleCalculate}
-            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+            className="calc-btn-secondary whitespace-nowrap"
           >
             초기화
           </button>
         </div>
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
         {/* 빠른 선택 */}
         <div className="flex flex-wrap gap-2 mt-4">
           {quickAmounts.map((item) => (
@@ -173,9 +153,8 @@ export default function VatCalculator() {
               key={item.value}
               onClick={() => {
                 setAmount(item.value.toLocaleString("ko-KR"));
-                setResult(calculateVat(item.value, mode));
               }}
-              className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+              className="calc-preset"
             >
               {item.label}원
             </button>
@@ -185,7 +164,7 @@ export default function VatCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           {/* 합계금액 하이라이트 */}
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">
@@ -240,6 +219,18 @@ export default function VatCalculator() {
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">{mode === "supply" ? "합계금액" : "공급가액"}</p>
+              <p className="text-lg font-extrabold text-blue-600">{mode === "supply" ? formatNumber(result.totalAmount) : formatNumber(result.supplyAmount)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

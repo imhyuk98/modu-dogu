@@ -1,39 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { calculateLoan, type LoanResult, type RepaymentType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 export default function LoanCalculator() {
-  const [amount, setAmount] = useState("");
-  const [rate, setRate] = useState("");
-  const [years, setYears] = useState("");
+  const [amount, setAmount] = useState("100,000,000");
+  const [rate, setRate] = useState("3.5");
+  const [years, setYears] = useState("30");
   const [type, setType] = useState<RepaymentType>("equalPrincipalInterest");
-  const [result, setResult] = useState<LoanResult | null>(null);
   const [showAll, setShowAll] = useState(false);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const handleCalculate = () => {
+  const result = useMemo(() => {
     const a = parseInt(amount.replace(/,/g, ""), 10);
     const r = parseFloat(rate);
     const y = parseInt(years, 10);
-    if (!a || a <= 0) { setError("대출 금액을 입력해주세요"); return; }
-    if (!r || r <= 0) { setError("이자율을 입력해주세요"); return; }
-    if (!y || y <= 0) { setError("대출 기간을 입력해주세요"); return; }
-    setError("");
-    setResult(calculateLoan(a, r, y, type));
-    setShowAll(false);
-  };
+    if (!a || a <= 0 || !r || r <= 0 || !y || y <= 0) return null;
+    return calculateLoan(a, r, y, type);
+  }, [amount, rate, years, type]);
 
   const handleReset = () => {
-    setAmount("");
-    setRate("");
-    setYears("");
+    setAmount("100,000,000");
+    setRate("3.5");
+    setYears("30");
     setType("equalPrincipalInterest");
-    setResult(null);
     setShowAll(false);
-    setError("");
     setCopied(false);
   };
 
@@ -49,22 +41,21 @@ export default function LoanCalculator() {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setAmount(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
-    setError("");
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">대출이자 계산기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">대출이자 계산기</h1>
       <p className="text-gray-500 mb-8">
         원리금균등상환과 원금균등상환 방식의 월 상환금과 총 이자를 계산합니다.
       </p>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 space-y-4">
+      <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">대출 금액</label>
           <div className="relative">
-            <input type="text" value={amount} onChange={handleAmountChange} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="예: 300,000,000"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input type="text" value={amount} onChange={handleAmountChange} placeholder="예: 300,000,000"
+              className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
           </div>
         </div>
@@ -73,16 +64,16 @@ export default function LoanCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">연 이자율</label>
             <div className="relative">
-              <input type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); setError(""); }} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="3.5"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); }} placeholder="3.5"
+                className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">대출 기간</label>
             <div className="relative">
-              <input type="number" value={years} onChange={(e) => { setYears(e.target.value); setError(""); }} onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }} placeholder="30" min="1" max="50"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <input type="number" value={years} onChange={(e) => { setYears(e.target.value); }} placeholder="30" min="1" max="50"
+                className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">년</span>
             </div>
           </div>
@@ -102,21 +93,16 @@ export default function LoanCalculator() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3">
-          <button onClick={handleCalculate}
-            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-            계산하기
-          </button>
           <button onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            className="calc-btn-secondary">
             초기화
           </button>
         </div>
       </div>
 
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">월 상환금 (첫 달)</p>
             <div className="flex items-center justify-center gap-2">
@@ -218,6 +204,20 @@ export default function LoanCalculator() {
         </div>
       </section>
           <RelatedTools current="loan" />
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">월 상환금 (첫 달)</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.monthlyPayments[0].payment)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">
+              {copied ? "복사됨!" : "복사"}
+            </button>
+          </div>
+        </div>
+      )}
 </div>
   );
 }

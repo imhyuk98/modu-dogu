@@ -183,8 +183,8 @@ export default function RandomRoulette() {
   );
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         랜덤 룰렛 돌리기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -194,7 +194,7 @@ export default function RandomRoulette() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Item management */}
         <div>
-          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+          <div className="calc-card p-6 mb-6">
             <h2 className="font-semibold text-gray-900 mb-4">
               항목 관리 ({items.length}/10)
             </h2>
@@ -285,7 +285,7 @@ export default function RandomRoulette() {
           </div>
 
           {/* Quick presets */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="calc-card p-6">
             <h2 className="font-semibold text-gray-900 mb-3">빠른 설정</h2>
             <div className="flex flex-wrap gap-2">
               {[

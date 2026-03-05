@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface StockReturnResult {
@@ -56,13 +56,11 @@ function calculateStockReturn(
 }
 
 export default function StockReturnCalculator() {
-  const [buyPrice, setBuyPrice] = useState("");
-  const [sellPrice, setSellPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [buyPrice, setBuyPrice] = useState("50,000");
+  const [sellPrice, setSellPrice] = useState("55,000");
+  const [quantity, setQuantity] = useState("100");
   const [feeRate, setFeeRate] = useState("0.015");
   const [taxRate, setTaxRate] = useState("0.18");
-  const [result, setResult] = useState<StockReturnResult | null>(null);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -74,24 +72,20 @@ export default function StockReturnCalculator() {
     } else {
       setter("");
     }
-    setError("");
   };
 
   const parseNumber = (value: string) =>
     parseInt(value.replace(/,/g, ""), 10) || 0;
 
-  const handleCalculate = () => {
+  const result = useMemo<StockReturnResult | null>(() => {
     const bp = parseNumber(buyPrice);
     const sp = parseNumber(sellPrice);
     const q = parseNumber(quantity);
     const fr = parseFloat(feeRate);
     const tr = parseFloat(taxRate);
-    if (!bp || bp <= 0) { setError("매수가를 입력해주세요"); return; }
-    if (!sp || sp <= 0) { setError("매도가를 입력해주세요"); return; }
-    if (!q || q <= 0) { setError("수량을 입력해주세요"); return; }
-    setError("");
-    setResult(calculateStockReturn(bp, sp, q, fr || 0, tr || 0));
-  };
+    if (!bp || bp <= 0 || !sp || sp <= 0 || !q || q <= 0) return null;
+    return calculateStockReturn(bp, sp, q, fr || 0, tr || 0);
+  }, [buyPrice, sellPrice, quantity, feeRate, taxRate]);
 
   const handleReset = () => {
     setBuyPrice("");
@@ -99,8 +93,6 @@ export default function StockReturnCalculator() {
     setQuantity("");
     setFeeRate("0.015");
     setTaxRate("0.18");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -112,8 +104,8 @@ export default function StockReturnCalculator() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         주식 수익률 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -121,7 +113,7 @@ export default function StockReturnCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 매수가 */}
           <div>
@@ -133,9 +125,8 @@ export default function StockReturnCalculator() {
                 type="text"
                 value={buyPrice}
                 onChange={(e) => handleNumberInput(e.target.value, setBuyPrice)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 50,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -155,9 +146,8 @@ export default function StockReturnCalculator() {
                 onChange={(e) =>
                   handleNumberInput(e.target.value, setSellPrice)
                 }
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 55,000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 원
@@ -177,9 +167,8 @@ export default function StockReturnCalculator() {
                 onChange={(e) =>
                   handleNumberInput(e.target.value, setQuantity)
                 }
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="예: 100"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 주
@@ -200,9 +189,8 @@ export default function StockReturnCalculator() {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setFeeRate(v);
                 }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="0.015"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 %
@@ -217,7 +205,7 @@ export default function StockReturnCalculator() {
                 <button
                   key={opt.label}
                   onClick={() => setFeeRate(opt.value)}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {opt.label}
                 </button>
@@ -238,9 +226,8 @@ export default function StockReturnCalculator() {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setTaxRate(v);
                 }}
-                onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
                 placeholder="0.18"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 %
@@ -255,7 +242,7 @@ export default function StockReturnCalculator() {
                 <button
                   key={i}
                   onClick={() => setTaxRate(opt.value)}
-                  className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  className="calc-preset"
                 >
                   {opt.label}
                 </button>
@@ -264,17 +251,10 @@ export default function StockReturnCalculator() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <div className="flex gap-3 mt-6">
           <button
-            onClick={handleCalculate}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="calc-btn-secondary"
           >
             초기화
           </button>
@@ -283,7 +263,7 @@ export default function StockReturnCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           {/* 하이라이트 */}
           <div
             className={`p-6 text-center text-white ${result.netProfit >= 0 ? "bg-red-500" : "bg-blue-500"}`}
@@ -365,6 +345,18 @@ export default function StockReturnCalculator() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">순수익 (수익률 {result.returnRate >= 0 ? "+" : ""}{result.returnRate}%)</p>
+              <p className={`text-lg font-extrabold ${result.netProfit >= 0 ? "text-red-600" : "text-blue-600"}`}>{result.netProfit >= 0 ? "+" : ""}{formatNumber(result.netProfit)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

@@ -70,8 +70,8 @@ export default function RandomPickPage() {
   }, []);
 
   return (
-    <div className="py-4 max-w-2xl mx-auto px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">🎰 랜덤 지목</h1>
+    <div className="py-6 max-w-2xl mx-auto px-4">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">🎰 랜덤 지목</h1>
       <p className="text-gray-500 mb-6">
         룰렛처럼 돌려서 한 명을 뽑고 랜덤 미션을 수행하세요!
       </p>

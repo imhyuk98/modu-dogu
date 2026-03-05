@@ -103,15 +103,15 @@ export default function JsonFormatterPage() {
   };
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">JSON 포매터</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">JSON 포매터</h1>
       <p className="text-gray-500 mb-8">
         JSON 데이터를 보기 좋게 정리하거나, 유효성을 검증하고, 미니파이(압축)할
         수 있습니다.
       </p>
 
       {/* 도구 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         {/* 버튼 영역 */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <button

@@ -226,14 +226,14 @@ export default function ColorConverterPage() {
   const relatedColors = getRelatedColors(hue, sat, lit);
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">색상 변환기</h1>
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">색상 변환기</h1>
       <p className="text-gray-500 mb-8">
         HEX, RGB, HSL 색상 코드를 자유롭게 변환하고 미리보기할 수 있습니다.
       </p>
 
       {/* 색상 미리보기 + 피커 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div
           className="w-full rounded-lg mb-4 border border-gray-200"
           style={{ height: 150, backgroundColor: hex }}
@@ -253,7 +253,7 @@ export default function ColorConverterPage() {
       </div>
 
       {/* HEX 입력 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-gray-900">HEX</h2>
           <button
@@ -269,12 +269,12 @@ export default function ColorConverterPage() {
           onChange={handleHexInput}
           maxLength={7}
           placeholder="#000000"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="calc-input calc-input-lg font-mono"
         />
       </div>
 
       {/* RGB 입력 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-gray-900">RGB</h2>
           <button
@@ -313,7 +313,7 @@ export default function ColorConverterPage() {
       </div>
 
       {/* HSL 입력 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-gray-900">HSL</h2>
           <button
@@ -354,7 +354,7 @@ export default function ColorConverterPage() {
       </div>
 
       {/* 관련 색상 팔레트 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">
           관련 색상 팔레트
         </h2>
@@ -380,7 +380,7 @@ export default function ColorConverterPage() {
 
       {/* 최근 사용한 색상 */}
       {recentColors.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-sm font-semibold text-gray-900 mb-4">
             최근 사용한 색상
           </h2>

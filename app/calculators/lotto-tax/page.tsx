@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface LottoTaxResult {
@@ -54,9 +54,7 @@ function calculateLottoTax(amount: number): LottoTaxResult {
 }
 
 export default function LottoTaxCalculator() {
-  const [amount, setAmount] = useState("");
-  const [result, setResult] = useState<LottoTaxResult | null>(null);
-  const [error, setError] = useState("");
+  const [amount, setAmount] = useState("2,000,000,000");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -68,23 +66,16 @@ export default function LottoTaxCalculator() {
     } else {
       setAmount("");
     }
-    setError("");
   };
 
-  const handleCalculate = () => {
+  const result = useMemo<LottoTaxResult | null>(() => {
     const num = parseInt(amount.replace(/,/g, ""), 10);
-    if (!num || num <= 0) {
-      setError("당첨금액을 입력해주세요");
-      return;
-    }
-    setError("");
-    setResult(calculateLottoTax(num));
-  };
+    if (!num || num <= 0) return null;
+    return calculateLottoTax(num);
+  }, [amount]);
 
   const handleReset = () => {
     setAmount("");
-    setResult(null);
-    setError("");
     setCopied(false);
   };
 
@@ -97,7 +88,6 @@ export default function LottoTaxCalculator() {
 
   const setQuickAmount = (value: number) => {
     setAmount(value.toLocaleString("ko-KR"));
-    setResult(calculateLottoTax(value));
   };
 
   const quickAmounts = [
@@ -114,8 +104,8 @@ export default function LottoTaxCalculator() {
   ];
 
   return (
-    <div className="py-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+    <div className="py-6">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
         로또 세금 계산기
       </h1>
       <p className="text-gray-500 mb-8">
@@ -123,7 +113,7 @@ export default function LottoTaxCalculator() {
       </p>
 
       {/* 입력 영역 */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="calc-card p-6 mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           당첨금액
         </label>
@@ -133,29 +123,20 @@ export default function LottoTaxCalculator() {
               type="text"
               value={amount}
               onChange={handleInputChange}
-              onKeyDown={(e) => { if (e.key === "Enter") handleCalculate(); }}
               placeholder="예: 2,000,000,000"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="calc-input calc-input-lg"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
               원
             </span>
           </div>
           <button
-            onClick={handleCalculate}
-            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
-          >
-            계산하기
-          </button>
-          <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap"
+            className="calc-btn-secondary whitespace-nowrap"
           >
             초기화
           </button>
         </div>
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
         {/* 빠른 금액 선택 */}
         <div className="mt-4">
           <p className="text-xs text-gray-500 mb-2">빠른 금액 선택</p>
@@ -164,7 +145,7 @@ export default function LottoTaxCalculator() {
               <button
                 key={item.value}
                 onClick={() => setQuickAmount(item.value)}
-                className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                className="calc-preset"
               >
                 {item.label}
               </button>
@@ -180,7 +161,7 @@ export default function LottoTaxCalculator() {
               <button
                 key={item.value}
                 onClick={() => setQuickAmount(item.value)}
-                className="px-3 py-1.5 text-sm border border-gray-200 rounded-full hover:bg-green-50 hover:border-green-300 transition-colors"
+                className="calc-preset"
               >
                 {item.label}
               </button>
@@ -191,7 +172,7 @@ export default function LottoTaxCalculator() {
 
       {/* 결과 영역 */}
       {result && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           {/* 실수령액 하이라이트 */}
           <div className="bg-blue-600 text-white p-6 text-center">
             <p className="text-blue-100 text-sm mb-1">세후 실수령액</p>
@@ -268,6 +249,18 @@ export default function LottoTaxCalculator() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {result && (
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-[var(--muted)]">세후 실수령액</p>
+              <p className="text-lg font-extrabold text-blue-600">{formatNumber(result.netAmount)}원</p>
+            </div>
+            <button onClick={handleCopy} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

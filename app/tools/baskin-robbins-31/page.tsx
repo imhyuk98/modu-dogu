@@ -154,8 +154,8 @@ export default function BaskinRobbins31() {
   // Mode selection screen
   if (mode === null) {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           베스킨라빈스 31
         </h1>
         <p className="text-gray-500 mb-8">
@@ -198,9 +198,9 @@ export default function BaskinRobbins31() {
   }
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold text-gray-900">베스킨라빈스 31</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">베스킨라빈스 31</h1>
         <button
           onClick={() => startGame(null)}
           className="text-sm text-gray-500 hover:text-gray-700 underline"
@@ -234,7 +234,7 @@ export default function BaskinRobbins31() {
       )}
 
       {/* Number grid */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 mb-6">
+      <div className="calc-card p-4 sm:p-6 mb-6">
         <div className="grid grid-cols-7 sm:grid-cols-8 gap-2">
           {Array.from({ length: LOSING_NUMBER }, (_, i) => i + 1).map((num) => {
             const colorClass = getNumberColor(num);
@@ -298,7 +298,7 @@ export default function BaskinRobbins31() {
       {/* Game over overlay */}
       {gameOver && showResult && (
         <div className="text-center mb-6">
-          <div className="bg-white rounded-xl border-2 border-gray-200 p-8 max-w-sm mx-auto">
+          <div className="calc-card border-2 border-gray-200 p-8 max-w-sm mx-auto">
             <div className="text-5xl mb-4">
               {mode === "ai"
                 ? loser === 2
@@ -327,13 +327,13 @@ export default function BaskinRobbins31() {
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => startGame(mode)}
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="calc-btn-primary"
               >
                 다시 하기
               </button>
               <button
                 onClick={() => startGame(null)}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="calc-btn-secondary"
               >
                 모드 선택
               </button>

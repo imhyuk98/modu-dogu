@@ -131,15 +131,15 @@ export default function ReactionTest() {
   if (phase === "done") {
     const grade = getGrade(average);
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           반응속도 테스트
         </h1>
         <p className="text-gray-500 mb-8">
           화면이 초록색으로 바뀌면 클릭! 5회 측정 결과입니다.
         </p>
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+        <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-8 text-center">
             <p className="text-blue-100 text-sm mb-1">평균 반응속도</p>
             <p className="text-5xl font-bold mb-2">{average}ms</p>
@@ -203,7 +203,7 @@ export default function ReactionTest() {
         <div className="text-center">
           <button
             onClick={handleClick}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-lg"
+            className="calc-btn-primary px-8 py-3 text-lg"
           >
             다시 하기
           </button>
@@ -241,8 +241,8 @@ export default function ReactionTest() {
 
   if (phase === "idle") {
     return (
-      <div className="py-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="py-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
           반응속도 테스트
         </h1>
         <p className="text-gray-500 mb-8">
@@ -298,7 +298,7 @@ export default function ReactionTest() {
   }
 
   return (
-    <div className="py-4">
+    <div className="py-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">반응속도 테스트</h1>
         <p className="text-sm text-gray-500">
