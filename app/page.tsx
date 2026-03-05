@@ -176,43 +176,12 @@ const calculators = [
     href: "/calculators/lotto-tax",
     emoji: "\uD83C\uDFB0",
   },
-  // 혈액형
-  {
-    title: "혈액형 계산기",
-    description: "부모 혈액형으로 아기의 가능한 혈액형과 확률을 계산합니다.",
-    href: "/calculators/blood-type",
-    emoji: "\uD83E\uDE78",
-  },
   // 12위: 600
   {
     title: "전월세 전환 계산기",
     description: "전세를 월세로, 월세를 전세로 전환할 때 적정 금액을 계산합니다.",
     href: "/calculators/rent-conversion",
     emoji: "\uD83C\uDFE0",
-  },
-  {
-    title: "별자리 계산기",
-    description: "생일로 나의 별자리, 성격, 궁합, 행운의 숫자를 알아봅니다.",
-    href: "/calculators/constellation",
-    emoji: "\u2B50",
-  },
-  {
-    title: "MBTI 궁합 테스트",
-    description: "두 MBTI 유형의 궁합 점수와 상세 분석을 확인합니다.",
-    href: "/calculators/mbti-compatibility",
-    emoji: "\uD83D\uDC95",
-  },
-  {
-    title: "이름 궁합 계산기",
-    description: "두 이름의 획수로 궁합 퍼센트를 계산합니다.",
-    href: "/calculators/name-compatibility",
-    emoji: "\uD83D\uDC98",
-  },
-  {
-    title: "띠 계산기 (12간지)",
-    description: "출생년도로 나의 띠, 천간, 오행, 성격, 궁합을 알아봅니다.",
-    href: "/calculators/zodiac",
-    emoji: "\uD83D\uDC09",
   },
 ];
 
@@ -246,6 +215,39 @@ const realEstateCalcs = [
     description: "상속재산, 배우자 유무, 자녀 수로 상속세를 계산합니다.",
     href: "/calculators/inheritance-tax",
     emoji: "\uD83D\uDCDC",
+  },
+];
+
+const funCalcs = [
+  {
+    title: "MBTI 궁합 테스트",
+    description: "두 MBTI 유형의 궁합 점수와 상세 분석을 확인합니다.",
+    href: "/calculators/mbti-compatibility",
+    emoji: "\uD83D\uDC95",
+  },
+  {
+    title: "이름 궁합 계산기",
+    description: "두 이름의 획수로 궁합 퍼센트를 계산합니다.",
+    href: "/calculators/name-compatibility",
+    emoji: "\uD83D\uDC98",
+  },
+  {
+    title: "별자리 계산기",
+    description: "생일로 나의 별자리, 성격, 궁합, 행운의 숫자를 알아봅니다.",
+    href: "/calculators/constellation",
+    emoji: "\u2B50",
+  },
+  {
+    title: "띠 계산기 (12간지)",
+    description: "출생년도로 나의 띠, 천간, 오행, 성격, 궁합을 알아봅니다.",
+    href: "/calculators/zodiac",
+    emoji: "\uD83D\uDC09",
+  },
+  {
+    title: "혈액형 계산기",
+    description: "부모 혈액형으로 아기의 가능한 혈액형과 확률을 계산합니다.",
+    href: "/calculators/blood-type",
+    emoji: "\uD83E\uDE78",
   },
 ];
 
@@ -360,6 +362,23 @@ export default function Home() {
             key={calc.href}
             href={calc.href}
             className="block bg-white rounded-xl border border-gray-200 p-6 transition-all hover:shadow-lg hover:border-purple-300 hover:-translate-y-1"
+          >
+            <div className="text-3xl mb-3">{calc.emoji}</div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">
+              {calc.title}
+            </h2>
+            <p className="text-sm text-gray-500">{calc.description}</p>
+          </Link>
+        ))}
+      </div>
+
+      <h2 className="text-xl font-bold text-gray-900 mb-4">재미/운세</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {funCalcs.map((calc) => (
+          <Link
+            key={calc.href}
+            href={calc.href}
+            className="block bg-white rounded-xl border border-gray-200 p-6 transition-all hover:shadow-lg hover:border-pink-300 hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">{calc.emoji}</div>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">

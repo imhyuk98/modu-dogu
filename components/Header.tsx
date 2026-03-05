@@ -41,11 +41,14 @@ const lifeCalcs = [
   { title: "음주 측정기", href: "/calculators/alcohol" },
   { title: "연차 계산기", href: "/calculators/annual-leave" },
   { title: "학점 계산기", href: "/calculators/gpa" },
-  { title: "혈액형 계산기", href: "/calculators/blood-type" },
-  { title: "별자리 계산기", href: "/calculators/constellation" },
-  { title: "띠 계산기", href: "/calculators/zodiac" },
+];
+
+const funCalcs = [
   { title: "MBTI 궁합", href: "/calculators/mbti-compatibility" },
   { title: "이름 궁합", href: "/calculators/name-compatibility" },
+  { title: "별자리 계산기", href: "/calculators/constellation" },
+  { title: "띠 계산기", href: "/calculators/zodiac" },
+  { title: "혈액형 계산기", href: "/calculators/blood-type" },
 ];
 
 const converterItems = [
@@ -211,6 +214,18 @@ export default function Header() {
             ))}
           </DropdownMenu>
 
+          <DropdownMenu label="재미/운세">
+            {funCalcs.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </DropdownMenu>
+
           <DropdownMenu label="변환기">
             {converterItems.map((item) => (
               <Link
@@ -290,6 +305,14 @@ export default function Header() {
             items={lifeCalcs}
             expanded={mobileExpanded === "life"}
             onToggle={() => setMobileExpanded(mobileExpanded === "life" ? null : "life")}
+            onClose={closeMobile}
+          />
+
+          <MobileSection
+            label="재미/운세"
+            items={funCalcs}
+            expanded={mobileExpanded === "fun"}
+            onToggle={() => setMobileExpanded(mobileExpanded === "fun" ? null : "fun")}
             onClose={closeMobile}
           />
 

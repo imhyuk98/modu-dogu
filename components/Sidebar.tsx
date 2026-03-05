@@ -48,11 +48,16 @@ const categories = [
       { title: "음주 측정기", href: "/calculators/alcohol" },
       { title: "연차 계산기", href: "/calculators/annual-leave" },
       { title: "학점 계산기", href: "/calculators/gpa" },
-      { title: "혈액형 계산기", href: "/calculators/blood-type" },
-      { title: "별자리 계산기", href: "/calculators/constellation" },
-      { title: "띠 계산기", href: "/calculators/zodiac" },
+    ],
+  },
+  {
+    label: "재미/운세",
+    items: [
       { title: "MBTI 궁합", href: "/calculators/mbti-compatibility" },
       { title: "이름 궁합", href: "/calculators/name-compatibility" },
+      { title: "별자리 계산기", href: "/calculators/constellation" },
+      { title: "띠 계산기", href: "/calculators/zodiac" },
+      { title: "혈액형 계산기", href: "/calculators/blood-type" },
     ],
   },
   {
