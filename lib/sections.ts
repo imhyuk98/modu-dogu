@@ -50,12 +50,17 @@ const lifeCalcs: Item[] = [
   { title: "단위 변환기", href: "/calculators/unit-converter", emoji: "🔄", desc: "길이·무게·부피" },
   { title: "비율 계산기", href: "/calculators/ratio", emoji: "📐", desc: "비율·비례 계산" },
   { title: "BMI 계산기", href: "/calculators/bmi", emoji: "⚖️", desc: "체질량지수 측정", featured: true },
+  { title: "기초대사량(BMR)", href: "/calculators/bmr", emoji: "🔥", desc: "기초대사량 계산" },
   { title: "음주 측정기", href: "/calculators/alcohol", emoji: "🍺", desc: "혈중 알코올 농도" },
   { title: "연차 계산기", href: "/calculators/annual-leave", emoji: "🏖️", desc: "연차 발생·잔여" },
   { title: "학점 계산기", href: "/calculators/gpa", emoji: "🎓", desc: "학점 평균 계산" },
+  { title: "표준체중 계산기", href: "/calculators/standard-weight", emoji: "🏋️", desc: "키·성별 표준체중" },
   { title: "공학용 계산기", href: "/calculators/scientific", emoji: "🔬", desc: "공학·과학 계산" },
   { title: "도시가스 요금", href: "/calculators/gas-bill", emoji: "🔥", desc: "도시가스 요금 계산" },
   { title: "유류비 계산기", href: "/calculators/fuel-cost", emoji: "⛽", desc: "자동차 주유비 계산" },
+  { title: "TDEE 계산기", href: "/calculators/tdee", emoji: "🔥", desc: "일일 소비 칼로리" },
+  { title: "체지방률 계산기", href: "/calculators/body-fat", emoji: "🏋️", desc: "US Navy 체지방률 측정" },
+  { title: "물 섭취량 계산기", href: "/calculators/water-intake", emoji: "💧", desc: "하루 권장 물 섭취량" },
 ];
 
 const funCalcs: Item[] = [

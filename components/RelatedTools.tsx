@@ -29,7 +29,11 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "unit-converter": { title: "단위 변환기", href: "/calculators/unit-converter", category: "생활" },
   ratio: { title: "비율 계산기", href: "/calculators/ratio", category: "생활" },
   bmi: { title: "BMI 계산기", href: "/calculators/bmi", category: "생활" },
+  "standard-weight": { title: "표준체중 계산기", href: "/calculators/standard-weight", category: "생활" },
+  bmr: { title: "기초대사량 계산기", href: "/calculators/bmr", category: "생활" },
+  tdee: { title: "TDEE 계산기", href: "/calculators/tdee", category: "생활" },
   alcohol: { title: "음주 측정기", href: "/calculators/alcohol", category: "생활" },
+  "water-intake": { title: "물 섭취량 계산기", href: "/calculators/water-intake", category: "생활" },
   "annual-leave": { title: "연차 계산기", href: "/calculators/annual-leave", category: "생활" },
   gpa: { title: "학점 계산기", href: "/calculators/gpa", category: "생활" },
   timer: { title: "타이머 & 스톱워치", href: "/tools/timer", category: "도구" },
@@ -83,6 +87,7 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "image-resize": { title: "이미지 크기 조절", href: "/tools/image-resize", category: "도구" },
   "image-mosaic": { title: "이미지 모자이크", href: "/tools/image-mosaic", category: "도구" },
   "image-watermark": { title: "이미지 워터마크", href: "/tools/image-watermark", category: "도구" },
+  "body-fat": { title: "체지방률 계산기", href: "/calculators/body-fat", category: "생활" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -114,8 +119,12 @@ const relatedMap: Record<string, string[]> = {
   pyeong: ["unit-converter", "rent-conversion", "electricity", "ratio"],
   "unit-converter": ["pyeong", "ratio", "percent", "color-converter"],
   ratio: ["percent", "unit-converter", "pyeong", "bmi"],
-  bmi: ["alcohol", "age", "ratio", "percent"],
-  alcohol: ["bmi", "age", "timer", "dday"],
+  bmi: ["standard-weight", "tdee", "bmr", "alcohol"],
+  "water-intake": ["bmi", "bmr", "tdee", "alcohol"],
+  "standard-weight": ["bmi", "tdee", "bmr", "alcohol"],
+  bmr: ["tdee", "bmi", "standard-weight", "age"],
+  tdee: ["bmi", "bmr", "standard-weight", "age"],
+  alcohol: ["bmi", "standard-weight", "age", "timer"],
   "annual-leave": ["salary", "retirement", "dday", "unemployment"],
   gpa: ["percent", "ratio", "character-count", "salary"],
   timer: ["dday", "alcohol", "json-formatter", "qr-code"],
@@ -169,6 +178,7 @@ const relatedMap: Record<string, string[]> = {
   "telepathy-game": ["chosung-quiz", "image-game", "name-compatibility", "nunchi-game"],
   "image-mosaic": ["image-watermark", "image-converter", "image-compress", "image-resize"],
   "image-watermark": ["image-mosaic", "image-converter", "image-compress", "image-resize"],
+  "body-fat": ["bmi", "alcohol", "age", "ratio"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

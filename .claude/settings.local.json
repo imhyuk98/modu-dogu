@@ -70,7 +70,12 @@
       "Bash(gh workflow:*)",
       "Bash(gh api:*)",
       "Bash(curl:*)",
-      "Bash(py:*)"
+      "Bash(py:*)",
+      "WebFetch(domain:k-boardgame.com)",
+      "WebFetch(domain:toz-app.com)",
+      "WebFetch(domain:foxcg.com)",
+      "WebFetch(domain:the.korearound.com)",
+      "WebFetch(domain:inno89.com)"
     ]
   }
 }
