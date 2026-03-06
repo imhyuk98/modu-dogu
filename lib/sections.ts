@@ -70,6 +70,7 @@ const funCalcs: Item[] = [
   { title: "커플 D-day", href: "/calculators/couple-dday", emoji: "💑", desc: "사귄 날 기념일" },
   { title: "심리테스트", href: "/tools/psychology-test", emoji: "🧠", desc: "나의 심리 분석" },
   { title: "MBTI 검사", href: "/tools/mbti-test", emoji: "🧩", desc: "MBTI 유형 검사" },
+  { title: "아재개그 생성기", href: "/tools/dad-joke", emoji: "😂", desc: "매일 새로운 아재개그" },
 ];
 
 const drinkingGames: Item[] = [
