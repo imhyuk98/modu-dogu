@@ -85,21 +85,30 @@ export default function FuelMapPage() {
 
   /* ── Load Kakao Maps SDK ── */
   useEffect(() => {
-    const kakao = (window as any).kakao;
-    if (kakao && kakao.maps) {
-      kakao.maps.load(() => setMapReady(true));
+    const w = window as any;
+    if (w.kakao && w.kakao.maps) {
+      if (w.kakao.maps.Map) {
+        setMapReady(true);
+      } else {
+        w.kakao.maps.load(() => setMapReady(true));
+      }
       return;
     }
 
     const script = document.createElement("script");
     script.src =
-      "//dapi.kakao.com/v2/maps/sdk.js?appkey=119e121dca3dca3aa9c4985cd6d8be52&autoload=false";
+      "https://dapi.kakao.com/v2/maps/sdk.js?appkey=119e121dca3dca3aa9c4985cd6d8be52&autoload=false";
     script.async = true;
     script.onload = () => {
       const k = (window as any).kakao;
       if (k && k.maps) {
         k.maps.load(() => setMapReady(true));
+      } else {
+        setError("카카오맵 SDK 로드에 실패했습니다.");
       }
+    };
+    script.onerror = () => {
+      setError("카카오맵 SDK를 불러올 수 없습니다. 도메인 등록을 확인해주세요.");
     };
     document.head.appendChild(script);
   }, []);
@@ -356,13 +365,13 @@ export default function FuelMapPage() {
             </div>
 
             {/* Map container */}
-            <div
-              ref={mapContainerRef}
-              className="w-full"
-              style={{ height: "clamp(350px, 55vh, 600px)" }}
-            >
+            <div className="relative w-full" style={{ height: "clamp(350px, 55vh, 600px)" }}>
+              <div
+                ref={mapContainerRef}
+                className="w-full h-full"
+              />
               {!mapReady && (
-                <div className="flex items-center justify-center h-full bg-gray-50">
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
                   <div className="text-center">
                     <div className="animate-spin w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full mx-auto mb-3" />
                     <p className="text-sm text-gray-500">지도를 불러오는 중...</p>
