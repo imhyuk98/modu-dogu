@@ -36,6 +36,8 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "json-formatter": { title: "JSON 포매터", href: "/tools/json-formatter", category: "도구" },
   "qr-code": { title: "QR 코드 생성기", href: "/tools/qr-code", category: "도구" },
   "image-converter": { title: "이미지 변환기", href: "/tools/image-converter", category: "변환기" },
+  "image-crop": { title: "이미지 자르기", href: "/tools/image-crop", category: "변환기" },
+  "image-rotate": { title: "이미지 회전/뒤집기", href: "/tools/image-rotate", category: "변환기" },
   "csv-json": { title: "CSV JSON 변환기", href: "/tools/csv-json", category: "변환기" },
   "markdown-html": { title: "Markdown HTML", href: "/tools/markdown-html", category: "변환기" },
   base64: { title: "Base64 인코더", href: "/tools/base64", category: "변환기" },
@@ -77,6 +79,10 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "never-have-i-ever": { title: "손병호 게임", href: "/tools/never-have-i-ever", category: "술게임" },
   "nunchi-game": { title: "눈치 게임", href: "/tools/nunchi-game", category: "술게임" },
   "telepathy-game": { title: "텔레파시 게임", href: "/tools/telepathy-game", category: "술게임" },
+  "image-compress": { title: "이미지 압축", href: "/tools/image-compress", category: "도구" },
+  "image-resize": { title: "이미지 크기 조절", href: "/tools/image-resize", category: "도구" },
+  "image-mosaic": { title: "이미지 모자이크", href: "/tools/image-mosaic", category: "도구" },
+  "image-watermark": { title: "이미지 워터마크", href: "/tools/image-watermark", category: "도구" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -115,7 +121,11 @@ const relatedMap: Record<string, string[]> = {
   timer: ["dday", "alcohol", "json-formatter", "qr-code"],
   "json-formatter": ["csv-json", "base64", "markdown-html", "timer"],
   "qr-code": ["image-converter", "base64", "color-converter", "timer"],
-  "image-converter": ["csv-json", "color-converter", "qr-code", "markdown-html"],
+  "image-converter": ["image-crop", "image-rotate", "color-converter", "qr-code"],
+  "image-crop": ["image-rotate", "image-converter", "color-converter", "qr-code"],
+  "image-rotate": ["image-crop", "image-converter", "color-converter", "qr-code"],
+  "image-compress": ["image-converter", "image-resize", "qr-code", "color-converter"],
+  "image-resize": ["image-converter", "image-compress", "qr-code", "color-converter"],
   "csv-json": ["json-formatter", "markdown-html", "base64", "image-converter"],
   "markdown-html": ["csv-json", "json-formatter", "character-count", "base64"],
   base64: ["json-formatter", "csv-json", "markdown-html", "color-converter"],
@@ -157,6 +167,8 @@ const relatedMap: Record<string, string[]> = {
   "never-have-i-ever": ["image-game", "truth-or-dare", "liar-game", "bomb-game"],
   "nunchi-game": ["baskin-robbins-31", "bomb-game", "random-pick", "updown-game"],
   "telepathy-game": ["chosung-quiz", "image-game", "name-compatibility", "nunchi-game"],
+  "image-mosaic": ["image-watermark", "image-converter", "image-compress", "image-resize"],
+  "image-watermark": ["image-mosaic", "image-converter", "image-compress", "image-resize"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

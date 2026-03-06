@@ -104,12 +104,20 @@ const tools: Item[] = [
   { title: "QR 코드 생성기", href: "/tools/qr-code", emoji: "📱", desc: "QR 코드 생성", featured: true },
   { title: "색상 변환기", href: "/tools/color-converter", emoji: "🎨", desc: "HEX·RGB·HSL 변환" },
   { title: "이미지 변환기", href: "/tools/image-converter", emoji: "🖼️", desc: "이미지 포맷 변환" },
+  { title: "이미지 압축", href: "/tools/image-compress", emoji: "📦", desc: "이미지 용량 줄이기" },
+  { title: "이미지 크기 조절", href: "/tools/image-resize", emoji: "📐", desc: "이미지 리사이즈" },
+  { title: "이미지 모자이크", href: "/tools/image-mosaic", emoji: "🔲", desc: "모자이크 & 블러 처리" },
+  { title: "이미지 워터마크", href: "/tools/image-watermark", emoji: "💧", desc: "텍스트 워터마크 추가" },
+  { title: "이미지 자르기", href: "/tools/image-crop", emoji: "✂️", desc: "이미지 크롭" },
+  { title: "이미지 회전", href: "/tools/image-rotate", emoji: "🔄", desc: "회전 & 뒤집기" },
   { title: "CSV JSON 변환기", href: "/tools/csv-json", emoji: "📄", desc: "CSV↔JSON 변환" },
   { title: "닉네임 생성기", href: "/tools/nickname-generator", emoji: "🎭", desc: "랜덤 닉네임 생성" },
   { title: "Markdown HTML", href: "/tools/markdown-html", emoji: "📨", desc: "MD↔HTML 변환" },
   { title: "랜덤 숫자 생성기", href: "/tools/random-number", emoji: "🎲", desc: "무작위 숫자 생성" },
   { title: "타자 속도 측정", href: "/tools/typing-test", emoji: "⌨️", desc: "타이핑 속도 측정" },
   { title: "랜덤 룰렛", href: "/tools/random-roulette", emoji: "🎰", desc: "돌려서 결정하기" },
+  { title: "이미지 PDF 변환", href: "/tools/image-to-pdf", emoji: "📄", desc: "이미지를 PDF로 합치기" },
+  { title: "이미지 색상 추출", href: "/tools/image-color-picker", emoji: "🎨", desc: "이미지에서 색상 코드 추출" },
 ];
 
 export const sections: Section[] = [
