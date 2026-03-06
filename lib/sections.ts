@@ -85,6 +85,7 @@ const drinkingGames: Item[] = [
   { title: "눈치 게임", href: "/tools/nunchi-game", emoji: "👀", desc: "같은 숫자 외치면 벌칙" },
   { title: "텔레파시 게임", href: "/tools/telepathy-game", emoji: "🧠", desc: "같은 답 맞추기" },
   { title: "사다리 타기", href: "/tools/ladder-game", emoji: "🧪", desc: "사다리로 결정" },
+  { title: "밸런스 게임", href: "/tools/balance-game", emoji: "⚖️", desc: "둘 중 하나 선택" },
 ];
 
 const games: Item[] = [
