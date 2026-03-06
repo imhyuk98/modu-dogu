@@ -1,8 +1,20 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { calculateLoan, type LoanResult, type RepaymentType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+
+interface LoanRateEntry {
+  rate: number;
+  label: string;
+}
+
+interface InterestRateData {
+  updatedAt: string;
+  dataMonth: string;
+  baseRate: number;
+  loan: Record<string, LoanRateEntry>;
+}
 
 export default function LoanCalculator() {
   const [amount, setAmount] = useState("100,000,000");
@@ -11,6 +23,27 @@ export default function LoanCalculator() {
   const [type, setType] = useState<RepaymentType>("equalPrincipalInterest");
   const [showAll, setShowAll] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [rateData, setRateData] = useState<InterestRateData | null>(null);
+
+  // 실시간 금리 로드
+  useEffect(() => {
+    fetch("/interest-rates.json")
+      .then((r) => r.json())
+      .then((data: InterestRateData) => {
+        setRateData(data);
+        // 주택담보대출 금리를 기본값으로 설정
+        if (data.loan?.mortgage?.rate) {
+          setRate(String(data.loan.mortgage.rate));
+        }
+      })
+      .catch(() => {/* fallback to defaults */});
+  }, []);
+
+  const formatDataMonth = (dataMonth: string) => {
+    const year = dataMonth.slice(0, 4);
+    const month = parseInt(dataMonth.slice(4), 10);
+    return `${year}년 ${month}월 기준`;
+  };
 
   const result = useMemo(() => {
     const a = parseInt(amount.replace(/,/g, ""), 10);
@@ -22,7 +55,7 @@ export default function LoanCalculator() {
 
   const handleReset = () => {
     setAmount("100,000,000");
-    setRate("3.5");
+    setRate(rateData?.loan?.mortgage?.rate ? String(rateData.loan.mortgage.rate) : "3.5");
     setYears("30");
     setType("equalPrincipalInterest");
     setShowAll(false);
@@ -50,6 +83,29 @@ export default function LoanCalculator() {
         원리금균등상환과 원금균등상환 방식의 월 상환금과 총 이자를 계산합니다.
       </p>
 
+      {/* 시중 평균 금리 현황 */}
+      {rateData && (
+        <div className="calc-card p-4 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">시중 평균 금리</h3>
+            <span className="text-xs text-gray-400">{formatDataMonth(rateData.dataMonth)}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: "기준금리", rate: rateData.baseRate },
+              ...(rateData.loan?.mortgage ? [{ label: rateData.loan.mortgage.label, rate: rateData.loan.mortgage.rate }] : []),
+              ...(rateData.loan?.household ? [{ label: rateData.loan.household.label, rate: rateData.loan.household.rate }] : []),
+              ...(rateData.loan?.small_loan ? [{ label: rateData.loan.small_loan.label, rate: rateData.loan.small_loan.rate }] : []),
+            ].map((item) => (
+              <span key={item.label} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-sm">
+                <span className="text-gray-600">{item.label}</span>
+                <span className="font-bold text-blue-700">{item.rate}%</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">대출 금액</label>
@@ -68,6 +124,27 @@ export default function LoanCalculator() {
                 className="calc-input calc-input-lg" />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
             </div>
+            {rateData && (
+              <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                <span className="text-xs text-gray-400">빠른 적용:</span>
+                {[
+                  { key: "mortgage", label: "주담대" },
+                  { key: "household", label: "가계" },
+                  { key: "small_loan", label: "소액" },
+                ].map(({ key, label }) => {
+                  const entry = rateData.loan?.[key];
+                  if (!entry) return null;
+                  return (
+                    <button key={key} onClick={() => setRate(String(entry.rate))}
+                      className={`text-xs px-2 py-1 rounded-md border transition-colors ${
+                        rate === String(entry.rate) ? "bg-blue-100 border-blue-300 text-blue-700" : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}>
+                      {label}({entry.rate}%)
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">대출 기간</label>

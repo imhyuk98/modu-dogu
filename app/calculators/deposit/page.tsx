@@ -1,9 +1,27 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type TaxType = "normal" | "taxFree" | "taxFavored";
+
+interface DepositRateEntry {
+  rate: number;
+  label: string;
+}
+
+interface InterestRatesData {
+  updatedAt: string;
+  dataMonth: string;
+  baseRate: number;
+  deposit: {
+    "6m_under": DepositRateEntry;
+    "6m_1y": DepositRateEntry;
+    "1y_2y": DepositRateEntry;
+    "2y_3y": DepositRateEntry;
+    avg: DepositRateEntry;
+  };
+}
 
 interface DepositResult {
   principal: number;
@@ -42,12 +60,54 @@ function calculateDeposit(
   };
 }
 
+function formatDataMonth(dataMonth: string): string {
+  const year = dataMonth.slice(0, 4);
+  const month = parseInt(dataMonth.slice(4, 6), 10);
+  return `${year}년 ${month}월 기준`;
+}
+
+function getSuggestedRateForMonths(
+  months: number,
+  deposit: InterestRatesData["deposit"]
+): number | null {
+  if (months < 6) return deposit["6m_under"].rate;
+  if (months < 12) return deposit["6m_1y"].rate;
+  if (months < 24) return deposit["1y_2y"].rate;
+  if (months < 36) return deposit["2y_3y"].rate;
+  return deposit["2y_3y"].rate;
+}
+
 export default function DepositCalculator() {
   const [principal, setPrincipal] = useState("10,000,000");
   const [rate, setRate] = useState("3.5");
   const [months, setMonths] = useState("12");
   const [taxType, setTaxType] = useState<TaxType>("normal");
   const [copied, setCopied] = useState(false);
+  const [ratesData, setRatesData] = useState<InterestRatesData | null>(null);
+  const [rateManuallySet, setRateManuallySet] = useState(false);
+
+  useEffect(() => {
+    fetch("/interest-rates.json")
+      .then((res) => res.json())
+      .then((data: InterestRatesData) => {
+        setRatesData(data);
+        setRate(data.deposit.avg.rate.toString());
+      })
+      .catch(() => {
+        // 실패 시 기본값 유지
+      });
+  }, []);
+
+  const suggestRateForMonths = useCallback(
+    (m: number) => {
+      if (!ratesData || rateManuallySet) return;
+      const suggested = getSuggestedRateForMonths(m, ratesData.deposit);
+      if (suggested !== null) {
+        setRate(suggested.toString());
+      }
+    },
+    [ratesData, rateManuallySet]
+  );
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
 
@@ -76,10 +136,11 @@ export default function DepositCalculator() {
 
   const handleReset = () => {
     setPrincipal("10,000,000");
-    setRate("3.5");
+    setRate(ratesData ? ratesData.deposit.avg.rate.toString() : "3.5");
     setMonths("12");
     setTaxType("normal");
     setCopied(false);
+    setRateManuallySet(false);
   };
 
   const handleCopy = async () => {
@@ -92,6 +153,14 @@ export default function DepositCalculator() {
   const quickAmounts = [1000, 3000, 5000, 10000];
   const quickMonths = [6, 12, 24, 36];
 
+  const ratePresets = ratesData
+    ? [
+        { label: "6개월", rate: ratesData.deposit["6m_under"].rate },
+        { label: "1년", rate: ratesData.deposit["6m_1y"].rate },
+        { label: "2년", rate: ratesData.deposit["1y_2y"].rate },
+      ]
+    : null;
+
   return (
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
@@ -100,6 +169,37 @@ export default function DepositCalculator() {
       <p className="text-gray-500 mb-8">
         정기예금의 세후 수령액과 이자를 계산합니다. 목돈을 한 번에 예치하는 예금 상품에 적합합니다.
       </p>
+
+      {/* 시중 평균 예금금리 카드 */}
+      {ratesData && (
+        <div className="calc-card p-4 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-gray-900">
+              시중 평균 예금금리
+            </h2>
+            <span className="text-xs text-gray-400">
+              {formatDataMonth(ratesData.dataMonth)}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+              기준금리 {ratesData.baseRate}%
+            </span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              6개월 미만 {ratesData.deposit["6m_under"].rate}%
+            </span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              6개월~1년 {ratesData.deposit["6m_1y"].rate}%
+            </span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              1~2년 {ratesData.deposit["1y_2y"].rate}%
+            </span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              2~3년 {ratesData.deposit["2y_3y"].rate}%
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* 입력 영역 */}
       <div className="calc-card p-6 mb-6">
@@ -148,6 +248,7 @@ export default function DepositCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setRate(v);
+                  setRateManuallySet(true);
                 }}
                 placeholder="예: 3.5"
                 className="calc-input calc-input-lg"
@@ -157,15 +258,30 @@ export default function DepositCalculator() {
               </span>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {[2.5, 3.0, 3.5, 4.0, 4.5].map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setRate(r.toString())}
-                  className="calc-preset"
-                >
-                  {r}%
-                </button>
-              ))}
+              {ratePresets ? (
+                ratePresets.map((p) => (
+                  <button
+                    key={p.label}
+                    onClick={() => {
+                      setRate(p.rate.toString());
+                      setRateManuallySet(false);
+                    }}
+                    className={`calc-preset ${rate === p.rate.toString() ? "ring-1 ring-blue-400 bg-blue-50 text-blue-700" : ""}`}
+                  >
+                    {p.label} {p.rate}%
+                  </button>
+                ))
+              ) : (
+                [2.5, 3.0, 3.5, 4.0, 4.5].map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setRate(r.toString())}
+                    className="calc-preset"
+                  >
+                    {r}%
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
@@ -181,6 +297,8 @@ export default function DepositCalculator() {
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9]/g, "");
                   setMonths(v);
+                  const m = parseInt(v, 10);
+                  if (m > 0) suggestRateForMonths(m);
                 }}
                 placeholder="예: 12"
                 className="calc-input calc-input-lg"
@@ -193,7 +311,13 @@ export default function DepositCalculator() {
               {quickMonths.map((m) => (
                 <button
                   key={m}
-                  onClick={() => setMonths(m.toString())}
+                  onClick={() => {
+                    setMonths(m.toString());
+                    if (ratesData && !rateManuallySet) {
+                      const suggested = getSuggestedRateForMonths(m, ratesData.deposit);
+                      if (suggested !== null) setRate(suggested.toString());
+                    }
+                  }}
                   className="calc-preset"
                 >
                   {m}개월

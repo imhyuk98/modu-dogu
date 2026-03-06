@@ -1,8 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { calculateSavings, type SavingsResult, type SavingsType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+
+interface SavingsRatesData {
+  updatedAt: string;
+  dataMonth: string;
+  baseRate: number;
+  savings: number;
+}
+
+function formatDataMonth(dataMonth: string): string {
+  const year = dataMonth.slice(0, 4);
+  const month = parseInt(dataMonth.slice(4, 6), 10);
+  return `${year}년 ${month}월 기준`;
+}
 
 export default function SavingsCalculator() {
   const [monthly, setMonthly] = useState("500,000");
@@ -11,6 +24,17 @@ export default function SavingsCalculator() {
   const [type, setType] = useState<SavingsType>("simple");
   const [taxRate, setTaxRate] = useState("15.4");
   const [copied, setCopied] = useState(false);
+  const [ratesData, setRatesData] = useState<SavingsRatesData | null>(null);
+
+  useEffect(() => {
+    fetch("/interest-rates.json")
+      .then((res) => res.json())
+      .then((data: SavingsRatesData) => {
+        setRatesData(data);
+        setRate(data.savings.toString());
+      })
+      .catch(() => {});
+  }, []);
 
   const result = useMemo(() => {
     const m = parseInt(monthly.replace(/,/g, ""), 10);
@@ -23,7 +47,7 @@ export default function SavingsCalculator() {
 
   const handleReset = () => {
     setMonthly("500,000");
-    setRate("4.0");
+    setRate(ratesData ? ratesData.savings.toString() : "4.0");
     setMonths("12");
     setType("simple");
     setTaxRate("15.4");
@@ -48,6 +72,27 @@ export default function SavingsCalculator() {
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">적금 이자 계산기</h1>
       <p className="text-gray-500 mb-8">월 납입금과 이자율로 적금 만기 수령액을 계산합니다.</p>
+
+      {ratesData && (
+        <div className="calc-card p-4 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-gray-900">
+              시중 평균 적금금리
+            </h2>
+            <span className="text-xs text-gray-400">
+              {formatDataMonth(ratesData.dataMonth)}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+              기준금리 {ratesData.baseRate}%
+            </span>
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              저축성수신 {ratesData.savings}%
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="calc-card p-6 mb-6 space-y-4">
         <div>

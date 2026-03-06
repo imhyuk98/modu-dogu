@@ -1,0 +1,108 @@
+name: Update Interest Rates
+
+on:
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch interest rates from Bank of Korea
+        env:
+          BOK_API_KEY: ${{ secrets.BOK_API_KEY }}
+        run: |
+          API_KEY="${BOK_API_KEY:-sample}"
+
+          python3 << 'PYEOF'
+import json, urllib.request, os
+from datetime import datetime, timedelta
+
+API_KEY = os.environ.get("BOK_API_KEY", "sample")
+BASE = f"https://ecos.bok.or.kr/api/StatisticSearch/{API_KEY}/json/kr"
+
+now = datetime.now()
+# Try current month, fallback to previous months
+months = []
+for i in range(4):
+    d = now - timedelta(days=30 * i)
+    months.append(d.strftime("%Y%m"))
+
+def fetch(stat_code, item_code, period_list):
+    for ym in period_list:
+        url = f"{BASE}/1/5/{stat_code}/M/{ym}/{ym}/{item_code}"
+        try:
+            req = urllib.request.Request(url)
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode())
+            rows = data.get("StatisticSearch", {}).get("row", [])
+            if rows and rows[0].get("DATA_VALUE"):
+                return {
+                    "value": float(rows[0]["DATA_VALUE"]),
+                    "period": rows[0]["TIME"],
+                    "name": rows[0]["ITEM_NAME1"]
+                }
+        except:
+            continue
+    return None
+
+# 1. 기준금리
+base_rate = fetch("722Y001", "0101000", months)
+
+# 2. 정기예금 금리 (기간별) - 121Y002
+deposit_items = {
+    "6m_under": ("BEABAA2111", "정기예금(6개월 미만)"),
+    "6m_1y": ("BEABAA2112", "정기예금(6개월~1년 미만)"),
+    "1y_2y": ("BEABAA2113", "정기예금(1~2년 미만)"),
+    "2y_3y": ("BEABAA2114", "정기예금(2~3년 미만)"),
+    "avg": ("BEABAA211", "정기예금"),
+}
+deposit_rates = {}
+for key, (code, label) in deposit_items.items():
+    r = fetch("121Y002", code, months)
+    if r:
+        deposit_rates[key] = {"rate": r["value"], "label": label}
+
+# 3. 대출금리 - 121Y006
+loan_items = {
+    "avg": ("BECBLA01", "대출평균"),
+    "household": ("BECBLA03", "가계대출"),
+    "mortgage": ("BECBLA0302", "주택담보대출"),
+    "mortgage_fixed": ("BECBLA030201", "고정형 주택담보대출"),
+    "corporate": ("BECBLA02", "기업대출"),
+    "small_loan": ("BECBLA0301", "소액대출(500만원 이하)"),
+}
+loan_rates = {}
+for key, (code, label) in loan_items.items():
+    r = fetch("121Y006", code, months)
+    if r:
+        loan_rates[key] = {"rate": r["value"], "label": label}
+
+# 4. 적금금리 (저축성수신)
+savings_rate = fetch("121Y002", "BEABAA1", months)
+
+result = {
+    "updatedAt": now.strftime("%Y-%m-%d"),
+    "dataMonth": base_rate["period"] if base_rate else months[0],
+    "baseRate": base_rate["value"] if base_rate else None,
+    "deposit": deposit_rates,
+    "loan": loan_rates,
+    "savings": savings_rate["value"] if savings_rate else None,
+}
+
+with open("public/interest-rates.json", "w", encoding="utf-8") as f:
+    json.dump(result, f, ensure_ascii=False, indent=2)
+
+print(json.dumps(result, ensure_ascii=False, indent=2))
+print("Interest rates updated successfully")
+PYEOF
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/interest-rates.json
+          git diff --staged --quiet || (git commit -m "chore: 금리 데이터 자동 업데이트 $(date +%Y-%m-%d)" && git push)

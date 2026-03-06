@@ -1,0 +1,54 @@
+{
+  "updatedAt": "2026-03-06",
+  "dataMonth": "202602",
+  "baseRate": 2.5,
+  "deposit": {
+    "6m_under": {
+      "rate": 2.7,
+      "label": "정기예금(6개월 미만)"
+    },
+    "6m_1y": {
+      "rate": 2.83,
+      "label": "정기예금(6개월~1년 미만)"
+    },
+    "1y_2y": {
+      "rate": 2.85,
+      "label": "정기예금(1~2년 미만)"
+    },
+    "2y_3y": {
+      "rate": 2.85,
+      "label": "정기예금(2~3년 미만)"
+    },
+    "avg": {
+      "rate": 2.77,
+      "label": "정기예금"
+    }
+  },
+  "loan": {
+    "avg": {
+      "rate": 4.24,
+      "label": "대출평균"
+    },
+    "household": {
+      "rate": 4.5,
+      "label": "가계대출"
+    },
+    "mortgage": {
+      "rate": 4.29,
+      "label": "주택담보대출"
+    },
+    "mortgage_fixed": {
+      "rate": 4.26,
+      "label": "고정형 주택담보대출"
+    },
+    "corporate": {
+      "rate": 4.15,
+      "label": "기업대출"
+    },
+    "small_loan": {
+      "rate": 6.48,
+      "label": "소액대출(500만원 이하)"
+    }
+  },
+  "savings": 2.77
+}
