@@ -1,0 +1,69 @@
+name: Update Fuel Prices
+
+on:
+  schedule:
+    # 매일 오전 9시 (KST) = UTC 0시에 실행
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch fuel prices from Opinet API
+        env:
+          OPINET_API_KEY: ${{ secrets.OPINET_API_KEY }}
+        run: |
+          if [ -z "$OPINET_API_KEY" ]; then
+            echo "OPINET_API_KEY not set, skipping"
+            exit 0
+          fi
+
+          RESPONSE=$(curl -s "https://www.opinet.co.kr/api/avgAllPrice.do?code=${OPINET_API_KEY}&out=json")
+
+          if echo "$RESPONSE" | python3 -c "import sys,json; json.load(sys.stdin)" 2>/dev/null; then
+            echo "$RESPONSE" | python3 -c "
+import sys, json
+from datetime import datetime
+
+data = json.load(sys.stdin)
+oils = data.get('RESULT', {}).get('OIL', [])
+
+prices = {
+  'updatedAt': datetime.now().strftime('%Y-%m-%d'),
+  'gasoline': None,
+  'diesel': None,
+  'lpg': None
+}
+
+for oil in oils:
+    code = oil.get('PRODCD', '')
+    price = oil.get('PRICE', 0)
+    diff = oil.get('DIFF', 0)
+    trade_dt = oil.get('TRADE_DT', '')
+
+    if code == 'B027':
+        prices['gasoline'] = {'price': round(price), 'diff': round(diff, 1)}
+        prices['tradeDate'] = f'{trade_dt[:4]}-{trade_dt[4:6]}-{trade_dt[6:8]}'
+    elif code == 'D047':
+        prices['diesel'] = {'price': round(price), 'diff': round(diff, 1)}
+    elif code == 'K015':
+        prices['lpg'] = {'price': round(price), 'diff': round(diff, 1)}
+
+print(json.dumps(prices, ensure_ascii=False, indent=2))
+" > public/fuel-prices.json
+            echo "Fuel prices updated successfully"
+            cat public/fuel-prices.json
+          else
+            echo "Invalid API response, skipping update"
+            exit 0
+          fi
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/fuel-prices.json
+          git diff --staged --quiet || (git commit -m "chore: 유가 자동 업데이트 $(date +%Y-%m-%d)" && git push)

@@ -61,7 +61,10 @@
       "WebFetch(domain:elementor.com)",
       "WebFetch(domain:zeenesia.com)",
       "WebFetch(domain:www.iloveimg.com)",
-      "WebFetch(domain:imgtools.co)"
+      "WebFetch(domain:imgtools.co)",
+      "WebFetch(domain:www.opinet.co.kr)",
+      "WebFetch(domain:blog.daum.net)",
+      "WebFetch(domain:www.data.go.kr)"
     ]
   }
 }

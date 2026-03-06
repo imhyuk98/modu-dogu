@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 type FuelType = "gasoline" | "diesel" | "lpg";
@@ -16,6 +16,14 @@ const DEFAULT_PRICES: Record<FuelType, number> = {
   diesel: 1500,
   lpg: 1050,
 };
+
+interface FuelPriceData {
+  updatedAt: string;
+  tradeDate: string;
+  gasoline: { price: number; diff: number };
+  diesel: { price: number; diff: number };
+  lpg: { price: number; diff: number };
+}
 
 const EFFICIENCY_PRESETS = [8, 10, 12, 15, 20];
 
@@ -39,6 +47,26 @@ export default function FuelCostCalculator() {
   const [monthlyDistance, setMonthlyDistance] = useState("1,000");
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [livePrices, setLivePrices] = useState<FuelPriceData | null>(null);
+
+  // 실시간 유가 로드
+  useEffect(() => {
+    fetch("/fuel-prices.json")
+      .then((r) => r.json())
+      .then((data: FuelPriceData) => {
+        setLivePrices(data);
+        // 현재 유종의 가격을 실시간 가격으로 업데이트
+        const livePrice = data[fuelType]?.price;
+        if (livePrice) {
+          setFuelPrice(formatNumber(livePrice));
+          DEFAULT_PRICES.gasoline = data.gasoline?.price || DEFAULT_PRICES.gasoline;
+          DEFAULT_PRICES.diesel = data.diesel?.price || DEFAULT_PRICES.diesel;
+          DEFAULT_PRICES.lpg = data.lpg?.price || DEFAULT_PRICES.lpg;
+        }
+      })
+      .catch(() => {/* fallback to defaults */});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleFuelTypeChange = (type: FuelType) => {
     setFuelType(type);
@@ -141,6 +169,31 @@ export default function FuelCostCalculator() {
       <p className="text-gray-500 mb-8">
         주행 거리와 연비를 입력하면 예상 유류비를 실시간으로 계산합니다.
       </p>
+
+      {/* 실시간 유가 현황 */}
+      {livePrices && (
+        <div className="calc-card p-4 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">전국 평균 유가</h3>
+            <span className="text-xs text-gray-400">{livePrices.tradeDate} 기준</span>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {(["gasoline", "diesel", "lpg"] as FuelType[]).map((type) => {
+              const info = livePrices[type];
+              if (!info) return null;
+              return (
+                <div key={type} className={`text-center p-2 rounded-lg ${fuelType === type ? "bg-blue-50 border border-blue-200" : "bg-gray-50"}`}>
+                  <p className="text-xs text-gray-500">{FUEL_LABELS[type]}</p>
+                  <p className="text-lg font-bold text-gray-900">{formatNumber(info.price)}</p>
+                  <p className={`text-xs font-medium ${info.diff > 0 ? "text-red-500" : info.diff < 0 ? "text-blue-500" : "text-gray-400"}`}>
+                    {info.diff > 0 ? "▲" : info.diff < 0 ? "▼" : "-"} {Math.abs(info.diff)}원
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 입력 영역 */}
       <div className="calc-card p-6 mb-6">
@@ -281,9 +334,22 @@ export default function FuelCostCalculator() {
               원/L
             </span>
           </div>
-          <p className="text-xs text-gray-400 mt-1">
-            유종 변경 시 평균 유가로 자동 설정됩니다. 직접 수정도 가능합니다.
-          </p>
+          {livePrices ? (
+            <div className="flex items-center gap-2 mt-1.5">
+              <span className="text-xs text-gray-400">
+                전국 평균 ({livePrices.tradeDate} 기준)
+              </span>
+              {livePrices[fuelType] && livePrices[fuelType].diff !== 0 && (
+                <span className={`text-xs font-medium ${livePrices[fuelType].diff > 0 ? "text-red-500" : "text-blue-500"}`}>
+                  {livePrices[fuelType].diff > 0 ? "▲" : "▼"} {Math.abs(livePrices[fuelType].diff)}원
+                </span>
+              )}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 mt-1">
+              유종 변경 시 평균 유가로 자동 설정됩니다. 직접 수정도 가능합니다.
+            </p>
+          )}
         </div>
 
         {/* 초기화 */}

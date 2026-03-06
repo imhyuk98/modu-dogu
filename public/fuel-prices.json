@@ -1,0 +1,7 @@
+{
+  "updatedAt": "2026-03-06",
+  "tradeDate": "2026-03-06",
+  "gasoline": { "price": 1650, "diff": 0 },
+  "diesel": { "price": 1500, "diff": 0 },
+  "lpg": { "price": 1050, "diff": 0 }
+}
