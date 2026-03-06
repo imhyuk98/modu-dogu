@@ -64,7 +64,13 @@
       "WebFetch(domain:imgtools.co)",
       "WebFetch(domain:www.opinet.co.kr)",
       "WebFetch(domain:blog.daum.net)",
-      "WebFetch(domain:www.data.go.kr)"
+      "WebFetch(domain:www.data.go.kr)",
+      "WebFetch(domain:www.minsimnews.com)",
+      "Bash(gh secret:*)",
+      "Bash(gh workflow:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(py:*)"
     ]
   }
 }

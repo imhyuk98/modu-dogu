@@ -120,6 +120,7 @@ const tools: Item[] = [
   { title: "랜덤 룰렛", href: "/tools/random-roulette", emoji: "🎰", desc: "돌려서 결정하기" },
   { title: "이미지 PDF 변환", href: "/tools/image-to-pdf", emoji: "📄", desc: "이미지를 PDF로 합치기" },
   { title: "이미지 색상 추출", href: "/tools/image-color-picker", emoji: "🎨", desc: "이미지에서 색상 코드 추출" },
+  { title: "주유소 최저가", href: "/tools/fuel-map", emoji: "⛽", desc: "전국 주유소 가격 지도" },
 ];
 
 export const sections: Section[] = [

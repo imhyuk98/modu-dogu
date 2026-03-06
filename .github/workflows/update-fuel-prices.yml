@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch fuel prices from Opinet API
+      - name: Fetch average fuel prices
         env:
           OPINET_API_KEY: ${{ secrets.OPINET_API_KEY }}
         run: |
@@ -54,15 +54,93 @@ for oil in oils:
 print(json.dumps(prices, ensure_ascii=False, indent=2))
 " > public/fuel-prices.json
             echo "Fuel prices updated successfully"
-            cat public/fuel-prices.json
           else
-            echo "Invalid API response, skipping update"
+            echo "Invalid API response, skipping"
+          fi
+
+      - name: Fetch station prices by region
+        env:
+          OPINET_API_KEY: ${{ secrets.OPINET_API_KEY }}
+        run: |
+          if [ -z "$OPINET_API_KEY" ]; then
             exit 0
           fi
+
+          mkdir -p public/fuel-stations
+
+          python3 << 'PYEOF'
+import json, urllib.request, math, time
+
+API_KEY = "${{ secrets.OPINET_API_KEY }}"
+AREAS = {
+    "01": "서울", "02": "경기", "03": "강원", "04": "충북", "05": "충남",
+    "06": "전북", "07": "전남", "08": "경북", "09": "경남", "10": "부산",
+    "11": "제주", "14": "대구", "15": "인천", "16": "광주", "17": "대전",
+    "18": "울산", "19": "세종"
+}
+
+# KATEC to WGS84 approximate conversion
+def katec_to_wgs84(x, y):
+    a = 6377397.155
+    fe, fn = 400000, 600000
+    lon0, lat0 = 128.0, 38.0
+    k0 = 0.9999
+
+    dx = x - fe
+    dy = y - fn
+
+    lat_rad = math.radians(lat0) + dy / (a * k0)
+    lon_rad = math.radians(lon0) + dx / (a * k0 * math.cos(lat_rad))
+
+    return round(math.degrees(lat_rad), 4), round(math.degrees(lon_rad), 4)
+
+from datetime import datetime
+today = datetime.now().strftime('%Y-%m-%d')
+
+for area_cd, area_nm in AREAS.items():
+    try:
+        url = f"https://www.opinet.co.kr/api/lowTop10.do?code={API_KEY}&prodcd=B027&area={area_cd}&out=json"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
+
+        stations = []
+        for s in data.get("RESULT", {}).get("OIL", []):
+            lat, lng = katec_to_wgs84(
+                float(s.get("GIS_X_COOR", 0)),
+                float(s.get("GIS_Y_COOR", 0))
+            )
+            stations.append({
+                "id": s.get("UNI_ID", ""),
+                "name": s.get("OS_NM", ""),
+                "brand": s.get("POLL_DIV_CD", ""),
+                "price": int(s.get("PRICE", 0)),
+                "addr": s.get("NEW_ADR", "") or s.get("VAN_ADR", ""),
+                "lat": lat,
+                "lng": lng
+            })
+
+        result = {
+            "updatedAt": today,
+            "area": area_nm,
+            "stations": stations
+        }
+
+        with open(f"public/fuel-stations/{area_cd}.json", "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+
+        print(f"  {area_nm}: {len(stations)} stations")
+        time.sleep(0.5)
+
+    except Exception as e:
+        print(f"  {area_nm}: ERROR - {e}")
+
+print("Station data update complete")
+PYEOF
 
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/fuel-prices.json
-          git diff --staged --quiet || (git commit -m "chore: 유가 자동 업데이트 $(date +%Y-%m-%d)" && git push)
+          git add public/fuel-prices.json public/fuel-stations/
+          git diff --staged --quiet || (git commit -m "chore: 유가 및 주유소 데이터 자동 업데이트 $(date +%Y-%m-%d)" && git push)
