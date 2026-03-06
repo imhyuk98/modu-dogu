@@ -174,9 +174,15 @@ export default function FuelMapPage() {
       infoWindowRef.current = null;
     }
 
-    // Move map center
-    const center = new kakao.maps.LatLng(selectedArea.lat, selectedArea.lng);
-    map.setCenter(center);
+    // Move map center to cheapest station, or area center as fallback
+    if (data.stations.length > 0) {
+      const cheapest = data.stations[0];
+      const center = new kakao.maps.LatLng(cheapest.lat, cheapest.lng);
+      map.setCenter(center);
+    } else {
+      const center = new kakao.maps.LatLng(selectedArea.lat, selectedArea.lng);
+      map.setCenter(center);
+    }
     map.setLevel(8);
 
     // Cheapest price for ranking
