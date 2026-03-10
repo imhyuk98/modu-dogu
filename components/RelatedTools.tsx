@@ -19,6 +19,7 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "inheritance-tax": { title: "상속세 계산기", href: "/calculators/inheritance-tax", category: "부동산" },
   "lotto-tax": { title: "로또 세금 계산기", href: "/calculators/lotto-tax", category: "금융" },
   vat: { title: "부가세 계산기", href: "/calculators/vat", category: "금융" },
+  "hourly-wage": { title: "시급 월급 변환기", href: "/calculators/hourly-wage", category: "금융" },
   "car-tax": { title: "자동차세 계산기", href: "/calculators/car-tax", category: "금융" },
   electricity: { title: "전기요금 계산기", href: "/calculators/electricity", category: "금융" },
   percent: { title: "퍼센트 계산기", href: "/calculators/percent", category: "생활" },
@@ -87,6 +88,8 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "image-resize": { title: "이미지 크기 조절", href: "/tools/image-resize", category: "도구" },
   "image-mosaic": { title: "이미지 모자이크", href: "/tools/image-mosaic", category: "도구" },
   "image-watermark": { title: "이미지 워터마크", href: "/tools/image-watermark", category: "도구" },
+  military: { title: "군대 전역일 계산기", href: "/calculators/military", category: "생활" },
+  shipping: { title: "택배 배송비 계산기", href: "/calculators/shipping", category: "생활" },
   "body-fat": { title: "체지방률 계산기", href: "/calculators/body-fat", category: "생활" },
   "macro-diet": { title: "매크로 식단 계산기", href: "/calculators/macro-diet", category: "생활" },
   tarot: { title: "AI 타로 카드", href: "/tools/tarot", category: "재미" },
@@ -105,7 +108,8 @@ const allItems: Record<string, { title: string; href: string; category: string }
 // Manual related mappings — shows same-category items + specific cross-links
 const relatedMap: Record<string, string[]> = {
   "exchange-rate": ["salary", "savings", "loan", "percent"],
-  salary: ["retirement", "unemployment", "annual-leave", "loan"],
+  salary: ["hourly-wage", "retirement", "unemployment", "annual-leave"],
+  "hourly-wage": ["salary", "retirement", "unemployment", "annual-leave"],
   loan: ["savings", "rent-conversion", "salary", "percent"],
   retirement: ["salary", "unemployment", "annual-leave", "savings"],
   unemployment: ["salary", "retirement", "annual-leave", "loan"],
@@ -203,6 +207,8 @@ const relatedMap: Record<string, string[]> = {
   "movie-recommendation": ["book-recommendation", "gift-recommendation", "food-recommendation", "psychology-test"],
   "travel-recommendation": ["gift-recommendation", "dday", "exchange-rate", "couple-dday"],
   "fashion-recommendation": ["gift-recommendation", "bmi", "couple-dday", "psychology-test"],
+  military: ["dday", "age", "annual-leave", "couple-dday"],
+  shipping: ["unit-converter", "pyeong", "percent", "dday"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

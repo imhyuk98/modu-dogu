@@ -22,6 +22,7 @@ const financeCalcs: Item[] = [
   { title: "예금이자 계산기", href: "/calculators/deposit", emoji: "🏦", desc: "예금 이자 수익" },
   { title: "적금 이자 계산기", href: "/calculators/savings", emoji: "💳", desc: "적금 만기 수령액" },
   { title: "퇴직금 계산기", href: "/calculators/retirement", emoji: "💼", desc: "퇴직금 예상액" },
+  { title: "시급 월급 변환기", href: "/calculators/hourly-wage", emoji: "⏰", desc: "시급↔월급↔연봉 환산" },
   { title: "실업급여 계산기", href: "/calculators/unemployment", emoji: "📋", desc: "실업급여 수급액" },
   { title: "주식 수익률", href: "/calculators/stock-return", emoji: "📈", desc: "매매 수익률 분석" },
   { title: "물타기 계산기", href: "/calculators/average-price", emoji: "📉", desc: "평균 단가 계산" },
@@ -63,6 +64,8 @@ const lifeCalcs: Item[] = [
   { title: "물 섭취량 계산기", href: "/calculators/water-intake", emoji: "💧", desc: "하루 권장 물 섭취량" },
   { title: "AI 식단 추천", href: "/calculators/macro-diet", emoji: "🥗", desc: "AI 맞춤 식단 추천" },
   { title: "AI 운동 추천", href: "/calculators/exercise", emoji: "💪", desc: "AI 맞춤 운동 루틴" },
+  { title: "군대 전역일", href: "/calculators/military", emoji: "🎖️", desc: "전역일·복무일수 계산" },
+  { title: "택배 배송비", href: "/calculators/shipping", emoji: "📦", desc: "택배사별 요금 비교" },
 ];
 
 const funCalcs: Item[] = [
