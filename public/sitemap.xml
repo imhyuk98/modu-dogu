@@ -910,6 +910,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://modu-dogu.pages.dev/calculators/due-date</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://modu-dogu.pages.dev/tools/apple-game</loc>
     <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
@@ -917,6 +923,18 @@
   </url>
   <url>
     <loc>https://modu-dogu.pages.dev/tools/planet-merge</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://modu-dogu.pages.dev/calculators/pet-age</loc>
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://modu-dogu.pages.dev/tools/password-generator</loc>
     <lastmod>2026-03-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

@@ -68,6 +68,8 @@ const lifeCalcs: Item[] = [
   { title: "AI 운동 추천", href: "/calculators/exercise", emoji: "💪", desc: "AI 맞춤 운동 루틴" },
   { title: "군대 전역일", href: "/calculators/military", emoji: "🎖️", desc: "전역일·복무일수 계산" },
   { title: "택배 배송비", href: "/calculators/shipping", emoji: "📦", desc: "택배사별 요금 비교" },
+  { title: "출산 예정일", href: "/calculators/due-date", emoji: "🤰", desc: "임신 주수·예정일 계산" },
+  { title: "반려동물 나이", href: "/calculators/pet-age", emoji: "🐾", desc: "강아지·고양이 사람 나이 환산" },
 ];
 
 const funCalcs: Item[] = [
@@ -147,6 +149,7 @@ const tools: Item[] = [
   { title: "AI 영화 추천", href: "/tools/movie-recommendation", emoji: "🎬", desc: "AI 기분별 영화 추천" },
   { title: "AI 여행지 추천", href: "/tools/travel-recommendation", emoji: "✈️", desc: "AI 맞춤 여행지 추천" },
   { title: "AI 패션 코디", href: "/tools/fashion-recommendation", emoji: "👗", desc: "AI 상황별 코디 추천" },
+  { title: "비밀번호 생성기", href: "/tools/password-generator", emoji: "🔑", desc: "안전한 랜덤 비밀번호" },
 ];
 
 export const sections: Section[] = [

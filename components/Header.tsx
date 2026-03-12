@@ -56,6 +56,8 @@ const lifeCalcs = [
   { title: "AI 운동 추천", href: "/calculators/exercise" },
   { title: "군대 전역일", href: "/calculators/military" },
   { title: "택배 배송비", href: "/calculators/shipping" },
+  { title: "출산 예정일 계산기", href: "/calculators/due-date" },
+  { title: "반려동물 나이 계산기", href: "/calculators/pet-age" },
 ];
 
 const funCalcs = [
@@ -138,6 +140,7 @@ const toolItems = [
   { title: "AI 영화 추천", href: "/tools/movie-recommendation" },
   { title: "AI 여행지 추천", href: "/tools/travel-recommendation" },
   { title: "AI 패션 코디", href: "/tools/fashion-recommendation" },
+  { title: "비밀번호 생성기", href: "/tools/password-generator" },
 ];
 
 function DropdownMenu({

@@ -44,6 +44,8 @@ const categoryMap: Record<string, { label: string; href?: string }> = {
   scientific: { label: "생활 계산기" },
   military: { label: "생활 계산기" },
   shipping: { label: "생활 계산기" },
+  "due-date": { label: "생활 계산기" },
+  "pet-age": { label: "생활 계산기" },
   // Fun
   "mbti-compatibility": { label: "재미/운세" },
   "name-compatibility": { label: "재미/운세" },
@@ -95,6 +97,7 @@ const categoryMap: Record<string, { label: string; href?: string }> = {
   "random-roulette": { label: "도구" },
   "random-number": { label: "도구" },
   "typing-test": { label: "도구" },
+  "password-generator": { label: "도구" },
 };
 
 const titleMap: Record<string, string> = {
@@ -135,6 +138,8 @@ const titleMap: Record<string, string> = {
   scientific: "공학용 계산기",
   military: "군대 전역일 계산기",
   shipping: "택배 배송비 계산기",
+  "due-date": "출산 예정일 계산기",
+  "pet-age": "반려동물 나이 계산기",
   "mbti-compatibility": "MBTI 궁합",
   "name-compatibility": "이름 궁합",
   constellation: "별자리 계산기",
@@ -181,6 +186,7 @@ const titleMap: Record<string, string> = {
   omok: "오목",
   "apple-game": "사과 게임",
   "planet-merge": "행성 합치기",
+  "password-generator": "비밀번호 생성기",
 };
 
 export default function Breadcrumb() {

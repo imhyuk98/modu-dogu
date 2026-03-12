@@ -107,6 +107,9 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "movie-recommendation": { title: "AI 영화 추천", href: "/tools/movie-recommendation", category: "도구" },
   "travel-recommendation": { title: "AI 여행지 추천", href: "/tools/travel-recommendation", category: "도구" },
   "fashion-recommendation": { title: "AI 패션 코디", href: "/tools/fashion-recommendation", category: "도구" },
+  "password-generator": { title: "비밀번호 생성기", href: "/tools/password-generator", category: "도구" },
+  "pet-age": { title: "반려동물 나이 계산기", href: "/calculators/pet-age", category: "생활" },
+  "due-date": { title: "출산 예정일 계산기", href: "/calculators/due-date", category: "생활" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -214,9 +217,12 @@ const relatedMap: Record<string, string[]> = {
   "movie-recommendation": ["book-recommendation", "gift-recommendation", "food-recommendation", "psychology-test"],
   "travel-recommendation": ["gift-recommendation", "dday", "exchange-rate", "couple-dday"],
   "fashion-recommendation": ["gift-recommendation", "bmi", "couple-dday", "psychology-test"],
+  "password-generator": ["random-number", "base64", "nickname-generator", "character-count"],
   military: ["dday", "age", "annual-leave", "couple-dday"],
   shipping: ["unit-converter", "pyeong", "percent", "dday"],
   "housing-subscription": ["rent-conversion", "acquisition-tax", "brokerage-fee", "loan"],
+  "pet-age": ["bmi", "age", "blood-type", "water-intake"],
+  "due-date": ["dday", "age", "bmi", "couple-dday"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {
