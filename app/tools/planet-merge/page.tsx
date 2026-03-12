@@ -104,70 +104,232 @@ export default function PlanetMerge() {
     setNextPlanet(n);
   }, [randomDropPlanet]);
 
-  // Draw a planet on canvas
+  // Draw a planet on canvas with unique textures
   const drawPlanet = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number, def: PlanetDef, alpha = 1) => {
     ctx.save();
     ctx.globalAlpha = alpha;
+    const r = def.radius;
 
-    // Glow for sun
-    if (def.glow) {
-      const glowGrad = ctx.createRadialGradient(x, y, def.radius * 0.5, x, y, def.radius * 1.8);
-      glowGrad.addColorStop(0, "rgba(255, 200, 0, 0.3)");
-      glowGrad.addColorStop(1, "rgba(255, 200, 0, 0)");
-      ctx.fillStyle = glowGrad;
-      ctx.beginPath();
-      ctx.arc(x, y, def.radius * 1.8, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // Clip to circle for textures
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.save();
+    ctx.clip();
 
-    // Ring for Saturn
-    if (def.ring) {
-      ctx.strokeStyle = `rgba(200, 180, 120, ${0.6 * alpha})`;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.ellipse(x, y, def.radius * 1.5, def.radius * 0.4, -0.3, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    // Planet body with gradient
-    const grad = ctx.createRadialGradient(x - def.radius * 0.3, y - def.radius * 0.3, def.radius * 0.1, x, y, def.radius);
+    // Base gradient
+    const grad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
     grad.addColorStop(0, def.color1);
     grad.addColorStop(1, def.color2);
     ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(x, y, def.radius, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
 
-    // Highlight
-    const hlGrad = ctx.createRadialGradient(x - def.radius * 0.3, y - def.radius * 0.35, 1, x - def.radius * 0.2, y - def.radius * 0.2, def.radius * 0.6);
-    hlGrad.addColorStop(0, "rgba(255,255,255,0.45)");
+    // Per-planet texture
+    if (def.name === "수성") {
+      // Craters
+      ctx.fillStyle = "rgba(0,0,0,0.15)";
+      const craters = [[0.3, -0.2, 0.18], [-0.2, 0.3, 0.15], [0.1, 0.1, 0.12], [-0.35, -0.15, 0.1], [0.25, 0.35, 0.08]];
+      for (const [cx, cy, cr] of craters) {
+        ctx.beginPath();
+        ctx.arc(x + cx * r, y + cy * r, cr * r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      for (const [cx, cy, cr] of craters) {
+        ctx.beginPath();
+        ctx.arc(x + cx * r - cr * r * 0.2, y + cy * r - cr * r * 0.2, cr * r * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (def.name === "금성") {
+      // Swirling clouds
+      ctx.strokeStyle = "rgba(255,220,150,0.25)";
+      ctx.lineWidth = r * 0.12;
+      for (let i = 0; i < 5; i++) {
+        const sy = y - r * 0.6 + i * r * 0.3;
+        ctx.beginPath();
+        ctx.moveTo(x - r, sy);
+        ctx.quadraticCurveTo(x - r * 0.3, sy + r * 0.15 * (i % 2 === 0 ? 1 : -1), x, sy);
+        ctx.quadraticCurveTo(x + r * 0.3, sy - r * 0.15 * (i % 2 === 0 ? 1 : -1), x + r, sy);
+        ctx.stroke();
+      }
+      // Haze overlay
+      const haze = ctx.createRadialGradient(x, y, r * 0.2, x, y, r);
+      haze.addColorStop(0, "rgba(255,230,180,0.15)");
+      haze.addColorStop(1, "rgba(200,150,50,0.1)");
+      ctx.fillStyle = haze;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    } else if (def.name === "지구") {
+      // Continents
+      ctx.fillStyle = "rgba(34,139,34,0.5)";
+      // Large continent
+      ctx.beginPath();
+      ctx.ellipse(x - r * 0.15, y - r * 0.1, r * 0.35, r * 0.45, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      // Small continent
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.35, y + r * 0.25, r * 0.2, r * 0.25, -0.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Ice cap
+      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.beginPath();
+      ctx.ellipse(x, y - r * 0.85, r * 0.4, r * 0.12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Clouds
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.2, y - r * 0.3, r * 0.4, r * 0.08, -0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(x - r * 0.3, y + r * 0.4, r * 0.3, r * 0.06, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (def.name === "화성") {
+      // Surface texture + polar cap
+      ctx.fillStyle = "rgba(150,60,30,0.3)";
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.2, y - r * 0.1, r * 0.5, r * 0.35, 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(100,40,20,0.2)";
+      ctx.beginPath();
+      ctx.ellipse(x - r * 0.3, y + r * 0.3, r * 0.3, r * 0.2, -0.3, 0, Math.PI * 2);
+      ctx.fill();
+      // Polar cap
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      ctx.beginPath();
+      ctx.ellipse(x, y - r * 0.85, r * 0.3, r * 0.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Olympus Mons (dark spot)
+      ctx.fillStyle = "rgba(80,30,15,0.25)";
+      ctx.beginPath();
+      ctx.arc(x + r * 0.15, y + r * 0.05, r * 0.12, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (def.name === "목성") {
+      // Horizontal bands
+      const bandColors = ["rgba(200,140,80,0.3)", "rgba(160,100,60,0.25)", "rgba(220,170,100,0.2)", "rgba(180,110,60,0.3)", "rgba(200,150,90,0.25)"];
+      for (let i = 0; i < 8; i++) {
+        const bandY = y - r + i * (r * 2 / 8);
+        ctx.fillStyle = bandColors[i % bandColors.length];
+        ctx.fillRect(x - r, bandY, r * 2, r * 2 / 8);
+      }
+      // Great Red Spot
+      ctx.fillStyle = "rgba(200,80,50,0.5)";
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.25, y + r * 0.2, r * 0.18, r * 0.12, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(220,100,60,0.3)";
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.25, y + r * 0.2, r * 0.12, r * 0.07, 0.1, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (def.name === "천왕성") {
+      // Subtle vertical bands (tilted planet)
+      ctx.fillStyle = "rgba(100,200,200,0.15)";
+      for (let i = 0; i < 5; i++) {
+        const bx = x - r * 0.6 + i * r * 0.3;
+        ctx.fillRect(bx, y - r, r * 0.15, r * 2);
+      }
+      // Atmosphere glow
+      const atm = ctx.createRadialGradient(x, y, r * 0.7, x, y, r);
+      atm.addColorStop(0, "rgba(100,220,220,0)");
+      atm.addColorStop(1, "rgba(60,180,180,0.2)");
+      ctx.fillStyle = atm;
+      ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    } else if (def.name === "해왕성") {
+      // Storm bands
+      ctx.fillStyle = "rgba(30,50,150,0.2)";
+      for (let i = 0; i < 6; i++) {
+        const bandY = y - r + i * (r * 2 / 6);
+        ctx.fillRect(x - r, bandY, r * 2, r * 2 / 12);
+      }
+      // Great Dark Spot
+      ctx.fillStyle = "rgba(10,20,80,0.4)";
+      ctx.beginPath();
+      ctx.ellipse(x - r * 0.2, y - r * 0.15, r * 0.2, r * 0.13, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      // White cloud streaks
+      ctx.fillStyle = "rgba(200,220,255,0.2)";
+      ctx.beginPath();
+      ctx.ellipse(x + r * 0.1, y + r * 0.3, r * 0.35, r * 0.04, -0.15, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (def.name === "태양") {
+      // Solar texture - granulation
+      ctx.fillStyle = "rgba(255,150,0,0.2)";
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2;
+        const dist = r * (0.3 + (i * 7 % 5) * 0.1);
+        ctx.beginPath();
+        ctx.arc(x + Math.cos(angle) * dist, y + Math.sin(angle) * dist, r * 0.15, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Sunspots
+      ctx.fillStyle = "rgba(200,100,0,0.3)";
+      ctx.beginPath();
+      ctx.arc(x + r * 0.2, y - r * 0.1, r * 0.08, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x - r * 0.3, y + r * 0.25, r * 0.06, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore(); // un-clip
+
+    // Ring for Saturn (drawn outside clip)
+    if (def.ring) {
+      // Back ring
+      ctx.strokeStyle = `rgba(200, 180, 120, ${0.3 * alpha})`;
+      ctx.lineWidth = r * 0.08;
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.6, r * 0.35, -0.15, Math.PI * 0.05, Math.PI * 0.95);
+      ctx.stroke();
+      // Planet body on top
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      const satGrad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+      satGrad.addColorStop(0, def.color1);
+      satGrad.addColorStop(1, def.color2);
+      ctx.fillStyle = satGrad;
+      ctx.fill();
+      // Front ring
+      ctx.strokeStyle = `rgba(210, 190, 130, ${0.5 * alpha})`;
+      ctx.lineWidth = r * 0.1;
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.6, r * 0.35, -0.15, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.stroke();
+      // Inner ring
+      ctx.strokeStyle = `rgba(180, 160, 100, ${0.3 * alpha})`;
+      ctx.lineWidth = r * 0.05;
+      ctx.beginPath();
+      ctx.ellipse(x, y, r * 1.35, r * 0.28, -0.15, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.stroke();
+    }
+
+    // Glow for sun (drawn outside clip)
+    if (def.glow) {
+      const glowGrad = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 2);
+      glowGrad.addColorStop(0, "rgba(255, 200, 0, 0.2)");
+      glowGrad.addColorStop(0.5, "rgba(255, 150, 0, 0.08)");
+      glowGrad.addColorStop(1, "rgba(255, 100, 0, 0)");
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(x, y, r * 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Highlight (specular)
+    const hlGrad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.35, 1, x - r * 0.15, y - r * 0.15, r * 0.5);
+    hlGrad.addColorStop(0, "rgba(255,255,255,0.4)");
     hlGrad.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = hlGrad;
     ctx.beginPath();
-    ctx.arc(x, y, def.radius, 0, Math.PI * 2);
+    ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
 
-    // Jupiter stripes
-    if (def.name === "목성") {
-      ctx.strokeStyle = `rgba(180, 100, 50, ${0.3 * alpha})`;
-      ctx.lineWidth = 2;
-      for (let i = -2; i <= 2; i++) {
-        const sy = y + i * (def.radius * 0.3);
-        ctx.beginPath();
-        const halfW = Math.sqrt(Math.max(0, def.radius * def.radius - (i * def.radius * 0.3) * (i * def.radius * 0.3)));
-        ctx.moveTo(x - halfW, sy);
-        ctx.lineTo(x + halfW, sy);
-        ctx.stroke();
-      }
-    }
-
-    // Planet name
-    const fontSize = Math.max(8, Math.min(12, def.radius * 0.55));
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.font = `bold ${fontSize}px -apple-system, sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(def.name, x, y);
+    // Edge darkening (atmosphere)
+    const edgeGrad = ctx.createRadialGradient(x, y, r * 0.6, x, y, r);
+    edgeGrad.addColorStop(0, "rgba(0,0,0,0)");
+    edgeGrad.addColorStop(1, "rgba(0,0,0,0.2)");
+    ctx.fillStyle = edgeGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
 
     ctx.restore();
   }, []);
