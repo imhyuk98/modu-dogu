@@ -1,7 +1,14 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import DailyChallenge from "@/components/viral/DailyChallenge";
+
+const TELEPATHY_CHALLENGES = [
+  { label: "친구와 3라운드 텔레파시 보내기", target: 3 },
+  { label: "오늘은 5개의 주제로 통하기", target: 5 },
+  { label: "7라운드까지 서로의 답 확인하기", target: 7 },
+];
 
 /* ───────── Topics Database ───────── */
 interface Topic {
@@ -145,7 +152,7 @@ export default function TelepathyGamePage() {
     "exact" | "partial" | "none" | null
   >(null);
 
-  const allTopics = [...TOPICS, ...customTopics];
+  const allTopics = useMemo(() => [...TOPICS, ...customTopics], [customTopics]);
 
   const addCustomTopic = useCallback(() => {
     const trimmed = newCustomTopic.trim();
@@ -154,14 +161,6 @@ export default function TelepathyGamePage() {
     setCustomTopics((prev) => [...prev, { category: "커스텀", question }]);
     setNewCustomTopic("");
   }, [newCustomTopic]);
-
-  const startGame = useCallback(() => {
-    if (!player1Name.trim() || !player2Name.trim()) return;
-    setRound(0);
-    setSuccesses(0);
-    setAttempts(0);
-    nextRound(true);
-  }, [player1Name, player2Name, allTopics]);
 
   const nextRound = useCallback(
     (isFirst = false) => {
@@ -183,6 +182,14 @@ export default function TelepathyGamePage() {
     },
     [allTopics]
   );
+
+  const startGame = useCallback(() => {
+    if (!player1Name.trim() || !player2Name.trim()) return;
+    setRound(0);
+    setSuccesses(0);
+    setAttempts(0);
+    nextRound(true);
+  }, [player1Name, player2Name, nextRound]);
 
   const doReveal = useCallback(() => {
     if (!answer1.trim() || !answer2.trim()) return;
@@ -231,6 +238,8 @@ export default function TelepathyGamePage() {
           같은 주제, 같은 생각! 마음이 통하는지 확인하세요
         </p>
       </div>
+
+      <DailyChallenge id="telepathy-game" challenges={TELEPATHY_CHALLENGES} currentValue={attempts} unit="회" />
 
       {/* ───── SETUP PHASE ───── */}
       {phase === "setup" && (
@@ -324,7 +333,7 @@ export default function TelepathyGamePage() {
                 ))}
               </div>
             )}
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-600">
               기본 {TOPICS.length}개 주제 + 커스텀 {customTopics.length}개 = 총{" "}
               {allTopics.length}개 주제
             </p>
@@ -602,9 +611,9 @@ export default function TelepathyGamePage() {
           </li>
           <li>&quot;공개!&quot; 버튼을 누르면 두 답이 동시에 공개됩니다.</li>
           <li>
-            <span className="text-green-600 font-medium">정확히 일치</span> =
+            <span className="text-green-800 font-medium">정확히 일치</span> =
             텔레파시 성공!{" "}
-            <span className="text-red-500 font-medium">불일치</span> = 둘 다
+            <span className="text-red-700 font-medium">불일치</span> = 둘 다
             마셔!
           </li>
         </ol>

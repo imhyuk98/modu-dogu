@@ -164,7 +164,7 @@ function DropdownMenu({
   }, []);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="site-header-dropdown relative">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1 hover:text-blue-600 transition-colors"
@@ -240,14 +240,14 @@ export default function Header() {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <header className="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-blue-600">
+    <header className="site-header bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50">
+      <div className="site-header-inner max-w-[1200px] mx-auto px-5 md:px-8 py-3 flex items-center justify-between">
+        <Link href="/" className="site-wordmark text-xl font-bold">
           모두의도구
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-5 text-sm text-[var(--muted)]">
+        <nav className="site-nav hidden md:flex items-center gap-5 text-sm text-[var(--muted)]">
           <Link href="/" className="hover:text-blue-600 transition-colors">
             홈
           </Link>
@@ -364,7 +364,7 @@ export default function Header() {
         <div className="flex items-center gap-1 md:hidden">
           {/* Mobile hamburger */}
         <button
-          className="md:hidden p-2 text-gray-600 hover:text-blue-600"
+          className="site-menu-button md:hidden p-2 text-gray-600"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="메뉴 열기"
         >
@@ -383,7 +383,7 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[var(--card-border)] bg-[var(--card-bg)] max-h-[80vh] overflow-y-auto">
+        <div className="site-mobile-menu md:hidden border-t border-[var(--card-border)] bg-[var(--card-bg)] max-h-[80vh] overflow-y-auto">
           <Link
             href="/"
             className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "시급 월급 변환기 - 시급↔월급↔연봉 환산 | 모두의도구",
+  title: "시급 월급 변환기 - 시급↔월급↔연봉 환산",
   description:
     "2026년 최저시급 10,030원 기준, 시급을 월급·연봉으로, 월급을 시급으로 간편하게 환산합니다. 주휴수당 포함 여부와 주 근무시간을 설정하여 정확한 급여를 계산하세요.",
   keywords: [

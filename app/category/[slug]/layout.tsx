@@ -9,16 +9,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const section = sections.find((s) => s.key === slug);
   if (!section) {
-    return { title: "카테고리 | 모두의도구", description: "무료 온라인 계산기 모음" };
+    return { title: "카테고리", description: "무료 온라인 계산기 모음" };
   }
 
-  const title = `${section.fullLabel} - 무료 온라인 ${section.fullLabel} 모음 | 모두의도구`;
+  const title = `${section.fullLabel} - 무료 온라인 ${section.fullLabel} 모음`;
   const description = section.description;
 
   return {
     title,
     description,
-    openGraph: { title, description },
+    openGraph: { title: `${title} | 모두의도구`, description },
     alternates: { canonical: `https://modu-dogu.pages.dev/category/${slug}` },
   };
 }

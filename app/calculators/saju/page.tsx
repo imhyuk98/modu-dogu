@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import ShareResultCard from "@/components/ShareResultCard";
 
 const 천간 = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
 const 천간한자 = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
@@ -24,6 +25,17 @@ const 오행색상: Record<string, string> = {
 
 const 오행텍스트색상: Record<string, string> = {
   목: "text-green-600", 화: "text-red-600", 토: "text-yellow-600", 금: "text-gray-500", 수: "text-blue-600",
+};
+
+const 오행순서 = ["목", "화", "토", "금", "수"] as const;
+type 오행 = (typeof 오행순서)[number];
+
+const 오행프로필: Record<오행, { name: string; keywords: string; routine: string }> = {
+  목: { name: "새싹 개척자", keywords: "성장 · 시작 · 추진", routine: "산책하며 새 계획을 한 줄 적어보세요." },
+  화: { name: "햇살 표현가", keywords: "열정 · 표현 · 확산", routine: "미뤄둔 연락을 먼저 건네보세요." },
+  토: { name: "든든한 중심축", keywords: "안정 · 신뢰 · 조율", routine: "책상 한 곳을 정리해 흐름을 가볍게 만드세요." },
+  금: { name: "선명한 설계자", keywords: "결단 · 기준 · 완성", routine: "오늘 끝낼 한 가지를 정확히 정해보세요." },
+  수: { name: "깊은 탐험가", keywords: "직관 · 유연 · 통찰", routine: "조용한 시간 10분으로 생각을 환기해보세요." },
 };
 
 const 시진목록 = [
@@ -143,12 +155,15 @@ export default function SajuCalculator() {
   const daysInMonth = new Date(year, month, 0).getDate();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  // 선택된 일이 해당 월의 최대일을 초과하면 조정
-  useEffect(() => {
-    if (day > daysInMonth) {
-      setDay(daysInMonth);
-    }
-  }, [day, daysInMonth]);
+  const handleYearChange = (nextYear: number) => {
+    setYear(nextYear);
+    setDay((currentDay) => Math.min(currentDay, new Date(nextYear, month, 0).getDate()));
+  };
+
+  const handleMonthChange = (nextMonth: number) => {
+    setMonth(nextMonth);
+    setDay((currentDay) => Math.min(currentDay, new Date(year, nextMonth, 0).getDate()));
+  };
 
   const handleCalculate = () => {
     setResult(calculateSaju(year, month, day, hour));
@@ -185,6 +200,23 @@ export default function SajuCalculator() {
   };
 
   const totalOh = result ? Object.values(result.오행비율).reduce((a, b) => a + b, 0) : 0;
+  const dominantOh = result
+    ? 오행순서.reduce((best, current) =>
+        result.오행비율[current] > result.오행비율[best] ? current : best,
+      )
+    : null;
+  const weakOh = result
+    ? 오행순서.reduce((weakest, current) =>
+        result.오행비율[current] < result.오행비율[weakest] ? current : weakest,
+      )
+    : null;
+  const balanceType = result
+    ? Math.max(...Object.values(result.오행비율)) - Math.min(...Object.values(result.오행비율)) <= 1
+      ? "고른 균형형"
+      : Object.values(result.오행비율).some((count) => count === 0)
+        ? "한 기운 집중형"
+        : "선명한 강점형"
+    : "";
 
   return (
     <div className="py-6">
@@ -197,10 +229,11 @@ export default function SajuCalculator() {
       <div className="calc-card p-6 mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">출생년도</label>
+            <label htmlFor="saju-birth-year" className="block text-sm font-medium text-gray-700 mb-1">출생년도</label>
             <select
+              id="saju-birth-year"
               value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
+              onChange={(e) => handleYearChange(Number(e.target.value))}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               {years.map((y) => (
@@ -209,10 +242,11 @@ export default function SajuCalculator() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">월</label>
+            <label htmlFor="saju-birth-month" className="block text-sm font-medium text-gray-700 mb-1">월</label>
             <select
+              id="saju-birth-month"
               value={month}
-              onChange={(e) => setMonth(Number(e.target.value))}
+              onChange={(e) => handleMonthChange(Number(e.target.value))}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               {months.map((m) => (
@@ -221,8 +255,9 @@ export default function SajuCalculator() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">일</label>
+            <label htmlFor="saju-birth-day" className="block text-sm font-medium text-gray-700 mb-1">일</label>
             <select
+              id="saju-birth-day"
               value={day}
               onChange={(e) => setDay(Number(e.target.value))}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -233,8 +268,9 @@ export default function SajuCalculator() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">태어난 시간</label>
+            <label htmlFor="saju-birth-hour" className="block text-sm font-medium text-gray-700 mb-1">태어난 시간</label>
             <select
+              id="saju-birth-hour"
               value={hour}
               onChange={(e) => setHour(Number(e.target.value))}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -375,6 +411,48 @@ export default function SajuCalculator() {
               })}
             </div>
           </div>
+
+          {dominantOh && weakOh && (
+            <>
+              <div className="border border-[#d8d1c5] bg-[#f4f0e8] rounded-xl p-6 text-[#1d1c19]">
+                <p className="text-xs font-mono font-bold text-[#a93d28] mb-3">나의 오행 프로필</p>
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+                  <div>
+                    <h2 className="text-2xl font-extrabold">{오행프로필[dominantOh].name}</h2>
+                    <p className="mt-2 text-sm text-[#5e5a52]">{오행프로필[dominantOh].keywords}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm min-w-60">
+                    <div className="border-t border-[#d8d1c5] pt-2">
+                      <span className="block text-xs text-[#5e5a52]">강한 기운</span>
+                      <strong>{dominantOh} · {result.오행비율[dominantOh]}개</strong>
+                    </div>
+                    <div className="border-t border-[#d8d1c5] pt-2">
+                      <span className="block text-xs text-[#5e5a52]">보완 기운</span>
+                      <strong>{weakOh} · {result.오행비율[weakOh]}개</strong>
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-5 pt-4 border-t border-[#d8d1c5] text-sm leading-relaxed">
+                  <strong>오늘의 개운 루틴:</strong> {오행프로필[weakOh].routine}
+                </p>
+              </div>
+
+              <ShareResultCard
+                kicker="나의 오행 프로필"
+                title={`나는 ${오행프로필[dominantOh].name}`}
+                subtitle={`${오행프로필[dominantOh].keywords} 성향이 돋보이는 ${balanceType}입니다.`}
+                highlights={[
+                  { label: "일간", value: `${천간한자[result.일간]} ${천간[result.일간]}` },
+                  { label: "강한 기운", value: `${dominantOh} ${result.오행비율[dominantOh]}개` },
+                  { label: "보완 기운", value: `${weakOh} ${result.오행비율[weakOh]}개` },
+                  { label: "밸런스", value: balanceType },
+                ]}
+                shareText={`나의 오행 타입은 ${오행프로필[dominantOh].name}! 당신의 오행 타입도 확인해보세요.`}
+                fileName="modu-dogu-saju-profile"
+                url="/calculators/saju"
+              />
+            </>
+          )}
 
           {/* 안내 */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">

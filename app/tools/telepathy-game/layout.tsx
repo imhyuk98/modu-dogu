@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "텔레파시 게임 온라인 - 모두의도구",
+  title: "텔레파시 게임 온라인 - 제시어 62개 무료 플레이",
   description:
-    "텔레파시 게임을 온라인으로! 주어진 주제에 대해 같은 단어를 맞추는 게임입니다. 친구, 연인과 얼마나 통하는지 확인하세요!",
+    "설치 없이 무료로 즐기는 텔레파시 게임입니다. 친구·커플과 62개 제시어 또는 직접 만든 주제로 같은 답을 맞춰보세요.",
   keywords: [
     "텔레파시게임",
     "텔레파시 게임",
@@ -12,10 +12,14 @@ export const metadata: Metadata = {
     "짝꿍 게임",
     "마음 맞추기",
   ],
+  alternates: {
+    canonical: "https://modu-dogu.pages.dev/tools/telepathy-game",
+  },
   openGraph: {
-    title: "텔레파시 게임 온라인 - 모두의도구",
+    title: "텔레파시 게임 온라인 - 제시어 62개 무료 플레이 | 모두의도구",
     description:
-      "주어진 주제에 대해 같은 단어를 맞추는 게임! 얼마나 통하는지 확인하세요!",
+      "친구·커플과 62개 제시어 또는 직접 만든 주제로 같은 답을 맞춰보세요.",
+    url: "https://modu-dogu.pages.dev/tools/telepathy-game",
     type: "website",
   },
 };

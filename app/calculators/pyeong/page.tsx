@@ -156,26 +156,26 @@ export default function PyeongCalculator() {
       {hasValue && (
         <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
-            <p className="text-blue-100 text-sm mb-1">변환 결과</p>
+            <p className="text-white text-sm mb-1">변환 결과</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-3xl font-bold">
                 {mainResult.toFixed(2)} {mainUnit}
               </p>
               <button
                 onClick={() => handleCopy(`${mainResult.toFixed(2)} ${mainUnit}`)}
-                className="text-sm text-blue-200 hover:text-white transition-colors"
+                className="text-sm text-white underline underline-offset-2 hover:no-underline transition-colors"
                 title="복사"
               >
                 {copied ? "복사됨!" : "복사"}
               </button>
             </div>
-            <p className="text-blue-200 text-sm mt-2">
+            <p className="text-white text-sm mt-2">
               {numericValue} {inputUnit} 기준
             </p>
           </div>
 
           <div className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">상세 환산</h3>
+            <h2 className="font-semibold text-gray-900 mb-4">상세 환산</h2>
             <div className="space-y-3">
               <div className="flex justify-between items-center py-1">
                 <span className="text-sm text-gray-600">
@@ -207,13 +207,13 @@ export default function PyeongCalculator() {
       )}
 
       {hasValue && (
-        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] px-4 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+        <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-[var(--card-bg)] border-t border-[var(--card-border)] pl-4 pr-20 py-3 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-[var(--muted)]">변환 결과</p>
               <p className="text-lg font-extrabold text-blue-600">{mainResult.toFixed(2)} {mainUnit}</p>
             </div>
-            <button onClick={() => handleCopy(`${mainResult.toFixed(2)} ${mainUnit}`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+            <button onClick={() => handleCopy(`${mainResult.toFixed(2)} ${mainUnit}`)} className="calc-btn-primary text-xs px-3 min-h-11 min-w-14">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}

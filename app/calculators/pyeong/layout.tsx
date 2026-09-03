@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     "아파트 평수",
     "면적 계산기",
   ],
+  alternates: {
+    canonical: "https://modu-dogu.pages.dev/calculators/pyeong",
+  },
   openGraph: {
     title: "평수 계산기 - 평을 제곱미터(㎡)로, ㎡를 평으로 변환",
     description:

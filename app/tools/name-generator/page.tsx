@@ -18,7 +18,7 @@ interface GeneratedName {
    Tab configuration
    ================================================================ */
 const tabConfig: Record<NameTab, { label: string; emoji: string; activeBg: string }> = {
-  baby: { label: "아기 이름", emoji: "👶", activeBg: "bg-pink-500" },
+  baby: { label: "아기 이름", emoji: "👶", activeBg: "bg-pink-700" },
   pet: { label: "반려동물", emoji: "🐾", activeBg: "bg-amber-500" },
   business: { label: "사업체 이름", emoji: "🏢", activeBg: "bg-blue-500" },
   game: { label: "게임 캐릭터", emoji: "🎮", activeBg: "bg-purple-500" },
@@ -635,7 +635,7 @@ export default function NameGenerator() {
                     onClick={() => setBabyGender(opt.value)}
                     className={`px-4 py-2 rounded-lg font-medium transition-all ${
                       babyGender === opt.value
-                        ? "bg-pink-500 text-white shadow-sm"
+                        ? "bg-pink-700 text-white shadow-sm"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
@@ -656,7 +656,7 @@ export default function NameGenerator() {
                     onClick={() => toggleCategory(cat)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                       babyCategories.includes(cat)
-                        ? "bg-pink-500 text-white shadow-sm"
+                        ? "bg-pink-700 text-white shadow-sm"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
@@ -673,7 +673,7 @@ export default function NameGenerator() {
                   onClick={() => setCharCount("2")}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     charCount === "2"
-                      ? "bg-pink-500 text-white shadow-sm"
+                      ? "bg-pink-700 text-white shadow-sm"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -683,7 +683,7 @@ export default function NameGenerator() {
                   onClick={() => setCharCount("3")}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     charCount === "3"
-                      ? "bg-pink-500 text-white shadow-sm"
+                      ? "bg-pink-700 text-white shadow-sm"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >

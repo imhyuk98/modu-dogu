@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import ShareResultCard from "@/components/ShareResultCard";
 
 // ─── Zodiac Data ────────────────────────────────────────────
 const 띠목록 = [
@@ -570,33 +571,20 @@ function generateFortune(zodiacIdx: number): FortuneResult {
 // ─── Animated Stars Component ───────────────────────────────
 
 function Stars({ score, delay = 0 }: { score: number; delay?: number }) {
-  const [visible, setVisible] = useState(0);
-
-  useEffect(() => {
-    setVisible(0);
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    for (let i = 1; i <= score; i++) {
-      timers.push(
-        setTimeout(() => setVisible(i), delay + i * 120)
-      );
-    }
-    return () => timers.forEach(clearTimeout);
-  }, [score, delay]);
-
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
           className={`text-lg transition-all duration-300 ${
-            i <= visible
+            i <= score
               ? "text-yellow-400 scale-110"
               : "text-gray-200 scale-100"
           }`}
           style={{
             display: "inline-block",
-            transform: i <= visible ? "scale(1.15)" : "scale(1)",
-            transition: `all 0.3s ease ${i * 0.05}s`,
+            transform: i <= score ? "scale(1.15)" : "scale(1)",
+            transition: `all 0.3s ease ${delay + i * 50}ms`,
           }}
         >
           &#x2605;
@@ -609,33 +597,9 @@ function Stars({ score, delay = 0 }: { score: number; delay?: number }) {
 // ─── Circular Gauge Component ───────────────────────────────
 
 function CircularGauge({ value, animated }: { value: number; animated: boolean }) {
-  const [current, setCurrent] = useState(0);
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (current / 100) * circumference;
-
-  useEffect(() => {
-    if (!animated) {
-      setCurrent(value);
-      return;
-    }
-    setCurrent(0);
-    const duration = 1200;
-    const startTime = performance.now();
-    let frame: number;
-    const animate = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // easeOutCubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCurrent(Math.round(eased * value));
-      if (progress < 1) {
-        frame = requestAnimationFrame(animate);
-      }
-    };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [value, animated]);
+  const strokeDashoffset = circumference - (value / 100) * circumference;
 
   // Color based on score
   const getColor = (v: number) => {
@@ -645,7 +609,7 @@ function CircularGauge({ value, animated }: { value: number; animated: boolean }
     return { stroke: "#ef4444", text: "text-red-500", bg: "from-red-500 to-rose-400" };
   };
 
-  const colors = getColor(current);
+  const colors = getColor(value);
 
   return (
     <div className="relative inline-flex items-center justify-center">
@@ -664,11 +628,11 @@ function CircularGauge({ value, animated }: { value: number; animated: boolean }
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          style={{ transition: animated ? "none" : "stroke-dashoffset 0.5s ease" }}
+          style={{ transition: animated ? "stroke-dashoffset 0.8s ease" : "none" }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`text-3xl font-bold ${colors.text}`}>{current}</span>
+        <span className={`text-3xl font-bold ${colors.text}`}>{value}</span>
         <span className="text-xs text-gray-400">/ 100</span>
       </div>
     </div>
@@ -972,6 +936,22 @@ export default function DailyFortune() {
             </div>
           </div>
 
+          <ShareResultCard
+            kicker={`${today} · 오늘의 운세`}
+            title={`${띠목록[selectedZodiac].name} 운세 ${result.총운.gauge}점`}
+            subtitle={`“${result.오늘의조언}”`}
+            highlights={[
+              { label: "애정운", value: `${result.애정운.score}/5` },
+              { label: "재물운", value: `${result.재물운.score}/5` },
+              { label: "행운 색", value: result.행운색.name },
+              { label: "행운 숫자", value: result.행운숫자.join(" · ") },
+            ]}
+            shareText={`${띠목록[selectedZodiac].name} 오늘의 운세는 ${result.총운.gauge}점! 오늘의 한마디: ${result.오늘의조언}`}
+            fileName="modu-dogu-daily-fortune"
+            url="/calculators/daily-fortune"
+            accent="#b45309"
+          />
+
           {/* Share & Reset Buttons */}
           <div className="flex justify-center gap-3">
             <button
@@ -982,7 +962,7 @@ export default function DailyFortune() {
                   : "bg-gray-900 text-white hover:bg-gray-800"
               }`}
             >
-              {copied ? "&#x2705; 클립보드에 복사되었습니다!" : "&#x1F4CB; 결과 공유하기"}
+              {copied ? "&#x2705; 텍스트를 복사했습니다!" : "&#x1F4CB; 결과 텍스트 복사"}
             </button>
             <button
               onClick={handleReset}

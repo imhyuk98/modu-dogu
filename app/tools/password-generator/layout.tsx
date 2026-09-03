@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "비밀번호 생성기 - 안전한 랜덤 비밀번호 만들기 | 모두의도구",
+  title: "비밀번호 생성기 - 안전한 랜덤 비밀번호 만들기",
   description:
     "강력한 랜덤 비밀번호를 무료로 생성하세요. 길이, 대소문자, 숫자, 특수문자를 설정하여 안전한 비밀번호를 만들 수 있습니다.",
   keywords: ["비밀번호 생성기", "랜덤 비밀번호", "패스워드 생성", "강력한 비밀번호", "비밀번호 만들기", "password generator"],

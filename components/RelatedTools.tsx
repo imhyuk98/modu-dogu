@@ -110,6 +110,14 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "password-generator": { title: "비밀번호 생성기", href: "/tools/password-generator", category: "도구" },
   "pet-age": { title: "반려동물 나이 계산기", href: "/calculators/pet-age", category: "생활" },
   "due-date": { title: "출산 예정일 계산기", href: "/calculators/due-date", category: "생활" },
+  "cost-per-use": { title: "1회당 비용 계산기", href: "/calculators/cost-per-use", category: "금융" },
+  "running-pace": { title: "러닝 페이스 계산기", href: "/calculators/running-pace", category: "생활" },
+  "energy-type-test": { title: "에너지 성향 테스트", href: "/tools/energy-type-test", category: "재미" },
+  "personal-style-test": { title: "퍼스널 스타일 테스트", href: "/tools/personal-style-test", category: "재미" },
+  "friend-chemistry": { title: "친구 케미 테스트", href: "/tools/friend-chemistry", category: "재미" },
+  "ideal-type-worldcup": { title: "취향 월드컵", href: "/tools/ideal-type-worldcup", category: "게임" },
+  "digital-fidget": { title: "디지털 키캡 피젯", href: "/tools/digital-fidget", category: "게임" },
+  "meme-card": { title: "밈 카드 만들기", href: "/tools/meme-card", category: "도구" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -223,6 +231,14 @@ const relatedMap: Record<string, string[]> = {
   "housing-subscription": ["rent-conversion", "acquisition-tax", "brokerage-fee", "loan"],
   "pet-age": ["bmi", "age", "blood-type", "water-intake"],
   "due-date": ["dday", "age", "bmi", "couple-dday"],
+  "cost-per-use": ["percent", "inflation", "gift-recommendation", "random-roulette"],
+  "running-pace": ["exercise", "tdee", "timer", "water-intake"],
+  "energy-type-test": ["personal-style-test", "psychology-test", "mbti-test", "friend-chemistry"],
+  "personal-style-test": ["fashion-recommendation", "energy-type-test", "psychology-test", "meme-card"],
+  "friend-chemistry": ["telepathy-game", "name-compatibility", "mbti-compatibility", "energy-type-test"],
+  "ideal-type-worldcup": ["balance-game", "random-roulette", "friend-chemistry", "meme-card"],
+  "digital-fidget": ["reaction-test", "typing-test", "timer", "apple-game"],
+  "meme-card": ["hashtag-generator", "personal-style-test", "image-resize", "qr-code"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

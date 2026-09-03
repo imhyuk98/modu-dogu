@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "아재개그 생성기 - 모두의도구",
+  title: "아재개그 생성기",
   description:
     "매일 새로운 아재개그! 동물, 음식, 일상, 클래식, 말장난 등 100가지 이상의 아재개그를 즐겨보세요. 친구, 가족과 함께 웃음 가득한 시간을 보내세요.",
   keywords: [

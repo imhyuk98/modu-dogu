@@ -234,7 +234,7 @@ export default function Breadcrumb() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <nav className="text-sm text-gray-500 mb-4 flex items-center gap-1.5 flex-wrap" aria-label="Breadcrumb">
+      <nav className="max-w-5xl mx-auto px-4 pt-4 text-sm text-gray-500 mb-4 flex items-center gap-1.5 flex-wrap" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-blue-600 transition-colors">
           홈
         </Link>

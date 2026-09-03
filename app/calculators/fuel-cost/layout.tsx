@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "자동차 유류비 계산기 - 주유비·연료비 계산 | 모두의도구",
+  title: "자동차 유류비 계산기 - 주유비·연료비 계산",
   description:
     "주행 거리와 연비를 입력하면 휘발유·경유·LPG 유류비를 실시간으로 계산합니다. 유종별 비교와 월간 유류비도 확인하세요.",
   keywords: [

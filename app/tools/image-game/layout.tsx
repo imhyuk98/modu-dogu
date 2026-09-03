@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "이미지 게임 - 술자리 질문 카드 - 모두의도구",
+  title: "이미지 게임 - 술자리 질문 카드",
   description:
     "이미지 게임을 온라인으로! '가장 ~할 것 같은 사람은?' 질문 카드를 랜덤으로 제공합니다. 술자리, 친구 모임에서 즐기세요.",
   keywords: [

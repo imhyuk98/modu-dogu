@@ -2,6 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import DailyChallenge from "@/components/viral/DailyChallenge";
+
+const NUNCHI_CHALLENGES = [
+  { label: "눈치 게임 3라운드 이어가기", target: 3 },
+  { label: "오늘은 5라운드까지 생존하기", target: 5 },
+  { label: "친구들과 7라운드 완주하기", target: 7 },
+];
 
 type GamePhase = "setup" | "countdown" | "tap" | "result" | "gameover";
 type GameMode = "timing" | "random";
@@ -79,14 +86,17 @@ export default function NunchiGamePage() {
         const t = setTimeout(() => setCountdownValue((v) => v - 1), 1000);
         return () => clearTimeout(t);
       } else {
-        if (mode === "random") {
-          const idx = Math.floor(Math.random() * players.length);
-          setRandomTarget(idx);
-          setRandomCountdown(5);
-          setRandomFailed(false);
-          setRandomSuccess(false);
-        }
-        setPhase("tap");
+        const t = setTimeout(() => {
+          if (mode === "random") {
+            const idx = Math.floor(Math.random() * players.length);
+            setRandomTarget(idx);
+            setRandomCountdown(5);
+            setRandomFailed(false);
+            setRandomSuccess(false);
+          }
+          setPhase("tap");
+        }, 0);
+        return () => clearTimeout(t);
       }
     }
   }, [phase, countdownValue, mode, players.length]);
@@ -98,18 +108,20 @@ export default function NunchiGamePage() {
         const t = setTimeout(() => setRandomCountdown((v) => v - 1), 1000);
         return () => clearTimeout(t);
       } else {
-        // Time's up - penalty!
-        setRandomFailed(true);
-        setPlayers((prev) =>
-          prev.map((p, i) => (i === randomTarget ? { ...p, penalties: p.penalties + 1 } : p))
-        );
-        setShakeIndices([randomTarget]);
-        setMessage(`${players[randomTarget].name}님이 시간 초과! 벌칙!`);
+        const t = setTimeout(() => {
+          setRandomFailed(true);
+          setPlayers((prev) =>
+            prev.map((p, i) => (i === randomTarget ? { ...p, penalties: p.penalties + 1 } : p))
+          );
+          setShakeIndices([randomTarget]);
+          setMessage(`${players[randomTarget].name}님이 시간 초과! 벌칙!`);
+        }, 0);
+        return () => clearTimeout(t);
       }
     }
   }, [phase, mode, randomTarget, randomCountdown, randomFailed, randomSuccess, players]);
 
-  const handleTap = (playerIndex: number) => {
+  const handleTap = (playerIndex: number, timestamp: number) => {
     if (phase !== "tap") return;
 
     if (mode === "random") {
@@ -133,8 +145,7 @@ export default function NunchiGamePage() {
     // Timing mode
     if (tapsRef.current.some((t) => t.playerIndex === playerIndex)) return;
 
-    const now = Date.now();
-    const record: TapRecord = { playerIndex, time: now };
+    const record: TapRecord = { playerIndex, time: timestamp };
     tapsRef.current = [...tapsRef.current, record];
     setTaps([...tapsRef.current]);
 
@@ -265,6 +276,8 @@ export default function NunchiGamePage() {
           타이밍 싸움! 눈치껏 숫자를 외치세요
         </p>
 
+        <DailyChallenge id="nunchi-game" challenges={NUNCHI_CHALLENGES} currentValue={round} unit="R" />
+
         {/* Mode selection */}
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-gray-700 mb-3">게임 모드</h2>
@@ -278,7 +291,7 @@ export default function NunchiGamePage() {
               }`}
             >
               <div className="font-bold text-base mb-1">타이밍 모드</div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-600">
                 모두 동시에 터치! 겹치면 벌칙
               </div>
             </button>
@@ -291,7 +304,7 @@ export default function NunchiGamePage() {
               }`}
             >
               <div className="font-bold text-base mb-1">랜덤 지목</div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-600">
                 랜덤으로 한 명 지목! 빠르게 외쳐라
               </div>
             </button>
@@ -316,7 +329,7 @@ export default function NunchiGamePage() {
             <button
               onClick={addPlayer}
               disabled={players.length >= 8}
-              className="px-5 py-3 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 disabled:opacity-40 transition-colors"
+              className="px-5 py-3 bg-blue-700 text-white rounded-xl font-semibold hover:bg-blue-800 disabled:opacity-40 transition-colors"
             >
               추가
             </button>
@@ -464,7 +477,7 @@ export default function NunchiGamePage() {
               return (
                 <button
                   key={i}
-                  onClick={() => handleTap(i)}
+                  onClick={(event) => handleTap(i, event.timeStamp)}
                   disabled={randomFailed || randomSuccess}
                   className={`p-5 rounded-2xl border-2 font-bold text-lg transition-all active:scale-95 ${
                     randomFailed || randomSuccess
@@ -521,7 +534,7 @@ export default function NunchiGamePage() {
             return (
               <button
                 key={i}
-                onClick={() => handleTap(i)}
+                onClick={(event) => handleTap(i, event.timeStamp)}
                 disabled={tapped}
                 className={`relative p-6 rounded-2xl border-2 font-bold text-lg transition-all active:scale-95 ${
                   tapped
@@ -625,6 +638,8 @@ export default function NunchiGamePage() {
           <h2 className="text-2xl font-black text-gray-800">최종 결과</h2>
           <p className="text-gray-500 text-sm mt-1">총 {round}라운드 진행</p>
         </div>
+
+        <DailyChallenge id="nunchi-game" challenges={NUNCHI_CHALLENGES} currentValue={round} unit="R" />
 
         <div className="space-y-3 mb-8">
           {sortedLeaderboard.map((p, rank) => {

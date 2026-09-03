@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import ShareResultCard from "@/components/ShareResultCard";
 
 interface PastLife {
   name: string;
@@ -315,6 +316,22 @@ export default function PastLifeTest() {
             <h3 className="text-lg font-bold text-gray-900 mb-3">&#x1F300; 현생에 미치는 영향</h3>
             <p className="text-gray-700 leading-relaxed">{result.influence}</p>
           </div>
+
+          <ShareResultCard
+            kicker="생년월일로 보는 나의 전생"
+            title={`나의 전생은 ${result.name}`}
+            subtitle={result.personality.split(".")[0] + "."}
+            highlights={[
+              { label: "시대", value: result.era },
+              { label: "지역", value: result.region },
+              { label: "현생의 흔적", value: result.influence.slice(0, 12) + "…" },
+              { label: "결과 타입", value: result.name },
+            ]}
+            shareText={`생년월일로 본 나의 전생은 ${result.name}! 당신의 전생도 확인해보세요.`}
+            fileName="modu-dogu-past-life"
+            url="/calculators/past-life"
+            accent="#6d3f82"
+          />
 
           <div className="text-center">
             <button

@@ -2,6 +2,13 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import DailyChallenge from "@/components/viral/DailyChallenge";
+
+const APPLE_CHALLENGES = [
+  { label: "제한 시간 안에 50점 만들기", target: 50 },
+  { label: "오늘은 70점 벽 넘기", target: 70 },
+  { label: "사과 90개 지우기에 도전", target: 90 },
+];
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const COLS = 17;
@@ -54,11 +61,16 @@ export default function AppleGame() {
   const dragStart = useRef({ x: 0, y: 0 });
   const popupId = useRef(0);
   const gridRef = useRef(grid);
-  gridRef.current = grid;
+
+  useEffect(() => {
+    gridRef.current = grid;
+  }, [grid]);
 
   // Load best score
   useEffect(() => {
     const stored = localStorage.getItem("bestAppleGame");
+    // Restore the browser-only high score after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored) setBestScore(parseInt(stored, 10));
   }, []);
 
@@ -417,6 +429,8 @@ export default function AppleGame() {
       <p className="text-gray-500 mb-6">
         드래그로 숫자를 선택하여 합이 10이 되면 제거! 제한 시간 안에 최대한 많이 제거하세요.
       </p>
+
+      <DailyChallenge id="apple-game" challenges={APPLE_CHALLENGES} currentValue={score} unit="점" />
 
       {/* Score & Controls */}
       <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">

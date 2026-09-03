@@ -27,6 +27,7 @@ const financeCalcs: Item[] = [
   { title: "주식 수익률", href: "/calculators/stock-return", emoji: "📈", desc: "매매 수익률 분석" },
   { title: "물타기 계산기", href: "/calculators/average-price", emoji: "📉", desc: "평균 단가 계산" },
   { title: "인플레이션", href: "/calculators/inflation", emoji: "💸", desc: "화폐 가치 변화" },
+  { title: "1회당 비용", href: "/calculators/cost-per-use", emoji: "🧾", desc: "구매 전 실제 사용비 검증", featured: true },
   { title: "자동차세", href: "/calculators/car-tax", emoji: "🚗", desc: "연간 자동차세" },
   { title: "전기요금", href: "/calculators/electricity", emoji: "⚡", desc: "전기요금 계산" },
   { title: "부가세 계산기", href: "/calculators/vat", emoji: "🧾", desc: "부가가치세 계산" },
@@ -66,6 +67,7 @@ const lifeCalcs: Item[] = [
   { title: "물 섭취량 계산기", href: "/calculators/water-intake", emoji: "💧", desc: "하루 권장 물 섭취량" },
   { title: "AI 식단 추천", href: "/calculators/macro-diet", emoji: "🥗", desc: "AI 맞춤 식단 추천" },
   { title: "AI 운동 추천", href: "/calculators/exercise", emoji: "💪", desc: "AI 맞춤 운동 루틴" },
+  { title: "러닝 페이스", href: "/calculators/running-pace", emoji: "🏁", desc: "1km 페이스·예상 기록", featured: true },
   { title: "군대 전역일", href: "/calculators/military", emoji: "🎖️", desc: "전역일·복무일수 계산" },
   { title: "택배 배송비", href: "/calculators/shipping", emoji: "📦", desc: "택배사별 요금 비교" },
   { title: "출산 예정일", href: "/calculators/due-date", emoji: "🤰", desc: "임신 주수·예정일 계산" },
@@ -84,6 +86,9 @@ const funCalcs: Item[] = [
   { title: "커플 D-day", href: "/calculators/couple-dday", emoji: "💑", desc: "사귄 날 기념일" },
   { title: "AI 심리 분석", href: "/tools/psychology-test", emoji: "🧠", desc: "AI 심리테스트" },
   { title: "MBTI 검사", href: "/tools/mbti-test", emoji: "🧩", desc: "MBTI 유형 검사" },
+  { title: "에너지 성향 테스트", href: "/tools/energy-type-test", emoji: "⚡", desc: "행동·관계 에너지 유형", featured: true },
+  { title: "퍼스널 스타일 테스트", href: "/tools/personal-style-test", emoji: "🎨", desc: "취향으로 찾는 패션 무드" },
+  { title: "친구 케미 테스트", href: "/tools/friend-chemistry", emoji: "🧩", desc: "링크로 비교하는 우정 궁합", featured: true },
   { title: "아재개그 생성기", href: "/tools/dad-joke", emoji: "😂", desc: "매일 새로운 아재개그" },
   { title: "AI 꿈 해몽", href: "/tools/dream-interpretation", emoji: "🌙", desc: "AI 꿈풀이 해석" },
   { title: "AI 타로", href: "/tools/tarot", emoji: "🃏", desc: "AI 타로 카드 운세" },
@@ -103,6 +108,7 @@ const drinkingGames: Item[] = [
   { title: "텔레파시 게임", href: "/tools/telepathy-game", emoji: "🧠", desc: "같은 답 맞추기" },
   { title: "사다리 타기", href: "/tools/ladder-game", emoji: "🧪", desc: "사다리로 결정" },
   { title: "밸런스 게임", href: "/tools/balance-game", emoji: "⚖️", desc: "둘 중 하나 선택" },
+  { title: "취향 월드컵", href: "/tools/ideal-type-worldcup", emoji: "🏆", desc: "직접 만드는 8강 월드컵" },
 ];
 
 const games: Item[] = [
@@ -117,6 +123,7 @@ const games: Item[] = [
   { title: "오목", href: "/tools/omok", emoji: "⚫", desc: "AI와 오목 대결" },
   { title: "사과 게임", href: "/tools/apple-game", emoji: "🍎", desc: "합이 10! 숫자 퍼즐" },
   { title: "행성 합치기", href: "/tools/planet-merge", emoji: "🪐", desc: "행성 합쳐 진화시키기" },
+  { title: "디지털 키캡 피젯", href: "/tools/digital-fidget", emoji: "⌨️", desc: "키보드 ASMR 클릭 놀이" },
 ];
 
 const tools: Item[] = [
@@ -144,6 +151,7 @@ const tools: Item[] = [
   { title: "AI 작명기", href: "/tools/name-generator", emoji: "✍️", desc: "AI 이름 짓기" },
   { title: "AI 선물 추천", href: "/tools/gift-recommendation", emoji: "🎁", desc: "AI 맞춤 선물 추천" },
   { title: "AI 인스타 해시태그", href: "/tools/hashtag-generator", emoji: "#️⃣", desc: "인스타 해시태그 생성" },
+  { title: "밈 카드 만들기", href: "/tools/meme-card", emoji: "🪪", desc: "감정 영수증·상장·속보 카드", featured: true },
   { title: "AI 책 추천", href: "/tools/book-recommendation", emoji: "📚", desc: "AI 기분별 맞춤 도서 추천" },
   { title: "AI 오늘 뭐 먹지", href: "/tools/food-recommendation", emoji: "🍽️", desc: "AI 메뉴 추천" },
   { title: "AI 영화 추천", href: "/tools/movie-recommendation", emoji: "🎬", desc: "AI 기분별 영화 추천" },

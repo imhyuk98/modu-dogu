@@ -143,9 +143,28 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+  const a = [...arr];
+  let state = seed | 0;
+  const random = () => {
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    return (state >>> 0) / 4294967296;
+  };
+
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const INITIAL_DECK = seededShuffle(STATEMENTS, 20260903);
+
 export default function NeverHaveIEverPage() {
   const [category, setCategory] = useState<Category>("전체");
-  const [deck, setDeck] = useState<Statement[]>(() => shuffle(STATEMENTS));
+  const [deck, setDeck] = useState<Statement[]>(INITIAL_DECK);
   const [index, setIndex] = useState(0);
   const [yesCount, setYesCount] = useState(0);
   const [noCount, setNoCount] = useState(0);
@@ -295,7 +314,7 @@ export default function NeverHaveIEverPage() {
             className={`flex-1 max-w-[160px] py-3 rounded-xl text-lg font-bold transition-all ${
               reacted
                 ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg active:scale-95"
+                : "bg-orange-700 hover:bg-orange-800 text-white shadow-md hover:shadow-lg active:scale-95"
             }`}
           >
             있다! 🙋
@@ -352,7 +371,7 @@ export default function NeverHaveIEverPage() {
           className="w-full flex items-center justify-between font-semibold text-gray-800"
         >
           <span>👥 플레이어 모드</span>
-          <span className="text-sm text-gray-400">{playerMode ? "접기 ▲" : "펼치기 ▼"}</span>
+          <span className="text-sm text-gray-600">{playerMode ? "접기 ▲" : "펼치기 ▼"}</span>
         </button>
 
         {playerMode && (
@@ -464,7 +483,7 @@ export default function NeverHaveIEverPage() {
             className="w-full flex items-center justify-between font-semibold text-gray-800"
           >
             <span>📜 히스토리 ({history.length})</span>
-            <span className="text-sm text-gray-400">{showHistory ? "접기 ▲" : "펼치기 ▼"}</span>
+            <span className="text-sm text-gray-600">{showHistory ? "접기 ▲" : "펼치기 ▼"}</span>
           </button>
           {showHistory && (
             <ul className="mt-3 space-y-2 max-h-60 overflow-y-auto">

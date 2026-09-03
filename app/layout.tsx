@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import Script from "next/script";
+import { Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -15,13 +14,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const notoSansKr = Noto_Sans_KR({
+  variable: "--font-noto-sans-kr",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "모두의도구 - 생활 계산기 모음",
+    default: "모두의도구 - 생활 계산기·온라인 도구 모음",
     template: "%s | 모두의도구",
   },
   description:
-    "연봉 실수령액, 대출이자, 환율, 부동산 세금, 주식 수익률, MBTI, 운세, JSON 포매터, QR코드 등 60가지 이상의 생활 계산기와 온라인 도구를 무료로 제공합니다.",
+    "연봉·대출·부동산 계산기부터 이미지·문서 변환, AI 추천, 미니게임까지 100가지 이상의 온라인 도구를 무료로 제공합니다.",
   keywords: [
     "계산기",
     "연봉 실수령액",
@@ -38,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "모두의도구 - 생활 계산기 & 온라인 도구 모음",
     description:
-      "연봉 실수령액, 대출이자, 환율, 부동산 세금, 주식 수익률, MBTI, 운세, JSON 포매터, QR코드 등 60가지 이상의 생활 계산기와 온라인 도구를 무료로 제공합니다.",
+      "연봉·대출·부동산 계산기부터 이미지·문서 변환, AI 추천, 미니게임까지 100가지 이상의 온라인 도구를 무료로 제공합니다.",
     type: "website",
     locale: "ko_KR",
     url: "https://modu-dogu.pages.dev",
@@ -56,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "모두의도구 - 생활 계산기 & 온라인 도구 모음",
     description:
-      "연봉 실수령액, 대출이자, 환율, 부동산 세금, 주식 수익률, MBTI, 운세, JSON 포매터, QR코드 등 60가지 이상의 생활 계산기와 온라인 도구를 무료로 제공합니다.",
+      "연봉·대출·부동산 계산기부터 이미지·문서 변환, AI 추천, 미니게임까지 100가지 이상의 온라인 도구를 무료로 제공합니다.",
     images: ["https://modu-dogu.pages.dev/og-image.svg"],
   },
 };
@@ -71,18 +76,17 @@ export default function RootLayout({
       <head>
         <meta name="naver-site-verification" content="8856760dc5a9e429adfe0c65cb1bfe4206d6fdb2" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" content="#a93d28" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-        <link rel="preload" as="style" crossOrigin="anonymous"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-        <link rel="stylesheet" crossOrigin="anonymous"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3204700288703280"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body
-        className={`${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${notoSansKr.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <script
           type="application/ld+json"
@@ -94,7 +98,7 @@ export default function RootLayout({
               alternateName: "modu-dogu",
               url: "https://modu-dogu.pages.dev",
               description:
-                "연봉 실수령액, 대출이자, 환율, 부동산 세금, 주식 수익률, MBTI, 운세, JSON 포매터, QR코드 등 70가지 이상의 생활 계산기와 온라인 도구를 무료로 제공합니다.",
+                "연봉·대출·부동산 계산기부터 이미지·문서 변환, AI 추천, 미니게임까지 100가지 이상의 온라인 도구를 무료로 제공합니다.",
               inLanguage: "ko",
               publisher: {
                 "@type": "Organization",
@@ -109,18 +113,10 @@ export default function RootLayout({
             }),
           }}
         />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3204700288703280"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
         <GoogleAnalytics />
         <Header />
         <main className="flex-1">
-          <div className="max-w-5xl mx-auto px-4 pt-4">
-            <Breadcrumb />
-          </div>
+          <Breadcrumb />
           {children}
         </main>
         <Footer />

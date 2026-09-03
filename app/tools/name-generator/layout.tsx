@@ -16,6 +16,9 @@ export const metadata: Metadata = {
     "한자 이름",
     "작명 사이트",
   ],
+  alternates: {
+    canonical: "https://modu-dogu.pages.dev/tools/name-generator",
+  },
   openGraph: {
     title: "AI 작명기 - 아기 이름 짓기, 반려동물 이름 추천",
     description:
