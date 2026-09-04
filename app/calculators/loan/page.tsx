@@ -25,7 +25,7 @@ export default function LoanCalculator() {
   const [copied, setCopied] = useState(false);
   const [rateData, setRateData] = useState<InterestRateData | null>(null);
 
-  // 실시간 금리 로드
+  // 기준월이 명시된 저장 통계 자료 로드
   useEffect(() => {
     fetch("/interest-rates.json")
       .then((r) => r.json())
@@ -87,9 +87,10 @@ export default function LoanCalculator() {
       {rateData && (
         <div className="calc-card p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-900">시중 평균 금리</h3>
+            <h3 className="text-sm font-semibold text-gray-900">저장된 평균 금리 참고값</h3>
             <span className="text-xs text-gray-400">{formatDataMonth(rateData.dataMonth)}</span>
           </div>
+          <p className="mt-3 text-xs leading-5 text-gray-500">현재 금융회사 제안 금리가 아닙니다. 계약서나 금융회사 공시에서 확인한 연이율을 아래 입력란에 직접 넣으세요.</p>
           <div className="flex flex-wrap gap-2">
             {[
               { label: "기준금리", rate: rateData.baseRate },

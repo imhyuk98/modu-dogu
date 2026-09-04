@@ -139,7 +139,7 @@ export default function BodyFatCalculator() {
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">체지방률 계산기</h1>
       <p className="text-gray-500 mb-8">
-        US Navy 공식으로 체지방률을 계산합니다. 허리둘레와 목둘레를 입력하면 정확한 체지방 비율을 확인할 수 있습니다.
+        US Navy 둘레 공식으로 체지방률을 추정합니다. 줄자 측정값에 따라 달라지는 참고용 수치입니다.
       </p>
 
       <div className="calc-card p-6 mb-6 space-y-4">
@@ -331,11 +331,11 @@ export default function BodyFatCalculator() {
           <p className="text-gray-600 leading-relaxed">
             체지방률(Body Fat Percentage)은 전체 체중에서 체지방이 차지하는 비율을 의미합니다.
             BMI가 단순히 키와 체중의 비율만 보는 것과 달리, 체지방률은 실제 지방의 비율을 측정하므로
-            건강 상태를 더 정확하게 파악할 수 있습니다.
+            체성분을 다른 관점에서 참고할 수 있습니다. 이 계산 결과만으로 건강 상태를 평가할 수는 없습니다.
           </p>
           <p className="text-gray-600 leading-relaxed mt-2">
             같은 체중이라도 근육량이 많으면 체지방률이 낮고, 지방이 많으면 체지방률이 높습니다.
-            따라서 BMI와 함께 체지방률을 확인하면 보다 정확한 건강 평가가 가능합니다.
+            따라서 BMI와 함께 보더라도 둘 다 선별용 추정치이며, 진단이나 정밀 체성분 검사를 대신하지 않습니다.
           </p>
         </div>
 
@@ -352,8 +352,8 @@ export default function BodyFatCalculator() {
             <p className="pl-4 font-mono text-xs">163.205 x log10(허리 + 엉덩이 - 목) - 97.684 x log10(키) - 78.387</p>
           </div>
           <p className="text-gray-600 leading-relaxed mt-3">
-            이 공식은 캘리퍼(피하지방 집게)나 수중체중법(Hydrostatic Weighing)과 비교하여
-            약 1~3% 범위 내의 오차를 보이며, 별도의 장비 없이 줄자만으로 측정할 수 있어 널리 사용됩니다.
+            별도 장비 없이 줄자로 계산할 수 있지만 측정 위치·자세와 개인 체형에 따라 오차가 달라집니다.
+            같은 조건에서 변화 추세를 보는 참고값으로 사용하세요.
           </p>
         </div>
 
@@ -405,8 +405,8 @@ export default function BodyFatCalculator() {
             <div>
               <h3 className="font-medium text-gray-800 mb-1">Q. 체지방률과 BMI의 차이는 무엇인가요?</h3>
               <p className="text-sm text-gray-600">
-                BMI는 키와 체중만으로 계산하므로 근육과 지방을 구분하지 못합니다. 체지방률은 실제 지방의 비율을
-                측정하므로 더 정확한 건강 지표입니다. 근육량이 많은 사람은 BMI가 높아도 체지방률은 낮을 수 있습니다.
+                BMI는 키와 체중만으로 계산하므로 근육과 지방을 구분하지 못합니다. 이 도구의 체지방률도 둘레값으로
+                추정할 뿐 직접 측정하지 않습니다. 근육량이 많은 사람은 BMI가 높아도 둘레 기반 추정치는 다를 수 있습니다.
               </p>
             </div>
             <div>
@@ -427,8 +427,8 @@ export default function BodyFatCalculator() {
               <h3 className="font-medium text-gray-800 mb-1">Q. BMI 기반 추정치와 Navy 공식 결과가 다른 이유는?</h3>
               <p className="text-sm text-gray-600">
                 BMI 기반 추정치는 키와 체중, 나이, 성별만으로 계산하는 간접 추정법이고,
-                Navy 공식은 실제 둘레 측정값을 사용하므로 더 정확합니다.
-                두 결과가 크게 다르다면 Navy 공식 결과를 더 신뢰하는 것이 좋습니다.
+                Navy 공식은 둘레 측정값을 추가로 사용하지만 개인별 오차가 있습니다.
+                두 결과가 크게 다르면 어느 하나를 확정값으로 보지 말고 전문 측정을 고려하세요.
               </p>
             </div>
             <div>

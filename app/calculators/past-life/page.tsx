@@ -225,9 +225,9 @@ export default function PastLifeTest() {
 
   return (
     <div className="py-6">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">AI 전생 테스트</h1>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">전생 콘셉트 테스트</h1>
       <p className="text-gray-500 mb-8">
-        AI가 생년월일을 분석하여 전생에서 어떤 삶을 살았는지 알려드립니다!
+        도구가 생년월일을 분석하여 전생에서 어떤 삶을 살았는지 알려드립니다!
       </p>
 
       {/* 입력 영역 */}

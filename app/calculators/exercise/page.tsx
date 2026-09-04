@@ -559,14 +559,14 @@ export default function ExerciseRecommendation() {
         .join("\n");
       return `[${day.dayLabel}] ${day.theme}\n${exList}\n  소모 칼로리: ~${day.totalCal}kcal`;
     }).join("\n\n");
-    const full = `AI 운동 추천 루틴\nBMI: ${result.bmi.toFixed(1)} (${result.bmiCategory})\n주간 예상 소모 칼로리: ~${result.weeklyCalories}kcal\n\n${text}`;
+    const full = `운동 루틴 추천 루틴\nBMI: ${result.bmi.toFixed(1)} (${result.bmiCategory})\n주간 예상 소모 칼로리: ~${result.weeklyCalories}kcal\n\n${text}`;
     await navigator.clipboard.writeText(full);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [result]);
 
   const faqs = [
-    { q: "AI 운동 추천은 어떻게 작동하나요?", a: "입력한 신체 정보, 운동 목표, 경험 수준 등을 바탕으로 알고리즘이 최적의 운동 조합과 주간 스케줄을 생성합니다. 50개 이상의 운동 데이터베이스에서 조건에 맞는 운동을 선택합니다." },
+    { q: "운동 루틴 추천은 어떻게 작동하나요?", a: "입력한 신체 정보, 운동 목표, 경험 수준 등을 바탕으로 알고리즘이 최적의 운동 조합과 주간 스케줄을 생성합니다. 50개 이상의 운동 데이터베이스에서 조건에 맞는 운동을 선택합니다." },
     { q: "운동 루틴을 매번 다르게 생성할 수 있나요?", a: "네, '루틴 다시 생성' 버튼을 누르면 같은 조건에서도 다른 운동 조합으로 새로운 루틴이 생성됩니다. 다양한 루틴을 시도해보세요." },
     { q: "칼로리 소모량은 정확한가요?", a: "제시된 칼로리 소모량은 운동 종류, 체중, 성별, 나이를 기반으로 한 추정치입니다. 실제 소모량은 운동 강도, 개인 체질 등에 따라 달라질 수 있습니다." },
     { q: "부상이 있을 때 운동해도 되나요?", a: "부상 부위를 선택하면 해당 부위에 무리가 가는 운동을 자동으로 제외합니다. 다만 심각한 부상의 경우 반드시 의사나 물리치료사와 상담 후 운동을 시작하세요." },
@@ -577,10 +577,10 @@ export default function ExerciseRecommendation() {
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-          AI 운동 추천
+          운동 루틴 추천
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          체형과 목표에 맞는 맞춤 운동 루틴을 AI가 생성합니다.
+          체형과 목표에 맞는 맞춤 운동 루틴을 도구가 생성합니다.
         </p>
       </div>
 
@@ -768,7 +768,7 @@ export default function ExerciseRecommendation() {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          AI 운동 루틴 생성
+          운동 루틴 만들기
         </button>
       </div>
 
@@ -927,9 +927,9 @@ export default function ExerciseRecommendation() {
       {/* SEO 콘텐츠 */}
       <section className="mt-12 space-y-6">
         <div className="calc-seo-card">
-          <h2 className="calc-seo-title">AI 운동 추천이란?</h2>
+          <h2 className="calc-seo-title">운동 루틴 추천이란?</h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            AI 운동 추천은 사용자의 신체 정보(키, 몸무게, 나이, 성별), 운동 목표, 경험 수준,
+            운동 루틴 추천은 사용자의 신체 정보(키, 몸무게, 나이, 성별), 운동 목표, 경험 수준,
             가용 시간, 운동 장소 등을 종합적으로 분석하여 최적의 주간 운동 루틴을 자동으로
             생성하는 서비스입니다. 50개 이상의 운동 데이터베이스를 기반으로 개인 맞춤형
             운동 계획을 제공하며, 부상 부위를 고려한 안전한 운동 추천이 가능합니다.

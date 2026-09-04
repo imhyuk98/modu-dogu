@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { sections, sectionColors } from "@/lib/sections";
 import type { Item } from "@/lib/sections";
+import { categoryGuides } from "@/lib/category-guides";
 
 function ToolCard({ item, colorKey, index }: { item: Item; colorKey: string; index: number }) {
   const colors = sectionColors[colorKey] || sectionColors.tools;
@@ -46,6 +47,7 @@ export default function CategoryPage() {
   }
 
   const colors = sectionColors[section.key];
+  const guide = categoryGuides[section.key];
   const otherSections = sections.filter((s) => s.key !== slug);
 
   return (
@@ -77,6 +79,31 @@ export default function CategoryPage() {
 
       {/* Tools grid */}
       <div className="max-w-4xl mx-auto px-4 py-8">
+        {guide && (
+          <div className="mb-10 space-y-6">
+            <section className="calc-card p-6 sm:p-8">
+              <p className={`text-xs font-black tracking-[0.14em] ${colors.text}`}>CATEGORY GUIDE</p>
+              <h2 className="mt-2 text-2xl font-black text-gray-950">{guide.question}</h2>
+              <p className="mt-3 leading-7 text-gray-600">{guide.answer}</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {guide.useCases.map((useCase) => <div key={useCase} className={`${colors.bg} rounded-xl p-4 text-sm font-semibold leading-6 text-gray-800`}>{useCase}</div>)}
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-black text-gray-900">먼저 써볼 대표 도구</h2>
+              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                {guide.representative.map((item) => <Link key={item.href} href={item.href} className={`rounded-2xl border ${colors.border} bg-white p-5 transition-shadow hover:shadow-md`}><strong className="text-gray-900">{item.title}</strong><p className="mt-2 text-sm leading-6 text-gray-600">{item.reason}</p><span className={`mt-3 inline-block text-sm font-bold ${colors.text}`}>열기 →</span></Link>)}
+              </div>
+            </section>
+            <section className="grid gap-4 sm:grid-cols-2">
+              <div className="calc-card p-6"><h2 className="text-lg font-black text-gray-900">고르는 기준</h2><ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-gray-600">{guide.choosing.map((item) => <li key={item}>{item}</li>)}</ol></div>
+              <div className="calc-card p-6"><h2 className="text-lg font-black text-gray-900">입력 → 출력</h2><dl className="mt-3 space-y-3 text-sm leading-6"><div><dt className="font-bold text-gray-800">입력</dt><dd className="text-gray-600">{guide.flow.input}</dd></div><div><dt className="font-bold text-gray-800">출력</dt><dd className="text-gray-600">{guide.flow.output}</dd></div></dl></div>
+            </section>
+            <aside className="rounded-2xl border border-amber-200 bg-amber-50 p-5"><h2 className="font-black text-amber-950">사용 전 주의</h2><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-amber-900">{guide.cautions.map((item) => <li key={item}>{item}</li>)}</ul></aside>
+          </div>
+        )}
+
+        <h2 className="mb-4 text-xl font-black text-gray-900">전체 도구 {section.items.length}개</h2>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {section.items.map((item, i) => (
             <ToolCard key={item.href} item={item} colorKey={section.key} index={i} />

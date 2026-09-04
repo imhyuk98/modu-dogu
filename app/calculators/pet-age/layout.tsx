@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calculators/pet-age" },
   title: "강아지 고양이 나이 계산기 - 사람 나이 환산",
   description:
-    "강아지, 고양이 나이를 사람 나이로 환산하세요. 체구별 정확한 계산과 생애 단계, 건강 체크리스트를 확인할 수 있습니다.",
+    "강아지, 고양이 나이를 사람 나이로 참고 환산하세요. 체구별 추정치와 생애 단계 체크리스트를 확인할 수 있습니다.",
   keywords: [
     "강아지 나이 계산기",
     "고양이 나이 계산기",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
     title: "강아지 고양이 나이 계산기 - 사람 나이 환산 | 모두의도구",
     description:
-      "강아지, 고양이 나이를 사람 나이로 환산하세요. 체구별 정확한 계산과 생애 단계, 건강 체크리스트를 확인할 수 있습니다.",
+      "강아지, 고양이 나이를 사람 나이로 참고 환산하세요. 체구별 추정치와 생애 단계 체크리스트를 확인할 수 있습니다.",
     url: "https://modu-dogu.pages.dev/calculators/pet-age",
   },
 };
@@ -37,7 +37,7 @@ export default function PetAgeLayout({
             "@type": "WebApplication",
             name: "강아지 고양이 나이 계산기",
             description:
-              "강아지, 고양이 나이를 사람 나이로 환산하세요. 체구별 정확한 계산과 생애 단계, 건강 체크리스트를 확인할 수 있습니다.",
+              "강아지, 고양이 나이를 사람 나이로 참고 환산하세요. 체구별 추정치와 생애 단계 체크리스트를 확인할 수 있습니다.",
             url: "https://modu-dogu.pages.dev/calculators/pet-age",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

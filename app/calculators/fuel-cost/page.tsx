@@ -49,13 +49,13 @@ export default function FuelCostCalculator() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [livePrices, setLivePrices] = useState<FuelPriceData | null>(null);
 
-  // 실시간 유가 로드
+  // 거래일이 명시된 저장 유가 자료 로드
   useEffect(() => {
     fetch("/fuel-prices.json")
       .then((r) => r.json())
       .then((data: FuelPriceData) => {
         setLivePrices(data);
-        // 현재 유종의 가격을 실시간 가격으로 업데이트
+        // 저장 자료의 가격을 편집 가능한 예시값으로 적용
         const livePrice = data[fuelType]?.price;
         if (livePrice) {
           setFuelPrice(formatNumber(livePrice));
@@ -170,13 +170,14 @@ export default function FuelCostCalculator() {
         주행 거리와 연비를 입력하면 예상 유류비를 실시간으로 계산합니다.
       </p>
 
-      {/* 실시간 유가 현황 */}
+      {/* 거래일이 명시된 저장 유가 참고값 */}
       {livePrices && (
         <div className="calc-card p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-900">전국 평균 유가</h3>
+            <h3 className="text-sm font-semibold text-gray-900">저장된 전국 평균 유가 참고값</h3>
             <span className="text-xs text-gray-400">{livePrices.tradeDate} 기준</span>
           </div>
+          <p className="mt-3 text-xs leading-5 text-gray-500">현재 판매가격이 아닙니다. 주유 전 오피넷이나 이용할 주유소 가격을 확인해 아래 입력값을 바꾸세요.</p>
           <div className="grid grid-cols-3 gap-3">
             {(["gasoline", "diesel", "lpg"] as FuelType[]).map((type) => {
               const info = livePrices[type];
@@ -347,7 +348,7 @@ export default function FuelCostCalculator() {
             </div>
           ) : (
             <p className="text-xs text-gray-400 mt-1">
-              유종 변경 시 평균 유가로 자동 설정됩니다. 직접 수정도 가능합니다.
+              유종별 예시값입니다. 이용할 주유소의 실제 가격으로 수정하세요.
             </p>
           )}
         </div>

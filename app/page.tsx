@@ -219,7 +219,10 @@ export default function Home() {
             <span>쓸데없어 보여도 은근 다 씀</span>
             <span>로그인 없음 · {allItems.length}개 무료</span>
           </div>
-          <h1 id="store-title" aria-label="모두의 도구">모두의도구</h1>
+          <h1 id="store-title" aria-label={`모두의도구 — 무료 계산기·테스트·게임·온라인 도구 ${allItems.length}개`}>
+            <span>모두의도구</span>
+            <small>무료 계산기·테스트·게임·온라인 도구 {allItems.length}개</small>
+          </h1>
           <div className="store-hero-bottom">
             <p>
               운세 보러 왔다가 연봉 계산하고 감.<br />

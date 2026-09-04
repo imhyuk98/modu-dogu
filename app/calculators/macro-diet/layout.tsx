@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/calculators/macro-diet" },
-  title: "AI 식단 추천 계산기",
+  title: "식단 구성 도우미 계산기",
   description:
-    "AI가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
-  keywords: ["AI 식단 추천", "식단 계산기", "탄단지 비율", "다이어트 식단", "벌크업 식단", "TDEE 계산", "AI 맞춤 식단"],
+    "도구가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
+  keywords: ["식단 구성 도우미", "식단 계산기", "탄단지 비율", "다이어트 식단", "벌크업 식단", "TDEE 계산", "조건별 맞춤 식단"],
   openGraph: {
     images: ["/og-image.png"],
-    title: "AI 식단 추천 계산기 - 모두의도구",
-    description: "AI가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
+    title: "식단 구성 도우미 계산기 - 모두의도구",
+    description: "도구가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
     url: "https://modu-dogu.pages.dev/calculators/macro-diet",
   },
 };
@@ -23,9 +23,9 @@ export default function MacroDietLayout({ children }: { children: React.ReactNod
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            name: "AI 식단 추천 계산기",
+            name: "식단 구성 도우미 계산기",
             description:
-              "AI가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
+              "도구가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다. 다이어트, 벌크업, 체중 유지 맞춤 식단을 확인하세요.",
             url: "https://modu-dogu.pages.dev/calculators/macro-diet",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

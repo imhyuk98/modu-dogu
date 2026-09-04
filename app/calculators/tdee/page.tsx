@@ -268,7 +268,7 @@ export default function TDEECalculator() {
             기초대사량(BMR)에 활동량 계수를 곱하여 산출합니다. TDEE를 알면 체중 감량, 유지, 증가 목표에 맞는 식단을 계획할 수 있습니다.
           </p>
           <p className="text-gray-600 leading-relaxed mt-2">
-            본 계산기는 <strong>Mifflin-St Jeor 공식</strong>을 사용합니다. 이 공식은 현재 가장 정확한 BMR 추정 공식으로 인정받고 있습니다.
+            본 계산기는 <strong>Mifflin-St Jeor 공식</strong>으로 BMR을 추정한 뒤 선택한 활동계수를 곱합니다.
             남성: (10 x 체중kg) + (6.25 x 키cm) - (5 x 나이) + 5, 여성: (10 x 체중kg) + (6.25 x 키cm) - (5 x 나이) - 161.
           </p>
         </div>
@@ -334,7 +334,7 @@ export default function TDEECalculator() {
             </div>
             <div>
               <h3 className="font-medium text-gray-800 mb-1">TDEE 계산이 정확한가요?</h3>
-              <p className="text-gray-600 text-sm">Mifflin-St Jeor 공식은 약 10% 오차 범위 내에서 BMR을 추정합니다. 개인의 근육량, 유전적 요인, 호르몬 상태에 따라 실제 값은 달라질 수 있으므로, 2~3주간 체중 변화를 관찰하며 조정하는 것이 좋습니다.</p>
+              <p className="text-gray-600 text-sm">공식과 활동계수로 만든 참고용 추정치입니다. 개인의 근육량, 생활 패턴, 건강 상태에 따라 실제 소비량은 달라질 수 있으므로 장기간 변화를 관찰해 조정하세요.</p>
             </div>
             <div>
               <h3 className="font-medium text-gray-800 mb-1">BMR 이하로 먹으면 안 되나요?</h3>

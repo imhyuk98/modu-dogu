@@ -1,11 +1,11 @@
 {
   "name": "모두의도구",
   "short_name": "모두의도구",
-  "description": "생활 계산기 & 온라인 도구 모음",
+  "description": "무료 계산기·테스트·게임·이미지·문서 온라인 도구 124개",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "theme_color": "#a93d28",
   "icons": [
     {
       "src": "/icon.svg",

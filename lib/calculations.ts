@@ -286,58 +286,264 @@ export function calculateRetirement(
 
 // ==================== 연차 계산기 ====================
 
-export interface AnnualLeaveResult {
-  totalLeave: number;
-  usedYears: number;
-  usedMonths: number;
-  details: { period: string; days: number; description: string }[];
+export type AnnualLeaveBasis = "hire-date" | "fiscal-year";
+export type AnnualLeaveMode = "employed" | "separation";
+
+export interface AnnualLeaveInput {
+  startDate: string;
+  referenceDate: string;
+  basis: AnnualLeaveBasis;
+  mode: AnnualLeaveMode;
+  usedLeave: number;
+  attendanceAtLeast80: boolean;
+  perfectAttendanceMonths?: number;
 }
 
-export function calculateAnnualLeave(startDate: Date, today: Date): AnnualLeaveResult {
-  const details: { period: string; days: number; description: string }[] = [];
-  let totalLeave = 0;
+export interface AnnualLeaveDetail {
+  grantDate: string;
+  days: number;
+  kind: "monthly" | "annual" | "fiscal";
+  description: string;
+}
 
-  const diffTime = today.getTime() - startDate.getTime();
-  const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const usedYears = Math.floor(totalDays / 365);
-  const usedMonths = Math.floor((totalDays % 365) / 30);
+export interface AnnualLeaveResult {
+  currentGranted: number;
+  currentAvailable: number;
+  historicalGenerated: number;
+  statutoryCurrentAvailable: number;
+  completedYears: number;
+  completedMonths: number;
+  details: AnnualLeaveDetail[];
+  warning?: string;
+}
 
-  if (totalDays < 0) {
-    return { totalLeave: 0, usedYears: 0, usedMonths: 0, details: [] };
+const DAY_MS = 86_400_000;
+
+function parseDateOnly(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatDateOnly(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function daysInUtcMonth(year: number, month: number) {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+function addUtcMonthsClamped(date: Date, months: number) {
+  const targetMonth = date.getUTCMonth() + months;
+  const year = date.getUTCFullYear() + Math.floor(targetMonth / 12);
+  const month = ((targetMonth % 12) + 12) % 12;
+  return new Date(Date.UTC(year, month, Math.min(date.getUTCDate(), daysInUtcMonth(year, month))));
+}
+
+function addUtcYearsClamped(date: Date, years: number) {
+  const year = date.getUTCFullYear() + years;
+  return new Date(Date.UTC(year, date.getUTCMonth(), Math.min(date.getUTCDate(), daysInUtcMonth(year, date.getUTCMonth()))));
+}
+
+function roundToOne(value: number) {
+  return Math.round((value + Number.EPSILON) * 10) / 10;
+}
+
+function calculateHireDateSchedule(
+  start: Date,
+  reference: Date,
+  attendanceAtLeast80: boolean,
+  perfectAttendanceMonths?: number,
+) {
+  const details: AnnualLeaveDetail[] = [];
+  let completedMonths = 0;
+  for (let month = 1; month <= 1_200; month += 1) {
+    if (addUtcMonthsClamped(start, month) > reference) break;
+    completedMonths = month;
+  }
+  let firstYearCompletedMonths = 0;
+  for (let month = 1; month <= 11; month += 1) {
+    const grantDate = addUtcMonthsClamped(start, month);
+    if (grantDate > reference) break;
+    firstYearCompletedMonths += 1;
+  }
+  const creditedMonthly = Math.min(
+    firstYearCompletedMonths,
+    Math.max(0, Math.floor(perfectAttendanceMonths ?? firstYearCompletedMonths)),
+  );
+  if (creditedMonthly > 0) {
+    details.push({
+      grantDate: formatDateOnly(addUtcMonthsClamped(start, creditedMonthly)),
+      days: creditedMonthly,
+      kind: "monthly",
+      description: `최초 1년 중 개근한 달 ${creditedMonthly}개월 × 1일`,
+    });
   }
 
-  // 1년 미만: 1개월 개근 시 1일씩 (최대 11일)
-  if (usedYears < 1) {
-    const monthsWorked = Math.min(Math.floor(totalDays / 30), 11);
-    totalLeave = monthsWorked;
+  let completedYears = 0;
+  for (let year = 1; year <= 80; year += 1) {
+    const grantDate = addUtcYearsClamped(start, year);
+    if (grantDate > reference) break;
+    completedYears = year;
+    const days = attendanceAtLeast80
+      ? Math.min(15 + Math.floor((year - 1) / 2), 25)
+      : Math.min(12, Math.max(0, Math.floor(perfectAttendanceMonths ?? 0)));
     details.push({
-      period: "입사일 ~ 1년 미만",
-      days: monthsWorked,
-      description: `1개월 개근 시 1일 (${monthsWorked}개월)`,
+      grantDate: formatDateOnly(grantDate),
+      days,
+      kind: "annual",
+      description: attendanceAtLeast80
+        ? `${year}년 근속 완료: 기본 15일${days > 15 ? ` + 가산 ${days - 15}일` : ""}`
+        : `직전 1년 출근율 80% 미만: 개근한 달 ${days}개월 × 1일`,
     });
-  } else {
-    // 1년차 월차 (최대 11일)
-    details.push({
-      period: "1년차 (월차)",
-      days: 11,
-      description: "1개월 개근 시 1일 × 11개월",
-    });
-    totalLeave += 11;
-
-    // 1년 이상: 매년 15일 기본 + 2년마다 1일 추가 (최대 25일)
-    for (let year = 1; year <= usedYears; year++) {
-      const bonus = Math.floor((year - 1) / 2);
-      const yearLeave = Math.min(15 + bonus, 25);
-      details.push({
-        period: `${year + 1}년차`,
-        days: yearLeave,
-        description: year === 1 ? "기본 15일" : `15일 + 추가 ${bonus}일`,
-      });
-      totalLeave += yearLeave;
-    }
   }
 
-  return { totalLeave, usedYears, usedMonths, details };
+  const firstAnniversary = addUtcYearsClamped(start, 1);
+  let currentGranted = reference < firstAnniversary ? creditedMonthly : 0;
+  const latestAnnual = [...details].reverse().find((detail) => detail.kind === "annual");
+  if (latestAnnual) {
+    const expiresOn = addUtcYearsClamped(parseDateOnly(latestAnnual.grantDate)!, 1);
+    if (reference < expiresOn) currentGranted = latestAnnual.days;
+  }
+
+  return {
+    details,
+    completedMonths,
+    completedYears,
+    currentGranted,
+    historicalGenerated: details.reduce((sum, detail) => sum + detail.days, 0),
+  };
+}
+
+function calculateFiscalYearGrant(start: Date, reference: Date, attendanceAtLeast80: boolean) {
+  const referenceYear = reference.getUTCFullYear();
+  const firstFiscalGrantYear = start.getUTCFullYear() + 1;
+  if (referenceYear < firstFiscalGrantYear) return null;
+
+  const grantDate = new Date(Date.UTC(referenceYear, 0, 1));
+  if (grantDate > reference) return null;
+  if (referenceYear === firstFiscalGrantYear) {
+    const yearStart = new Date(Date.UTC(start.getUTCFullYear(), 0, 1));
+    const nextYear = new Date(Date.UTC(start.getUTCFullYear() + 1, 0, 1));
+    const daysInYear = Math.round((nextYear.getTime() - yearStart.getTime()) / DAY_MS);
+    const employedDays = Math.round((nextYear.getTime() - start.getTime()) / DAY_MS);
+    return {
+      grantDate: formatDateOnly(grantDate),
+      days: attendanceAtLeast80 ? roundToOne(15 * employedDays / daysInYear) : 0,
+      description: `입사 첫해 재직 ${employedDays}/${daysInYear}일을 15일에 비례한 참고 배정`,
+    };
+  }
+
+  const serviceYearsAtGrant = Math.max(1, referenceYear - start.getUTCFullYear());
+  const days = attendanceAtLeast80
+    ? Math.min(15 + Math.floor((serviceYearsAtGrant - 1) / 2), 25)
+    : 0;
+  return {
+    grantDate: formatDateOnly(grantDate),
+    days,
+    description: `1월 1일 일괄 배정 참고값: ${days}일`,
+  };
+}
+
+/**
+ * 근로기준법 제60조의 입사일 기준 발생분을 중심으로 계산합니다.
+ * 회계연도 기준은 법정 산식이 하나로 정해져 있지 않아 1월 1일 배정 예시와
+ * 입사일 기준 법정 최저치를 함께 반환합니다.
+ */
+export function calculateAnnualLeave(input: AnnualLeaveInput): AnnualLeaveResult {
+  const start = parseDateOnly(input.startDate);
+  const reference = parseDateOnly(input.referenceDate);
+  if (!start || !reference || reference < start) {
+    return {
+      currentGranted: 0,
+      currentAvailable: 0,
+      historicalGenerated: 0,
+      statutoryCurrentAvailable: 0,
+      completedYears: 0,
+      completedMonths: 0,
+      details: [],
+      warning: "입사일과 계산 기준일을 확인해 주세요.",
+    };
+  }
+
+  const statutory = calculateHireDateSchedule(
+    start,
+    reference,
+    input.attendanceAtLeast80,
+    input.perfectAttendanceMonths,
+  );
+  const usedLeave = Math.max(0, input.usedLeave || 0);
+  const statutoryCurrentAvailable = Math.max(0, roundToOne(statutory.currentGranted - usedLeave));
+
+  if (input.basis === "hire-date") {
+    return {
+      currentGranted: statutory.currentGranted,
+      currentAvailable: statutoryCurrentAvailable,
+      historicalGenerated: statutory.historicalGenerated,
+      statutoryCurrentAvailable,
+      completedYears: statutory.completedYears,
+      completedMonths: statutory.completedMonths,
+      details: statutory.details,
+      warning: usedLeave > statutory.currentGranted
+        ? "입력한 사용 연차가 현재 사용기간의 발생 연차보다 큽니다. 이전 발생분이나 회사 이월 규정을 확인하세요."
+        : undefined,
+    };
+  }
+
+  const fiscalGrant = calculateFiscalYearGrant(start, reference, input.attendanceAtLeast80);
+  const currentGranted = fiscalGrant?.days ?? statutory.currentGranted;
+  return {
+    currentGranted,
+    currentAvailable: Math.max(0, roundToOne(currentGranted - usedLeave)),
+    historicalGenerated: statutory.historicalGenerated,
+    statutoryCurrentAvailable,
+    completedYears: statutory.completedYears,
+    completedMonths: statutory.completedMonths,
+    details: fiscalGrant
+      ? [{ ...fiscalGrant, kind: "fiscal" }, ...statutory.details]
+      : statutory.details,
+    warning: "회계연도 기준은 회사 규정에 따라 비례·이월·정산 방식이 다릅니다. 표시된 1월 1일 배정값은 예시이며, 입사일 기준보다 불리한 차이는 별도 정산해야 할 수 있습니다.",
+  };
+}
+
+// ==================== 면적 변환 ====================
+
+export const SQUARE_METERS_PER_PYEONG = 400 / 121;
+export const SQUARE_METERS_PER_SQUARE_FOOT = 0.09290304;
+
+export type AreaUnit = "pyeong" | "sqm" | "sqft";
+
+export function convertArea(value: number, from: AreaUnit) {
+  const squareMeters = from === "sqm"
+    ? value
+    : from === "pyeong"
+      ? value * SQUARE_METERS_PER_PYEONG
+      : value * SQUARE_METERS_PER_SQUARE_FOOT;
+  return {
+    sqm: squareMeters,
+    pyeong: squareMeters / SQUARE_METERS_PER_PYEONG,
+    sqft: squareMeters / SQUARE_METERS_PER_SQUARE_FOOT,
+  };
+}
+
+// ==================== GPA 계산 ====================
+
+export function calculateWeightedGpa(rows: Array<{ credits: number; points: number; excluded?: boolean }>) {
+  const included = rows.filter((row) => !row.excluded && row.credits > 0);
+  const credits = included.reduce((sum, row) => sum + row.credits, 0);
+  const qualityPoints = included.reduce((sum, row) => sum + row.credits * row.points, 0);
+  return { credits, qualityPoints, gpa: credits > 0 ? qualityPoints / credits : 0 };
+}
+
+export function calculateRequiredGpa(
+  currentGpa: number,
+  completedCredits: number,
+  targetGpa: number,
+  remainingCredits: number,
+) {
+  if (remainingCredits <= 0) return null;
+  return (targetGpa * (completedCredits + remainingCredits) - currentGpa * completedCredits) / remainingCredits;
 }
 
 // ==================== 적금 이자 계산기 ====================

@@ -296,7 +296,7 @@ export default function MacroDietCalculator() {
   const buildMealText = useCallback(() => {
     if (!meals || !mealSummary || !result || !totalSummary) return "";
     const lines: string[] = [];
-    lines.push(`[AI 식단 추천 결과]`);
+    lines.push(`[식단 구성 도우미 결과]`);
     lines.push(`목표 칼로리: ${fmt(result.targetCal)} kcal`);
     lines.push(`BMR: ${fmt(result.bmr)} kcal / TDEE: ${fmt(result.tdee)} kcal`);
     lines.push(`탄수화물: ${fmt(result.carbGrams)}g (${result.carbPercent}%)`);
@@ -357,9 +357,9 @@ export default function MacroDietCalculator() {
 
   return (
     <div className="py-6">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">AI 식단 추천 계산기</h1>
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">식단 구성 도우미 계산기</h1>
       <p className="text-gray-500 mb-8">
-        AI가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다.
+        도구가 체형과 목표에 맞는 탄단지 비율과 한식 식단을 추천합니다.
       </p>
 
       {/* ── Inputs ── */}
@@ -491,7 +491,7 @@ export default function MacroDietCalculator() {
       {/* ── Section 2: Macro Nutrients ── */}
       {result && (
         <div className="calc-card p-6 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-4">AI 추천 영양소 비율</h3>
+          <h3 className="font-semibold text-gray-900 mb-4">조건별 추천 영양소 비율</h3>
           <div className="grid grid-cols-3 gap-3 mb-4">
             {/* Carb Card */}
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">

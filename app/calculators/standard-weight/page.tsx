@@ -49,32 +49,32 @@ function getWeightStatus(
 
   if (diff < -20)
     return {
-      label: "심한 저체중",
+      label: "BMI 22 참고값보다 20% 이상 낮음",
       color: "text-blue-600",
-      description: "표준체중보다 20% 이상 부족합니다. 영양 섭취에 신경 쓰세요.",
+      description: "단순 비교값입니다. 현재 건강 상태를 판정하지 않습니다.",
     };
   if (diff < -10)
     return {
-      label: "저체중",
+      label: "BMI 22 참고값보다 10~20% 낮음",
       color: "text-blue-500",
-      description: "표준체중보다 10~20% 부족합니다. 균형 잡힌 식단을 권장합니다.",
+      description: "체성분과 연령 등 개인 조건을 반영하지 않은 비교입니다.",
     };
   if (diff <= 10)
     return {
-      label: "정상",
+      label: "BMI 22 참고값의 ±10%",
       color: "text-green-600",
-      description: "표준체중 범위(±10%) 안에 있습니다. 현재 체중을 유지하세요.",
+      description: "이 범위를 건강 판정이나 체중 목표로 해석하지 마세요.",
     };
   if (diff <= 20)
     return {
-      label: "과체중",
+      label: "BMI 22 참고값보다 10~20% 높음",
       color: "text-orange-500",
-      description: "표준체중보다 10~20% 초과입니다. 식이조절과 운동을 권장합니다.",
+      description: "체성분과 연령 등 개인 조건을 반영하지 않은 비교입니다.",
     };
   return {
-    label: "비만",
+    label: "BMI 22 참고값보다 20% 이상 높음",
     color: "text-red-600",
-    description: "표준체중보다 20% 이상 초과입니다. 건강 관리가 필요합니다.",
+    description: "단순 비교값이며 비만 진단이 아닙니다.",
   };
 }
 
@@ -388,10 +388,10 @@ export default function StandardWeightCalculator() {
       {/* SEO 콘텐츠 */}
       <section className="mt-12 space-y-8">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-3">표준체중이란?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">세 가지 체중 참고식</h2>
           <p className="text-gray-600 leading-relaxed">
-            표준체중(ideal body weight)이란 키와 성별을 기준으로 건강을 유지하기에 가장 적합한 체중을 말합니다.
-            비만이나 저체중 여부를 판단하는 기준이 되며, 약물 투여량 계산이나 영양 상담 등 의료 분야에서도 널리 사용됩니다.
+            이 페이지는 키와 성별만 사용하는 세 가지 역사적 계산식을 비교합니다. 이 값이 개인에게 가장 건강한 체중을 뜻하지 않으며,
+            비만·저체중 진단이나 약물 용량 결정을 위한 결과가 아닙니다.
           </p>
           <p className="text-gray-600 leading-relaxed mt-2">
             표준체중은 하나의 절대적 수치가 아닌 참고 기준이며, 개인의 근육량, 체지방률, 연령 등에 따라
@@ -405,7 +405,7 @@ export default function StandardWeightCalculator() {
             <li>
               <strong className="text-gray-900">Broca법 (변형 브로카 공식)</strong>
               <p className="mt-1">
-                프랑스 외과의사 Paul Broca가 개발한 공식의 변형으로, 한국에서 가장 널리 사용됩니다.
+                Broca 식을 변형해 널리 알려진 간단한 경험식입니다.
                 남성은 (키 - 100) x 0.9, 여성은 (키 - 100) x 0.85로 계산합니다.
                 간단하지만 키가 매우 크거나 작은 사람에게는 정확도가 떨어질 수 있습니다.
               </p>
@@ -413,9 +413,9 @@ export default function StandardWeightCalculator() {
             <li>
               <strong className="text-gray-900">BMI 기준법</strong>
               <p className="mt-1">
-                세계보건기구(WHO)가 권장하는 이상적인 BMI 22를 기준으로 역산한 체중입니다.
+                성인 BMI 범위 안의 한 지점인 22를 편의상 선택해 역산한 체중입니다. WHO가 개인의 이상 체중으로 22를 지정한 것은 아닙니다.
                 키(m)² x 22로 계산하며, 성별에 관계없이 동일한 공식을 사용합니다.
-                국제적으로 가장 보편적인 기준입니다.
+                건강 상태나 개인 목표를 정하는 기준으로 단독 사용하지 마세요.
               </p>
             </li>
             <li>
@@ -424,7 +424,7 @@ export default function StandardWeightCalculator() {
                 1974년 미국의 약학자 Ben Devine이 약물 투여량 계산을 위해 개발한 공식입니다.
                 원래 인치 단위 기준이며, 남성은 50 + 2.3 x (키(inch) - 60),
                 여성은 45.5 + 2.3 x (키(inch) - 60)으로 계산합니다.
-                의료 현장에서 많이 사용되지만, 아시아인에게는 다소 높게 나올 수 있습니다.
+                건강 체중 공식이 아니라 약물 용량 계산을 돕기 위해 제안된 역사적 참고식입니다. 실제 투약에 사용하면 안 됩니다.
               </p>
             </li>
           </ul>
@@ -462,8 +462,8 @@ export default function StandardWeightCalculator() {
             <div>
               <h3 className="text-sm font-semibold text-gray-800">Q. 세 가지 공식 중 어떤 것을 기준으로 해야 하나요?</h3>
               <p className="text-sm text-gray-600 mt-1">
-                한국에서는 BMI 기준법(키(m)² x 22)이 가장 보편적으로 사용됩니다.
-                다만, 세 공식의 결과를 종합적으로 참고하면 자신의 적정 체중 범위를 더 정확하게 파악할 수 있습니다.
+                세 식의 용도와 가정이 달라 어느 하나를 개인의 목표 체중으로 권하지 않습니다.
+                성인 BMI의 넓은 선별 범위를 보려면 BMI 계산기를 참고하고, 건강 목표는 의료 전문가와 정하세요.
               </p>
             </div>
             <div>
@@ -477,8 +477,8 @@ export default function StandardWeightCalculator() {
             <div>
               <h3 className="text-sm font-semibold text-gray-800">Q. 표준체중의 ±10%가 정상 범위인 이유는?</h3>
               <p className="text-sm text-gray-600 mt-1">
-                대한비만학회에서는 표준체중의 ±10% 이내를 정상 체중으로 분류합니다.
-                이는 개인차를 고려한 범위로, 10~20% 초과 시 과체중, 20% 이상 초과 시 비만으로 판정합니다.
+                이 페이지의 ±10% 표시는 BMI 22 역산값과 현재 체중을 산술 비교하기 위한 구간일 뿐입니다.
+                정상·과체중·비만을 판정하는 기준으로 사용하지 않습니다.
               </p>
             </div>
             <div>

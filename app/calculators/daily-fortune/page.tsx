@@ -751,9 +751,9 @@ export default function DailyFortune() {
     <div className="py-6">
       {/* Header with Date */}
       <div className="text-center mb-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">AI 오늘의 운세</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">오늘의 띠 운세</h1>
         <p className="text-gray-500 mb-3">
-          AI가 나의 띠로 오늘의 운세를 분석합니다. 매일 새로운 운세가 제공됩니다.
+          도구가 나의 띠로 오늘의 운세를 분석합니다. 매일 새로운 운세가 제공됩니다.
         </p>
         <div className="inline-block bg-gradient-to-r from-orange-100 to-amber-100 rounded-full px-5 py-2">
           <span className="text-orange-700 font-semibold text-sm">{today}</span>

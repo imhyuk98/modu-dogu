@@ -34,11 +34,11 @@ const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 export const metadata: Metadata = {
   metadataBase: new URL("https://modu-dogu.pages.dev"),
   title: {
-    default: "모두의도구 - 친구와 같이 하는 무료 테스트·게임",
+    default: "모두의도구 — 무료 계산기·테스트·게임·온라인 도구 124개",
     template: "%s | 모두의도구",
   },
   description:
-    "친구와 같이 하는 텔레파시 게임, 케미 테스트, 오늘의 운세와 성향 테스트를 무료로 즐기고 결과를 공유하세요. 생활 계산기와 온라인 도구도 제공합니다.",
+    "생활·금융 계산기부터 테스트, 게임, 이미지·문서 온라인 도구까지 124개 기능을 회원가입 없이 무료로 이용하세요.",
   keywords: [
     "계산기",
     "연봉 실수령액",
@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     languages: { ko: "/", en: "/en", "x-default": "/" },
   },
   openGraph: {
-    title: "친구와 같이 하고, 결과를 나눠보세요 | 모두의도구",
+    title: "무료 계산기·테스트·게임·온라인 도구 124개 | 모두의도구",
     description:
-      "텔레파시 게임, 친구 케미, 성향 테스트와 오늘의 운세를 가입 없이 바로 즐겨보세요.",
+      "생활·금융 계산기부터 테스트, 게임, 이미지·문서 도구까지 회원가입 없이 이용하세요.",
     type: "website",
     locale: "ko_KR",
     url: "https://modu-dogu.pages.dev",
@@ -69,15 +69,15 @@ export const metadata: Metadata = {
         url: "https://modu-dogu.pages.dev/og-image.png",
         width: 1200,
         height: 630,
-        alt: "친구와 같이 하는 무료 테스트와 게임 - 모두의도구",
+        alt: "무료 계산기·테스트·게임·온라인 도구 - 모두의도구",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "친구와 같이 하고, 결과를 나눠보세요 | 모두의도구",
+    title: "무료 계산기·테스트·게임·온라인 도구 124개 | 모두의도구",
     description:
-      "텔레파시 게임, 친구 케미, 성향 테스트와 오늘의 운세를 가입 없이 바로 즐겨보세요.",
+      "생활·금융 계산기부터 테스트, 게임, 이미지·문서 도구까지 회원가입 없이 이용하세요.",
     images: ["https://modu-dogu.pages.dev/og-image.png"],
   },
 };
@@ -118,7 +118,7 @@ export default function RootLayout({
               alternateName: ["modu-dogu", "Modu Tools"],
               url: "https://modu-dogu.pages.dev",
               description:
-                "친구와 함께 즐기고 결과를 공유하는 무료 테스트·게임과 생활 도구를 제공합니다.",
+                "무료 계산기·테스트·게임·이미지·문서 온라인 도구 124개를 제공합니다.",
               inLanguage: ["ko", "en"],
               publisher: {
                 "@type": "Organization",

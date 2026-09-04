@@ -227,7 +227,7 @@ export default function BMRCalculator() {
           <div className="space-y-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-semibold text-gray-800 mb-2">Mifflin-St Jeor 공식 (1990년)</h3>
-              <p className="text-sm text-gray-600 mb-2">현재 가장 정확하다고 인정받는 공식입니다.</p>
+              <p className="text-sm text-gray-600 mb-2">키·체중·나이·성별로 기초대사량을 추정하는 널리 쓰이는 공식입니다.</p>
               <div className="text-sm text-gray-700 space-y-1 font-mono bg-white p-3 rounded border">
                 <p>남성: (10 x 체중kg) + (6.25 x 키cm) - (5 x 나이) + 5</p>
                 <p>여성: (10 x 체중kg) + (6.25 x 키cm) - (5 x 나이) - 161</p>
@@ -282,10 +282,10 @@ export default function BMRCalculator() {
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 mb-1">Q. 두 공식 중 어떤 것이 더 정확한가요?</h3>
+              <h3 className="font-semibold text-gray-800 mb-1">Q. 두 공식 중 무엇을 기준으로 보나요?</h3>
               <p className="text-sm text-gray-600">
-                미국영양학회(ADA)는 <strong>Mifflin-St Jeor 공식</strong>을 가장 정확한 BMR 계산법으로 권장합니다.
-                Harris-Benedict 공식은 실제 기초대사량보다 약 5% 정도 높게 측정되는 경향이 있습니다.
+                두 값 모두 집단 자료에서 만든 추정치입니다. 기본 결과는 <strong>Mifflin-St Jeor 공식</strong>으로 표시하고
+                Harris-Benedict 값은 비교용으로 제공합니다. 실제 기초대사량은 체성분과 건강 상태에 따라 달라집니다.
               </p>
             </div>
           </div>
