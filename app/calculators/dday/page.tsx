@@ -3,42 +3,42 @@
 import { useState, useMemo } from "react";
 import { calculateDday, calculateDateDiff, type DdayResult, type DateDiffResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+import { formatLocalDateKey, useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 type Mode = "dday" | "diff";
-
-function getDefaultTargetDate(): string {
-  const d = new Date();
-  d.setDate(d.getDate() + 100);
-  return d.toISOString().split("T")[0];
-}
-
-function getDefaultStartDate(): string {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - 1);
-  return d.toISOString().split("T")[0];
-}
-
-function getTodayStr(): string {
-  return new Date().toISOString().split("T")[0];
-}
+const DEFAULT_DATE = "__default__";
 
 export default function DdayCalculator() {
   const [mode, setMode] = useState<Mode>("dday");
-  const [targetDate, setTargetDate] = useState(getDefaultTargetDate);
-  const [startDate, setStartDate] = useState(getDefaultStartDate);
-  const [endDate, setEndDate] = useState(getTodayStr);
+  const [targetDateInput, setTargetDate] = useState(DEFAULT_DATE);
+  const [startDateInput, setStartDate] = useState(DEFAULT_DATE);
+  const [endDateInput, setEndDate] = useState(DEFAULT_DATE);
   const [copied, setCopied] = useState(false);
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+
+  const defaultDates = useMemo(() => {
+    if (!clientReady) return { target: "", start: "", end: "" };
+    const today = new Date(`${todayKey}T12:00:00`);
+    const target = new Date(today);
+    const start = new Date(today);
+    target.setDate(target.getDate() + 100);
+    start.setFullYear(start.getFullYear() - 1);
+    return { target: formatLocalDateKey(target), start: formatLocalDateKey(start), end: todayKey };
+  }, [clientReady, todayKey]);
+
+  const targetDate = targetDateInput === DEFAULT_DATE ? defaultDates.target : targetDateInput;
+  const startDate = startDateInput === DEFAULT_DATE ? defaultDates.start : startDateInput;
+  const endDate = endDateInput === DEFAULT_DATE ? defaultDates.end : endDateInput;
 
   const ddayResult = useMemo<DdayResult | null>(() => {
     if (!targetDate) return null;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return calculateDday(new Date(targetDate), today);
-  }, [targetDate]);
+    return calculateDday(new Date(`${targetDate}T00:00:00`), new Date(`${todayKey}T00:00:00`));
+  }, [targetDate, todayKey]);
 
   const diffResult = useMemo<DateDiffResult | null>(() => {
     if (!startDate || !endDate) return null;
-    return calculateDateDiff(new Date(startDate), new Date(endDate));
+    return calculateDateDiff(new Date(`${startDate}T00:00:00`), new Date(`${endDate}T00:00:00`));
   }, [startDate, endDate]);
 
   const handleReset = () => {
