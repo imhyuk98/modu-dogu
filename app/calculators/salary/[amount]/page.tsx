@@ -19,8 +19,6 @@ export default function SalaryAmountPage() {
   const result = calculateSalary(amountNum * 10000);
   const amountLabel = formatMan(amountNum);
 
-  const prevAmount = amountNum - 100;
-  const nextAmount = amountNum + 100;
   const nearAmounts = [
     amountNum - 500,
     amountNum - 300,
@@ -50,7 +48,7 @@ export default function SalaryAmountPage() {
         연봉 {amountLabel}원 실수령액
       </h1>
       <p className="text-gray-500 mb-8">
-        2026년 4대보험·소득세 기준 계산 결과입니다.
+        2026년 7월 이후 4대보험·예상 소득세 기준 계산 결과입니다.
       </p>
 
       {/* 핵심 결과 카드 */}

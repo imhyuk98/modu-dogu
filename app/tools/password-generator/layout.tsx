@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/tools/password-generator" },
+  alternates: {
+    canonical: "/tools/password-generator",
+    languages: { ko: "/tools/password-generator", en: "/en/tools/password-generator", "x-default": "/tools/password-generator" },
+  },
   title: "비밀번호 생성기 - 안전한 랜덤 비밀번호 만들기",
   description:
     "강력한 랜덤 비밀번호를 무료로 생성하세요. 길이, 대소문자, 숫자, 특수문자를 설정하여 안전한 비밀번호를 만들 수 있습니다.",

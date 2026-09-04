@@ -16,7 +16,6 @@ export default function RandomRoulette() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
-  const [rotation, setRotation] = useState(0);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -146,7 +145,6 @@ export default function RandomRoulette() {
       const current = startRotation + (totalRotation - startRotation) * eased;
 
       drawRoulette(canvas, items, current);
-      setRotation(current);
 
       if (progress < 1) {
         requestAnimationFrame(animate);

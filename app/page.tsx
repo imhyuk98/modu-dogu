@@ -8,118 +8,151 @@ import { allItems, sections } from "@/lib/sections";
 import type { Item, Section } from "@/lib/sections";
 import { getRecentTools } from "@/lib/recent";
 
-const recommendedHrefs = [
-  "/tools/telepathy-game",
-  "/tools/friend-chemistry",
-  "/calculators/daily-fortune",
-];
+const showcase = [
+  {
+    href: "/tools/telepathy-game",
+    overline: "찐친이면 이건 맞혀야지",
+    badge: "말 안 해도 알지?",
+    action: "우리 진짜 통하나?",
+    tone: "blue",
+  },
+  {
+    href: "/calculators/daily-fortune",
+    overline: "오늘 운빨 체크",
+    badge: "과몰입 금지",
+    action: "내 운세 까보기",
+    tone: "yellow",
+  },
+  {
+    href: "/tools/friend-chemistry",
+    overline: "단톡에 슬쩍 투척",
+    badge: "우정 검거",
+    action: "우리 케미 몇 점?",
+    tone: "pink",
+  },
+]
+  .map((entry) => ({
+    ...entry,
+    item: allItems.find((item) => item.href === entry.href),
+  }))
+  .filter((entry): entry is (typeof entry) & { item: Item } => Boolean(entry.item));
 
-const recommendedItems = recommendedHrefs
-  .map((href) => allItems.find((item) => item.href === href))
-  .filter((item): item is Item => Boolean(item));
-
-const launchHrefs = [
+const newHrefs = new Set([
   "/tools/personal-style-test",
   "/tools/ideal-type-worldcup",
   "/calculators/cost-per-use",
   "/tools/digital-fidget",
   "/tools/meme-card",
-];
+]);
 
-const launchItems = launchHrefs
-  .map((href) => allItems.find((item) => item.href === href))
-  .filter((item): item is Item => Boolean(item));
-
-const purposeGroups = [
-  {
-    key: "together",
-    label: "친구와 같이 놀기",
-    description: "링크를 보내고 답과 취향을 바로 비교하는 게임",
-    href: "/category/drinking",
-    badge: "초대 링크 · 결과 비교",
-    itemHrefs: ["/tools/telepathy-game", "/tools/friend-chemistry", "/tools/ideal-type-worldcup"],
-  },
-  {
-    key: "discover",
-    label: "오늘의 나 발견하기",
-    description: "매일 달라지는 운세와 공유하고 싶은 성향 결과",
-    href: "/category/fun",
-    itemHrefs: ["/calculators/daily-fortune", "/tools/energy-type-test", "/calculators/saju"],
-  },
-  {
-    key: "life",
-    label: "생활 계산하기",
-    description: "나이, 평수, 월급처럼 지금 필요한 숫자를 빠르게",
-    href: "/category/life",
-    itemHrefs: ["/calculators/age", "/calculators/pyeong", "/calculators/salary"],
-  },
-  {
-    key: "files",
-    label: "파일·이미지",
-    description: "압축, 변환, 편집을 브라우저에서 빠르게",
-    href: "/category/tools",
-    itemHrefs: ["/tools/image-compress", "/tools/image-mosaic", "/tools/qr-code"],
-  },
-].map((group) => ({
-  ...group,
-  items: group.itemHrefs
-    .map((href) => allItems.find((item) => item.href === href))
-    .filter((item): item is Item => Boolean(item)),
-}));
+const tones = ["blue", "pink", "yellow", "green", "orange", "violet"];
 
 function ArrowIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" d="M5 12h14m-5-5 5 5-5 5" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M5 12h14m-5-5 5 5-5 5" />
     </svg>
   );
 }
 
-function FeaturedRow({ item, index }: { item: Item; index: number }) {
+function ShowcaseCard({
+  item,
+  overline,
+  badge,
+  action,
+  tone,
+  index,
+}: {
+  item: Item;
+  overline: string;
+  badge: string;
+  action: string;
+  tone: string;
+  index: number;
+}) {
   return (
-    <Link href={item.href} className="home-featured-row">
-      <span className="home-row-index">{String(index + 1).padStart(2, "0")}</span>
-      <span>
+    <Link href={item.href} className={`store-showcase-card store-tone-${tone}`}>
+      <span className="store-showcase-topline">
+        <span>{overline}</span>
+        <span>0{index + 1}</span>
+      </span>
+      <span className="store-showcase-title">
         <strong>{item.title}</strong>
         <small>{item.desc}</small>
       </span>
-      <ArrowIcon />
+      <span className="store-showcase-art" aria-hidden="true">
+        <span className="store-showcase-orbit" />
+        <span className="store-showcase-emoji">{item.emoji}</span>
+        <span className="store-showcase-badge">{badge}</span>
+      </span>
+      <span className="store-showcase-action">
+        {action} <ArrowIcon />
+      </span>
     </Link>
   );
 }
 
-function ToolRow({ item, index }: { item: Item; index: number }) {
+function ToolCard({
+  item,
+  number,
+  tone,
+}: {
+  item: Item;
+  number: number;
+  tone: string;
+}) {
   return (
-    <Link href={item.href} className="home-tool-row">
-      <span className="home-tool-mark" aria-hidden="true">
-        {String(index + 1).padStart(2, "0")}
+    <Link href={item.href} prefetch={false} className={`store-tool-card store-tone-${tone}`}>
+      <span className="store-tool-art" aria-hidden="true">
+        <span className="store-tool-number">MD.{String(number).padStart(3, "0")}</span>
+        {newHrefs.has(item.href) && <span className="store-tool-new">NEW</span>}
+        <span className="store-tool-emoji">{item.emoji}</span>
       </span>
-      <span className="home-tool-copy">
-        <strong>{item.title}</strong>
-        <small>{item.desc}</small>
+      <span className="store-tool-info">
+        <span>
+          <strong>{item.title}</strong>
+          <small>{item.desc}</small>
+        </span>
+        <ArrowIcon />
       </span>
-      <span className="home-tool-type">{item.href.startsWith("/calculators/") ? "계산기" : "도구"}</span>
-      <ArrowIcon />
     </Link>
   );
 }
 
-function ToolSection({ section, items, index }: { section: Section; items: Item[]; index: number }) {
+function ToolSection({
+  section,
+  items,
+  index,
+}: {
+  section: Section;
+  items: Item[];
+  index: number;
+}) {
+  const sectionOffset = sections
+    .slice(0, index)
+    .reduce((total, candidate) => total + candidate.items.length, 0);
+
   return (
-    <section className="home-tool-section" aria-labelledby={`home-section-${section.key}`}>
-      <div className="home-section-heading">
-        <span className="home-section-number">{String(index + 1).padStart(2, "0")}</span>
+    <section className="store-tool-section" aria-labelledby={`store-section-${section.key}`}>
+      <div className="store-section-heading">
+        <span className="store-section-index">0{index + 1}</span>
         <div>
-          <h2 id={`home-section-${section.key}`}>{section.fullLabel}</h2>
-          <p>{section.description}</p>
+          <p>{section.icon} 무려 {items.length}개 있음</p>
+          <h2 id={`store-section-${section.key}`}>{section.fullLabel}</h2>
+          <small>{section.description}</small>
         </div>
-        <Link href={`/category/${section.key}`}>
-          전체 보기 <span aria-hidden="true">→</span>
+        <Link href={`/category/${section.key}`} prefetch={false}>
+          이 카테고리 털기 <ArrowIcon />
         </Link>
       </div>
-      <div className="home-tool-list">
+      <div className="store-tool-grid">
         {items.map((item, itemIndex) => (
-          <ToolRow key={item.href} item={item} index={itemIndex} />
+          <ToolCard
+            key={item.href}
+            item={item}
+            number={sectionOffset + itemIndex + 1}
+            tone={tones[(sectionOffset + itemIndex) % tones.length]}
+          />
         ))}
       </div>
     </section>
@@ -148,7 +181,7 @@ export default function Home() {
     () => [
       {
         key: "all",
-        label: "전체 도구",
+        label: "전체",
         count: allItems.filter(matchesQuery).length,
       },
       ...sections.map((section) => ({
@@ -175,166 +208,124 @@ export default function Home() {
   const visibleCount = visibleSections.reduce((total, group) => total + group.items.length, 0);
   const recentItems = recentHrefs
     .map((href) => allItems.find((item) => item.href === href))
-    .filter((item): item is Item => Boolean(item));
+    .filter((item): item is Item => Boolean(item))
+    .slice(0, 5);
 
   return (
-    <main className="home-index">
-      <section className="home-hero">
-        <div className="home-container home-hero-grid">
-          <div className="home-hero-copy">
-            <p className="home-eyebrow">친구 링크 · 결과 카드 · 오늘의 콘텐츠</p>
-            <h1>친구와 같이 하고,<br />결과를 나눠보세요.</h1>
-            <p className="home-intro">
-              텔레파시 게임부터 친구 케미, 성향 테스트와 오늘의 운세까지.
-              가입 없이 바로 시작하고 결과를 친구에게 보내보세요.
-            </p>
-            <ToolSearch items={allItems} query={query} onQueryChange={setQuery} />
-            <p className="home-search-meta" aria-live="polite">
-              {query ? `검색 결과 ${visibleCount}개` : `현재 ${allItems.length}개 도구 제공 중`}
-            </p>
+    <main className="home-index store-home">
+      <section className="store-hero" aria-labelledby="store-title">
+        <div className="store-wide">
+          <div className="store-topline">
+            <span>쓸데없어 보여도 은근 다 씀</span>
+            <span>로그인 없음 · {allItems.length}개 무료</span>
           </div>
-
-          <aside className="home-featured" aria-labelledby="home-featured-title">
-            <div className="home-featured-heading">
-              <p>바로 시작</p>
-              <h2 id="home-featured-title">지금 같이 하기</h2>
+          <h1 id="store-title" aria-label="모두의 도구">모두의도구</h1>
+          <div className="store-hero-bottom">
+            <p>
+              운세 보러 왔다가 연봉 계산하고 감.<br />
+              재미도 실용도, 일단 눌러보면 됨.
+            </p>
+            <div className="store-hero-search">
+              <ToolSearch items={allItems} query={query} onQueryChange={setQuery} />
+              <p className="home-search-meta" aria-live="polite">
+                {query ? `${visibleCount}개 찾음` : "로그인 없이 바로 가능"}
+              </p>
             </div>
-            <div>
-              {recommendedItems.map((item, index) => (
-                <FeaturedRow key={item.href} item={item} index={index} />
-              ))}
-            </div>
-          </aside>
+          </div>
         </div>
       </section>
 
-      <section className="home-purpose" aria-labelledby="home-purpose-title">
-        <div className="home-container">
-          <div className="home-purpose-heading">
-            <div>
-              <p className="home-eyebrow">바로 시작</p>
-              <h2 id="home-purpose-title">오늘은 무엇을 해볼까요?</h2>
-            </div>
-            <p>같이 놀기, 나를 발견하기, 필요한 계산까지 목적별로 골라보세요.</p>
-          </div>
-
-          <div className="home-purpose-grid">
-            {purposeGroups.map((group, index) => (
-              <article key={group.key} className="home-purpose-group">
-                <div className="home-purpose-title">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  {group.badge && <small>{group.badge}</small>}
-                </div>
-                <h3>{group.label}</h3>
-                <p>{group.description}</p>
-                <div className="home-purpose-links">
-                  {group.items.map((item) => (
-                    <Link key={item.href} href={item.href}>
-                      {item.title}<span aria-hidden="true">↗</span>
-                    </Link>
-                  ))}
-                </div>
-                <Link href={group.href} className="home-purpose-all">
-                  분야 전체 보기 <span aria-hidden="true">→</span>
-                </Link>
-              </article>
+      {!query && (
+        <section className="store-showcase" aria-label="지금 인기 있는 도구">
+          <div className="store-showcase-grid">
+            {showcase.map((entry, index) => (
+              <ShowcaseCard
+                key={entry.href}
+                item={entry.item}
+                overline={entry.overline}
+                badge={entry.badge}
+                action={entry.action}
+                tone={entry.tone}
+                index={index}
+              />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {recentItems.length > 0 && !query && activeCategory === "all" && (
-        <section className="home-recent" aria-labelledby="home-recent-title">
-          <div className="home-container home-recent-inner">
-            <h2 id="home-recent-title">최근 사용</h2>
-            <div className="home-recent-links">
+        <section className="store-recent" aria-labelledby="store-recent-title">
+          <div className="store-wide store-recent-inner">
+            <h2 id="store-recent-title">아까 그거</h2>
+            <div>
               {recentItems.map((item) => (
-                <Link key={item.href} href={item.href}>{item.title}</Link>
+                <Link key={item.href} href={item.href}>{item.title} <span aria-hidden="true">↗</span></Link>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {!query && activeCategory === "all" && (
-        <section className="home-recent" aria-labelledby="home-launch-title">
-          <div className="home-container home-recent-inner">
-            <h2 id="home-launch-title">새로 추가</h2>
-            <div className="home-recent-links">
-              {launchItems.map((item) => (
-                <Link key={item.href} href={item.href}>{item.title}</Link>
-              ))}
+      <section className="store-directory" aria-labelledby="store-directory-title">
+        <div className="store-wide">
+          <div className="store-directory-heading">
+            <div>
+              <p>그냥 지나치기엔 좀 궁금함</p>
+              <h2 id="store-directory-title">뭐 할지 몰라서<br />다 준비함.</h2>
             </div>
-          </div>
-        </section>
-      )}
-
-      <section className="home-directory" aria-labelledby="home-directory-title">
-        <div className="home-container">
-          <div className="home-directory-intro">
-            <p className="home-eyebrow">도구 서랍</p>
-            <h2 id="home-directory-title">{allItems.length}개 도구를 분야별로.</h2>
-            <p>게임과 테스트 외에도 금융·생활 계산, 이미지·문서 도구를 모두 이용할 수 있어요.</p>
+            <p>
+              놀 거리부터 돈·생활 계산, 이미지 도구까지.<br />
+              저장해두면 언젠가 꼭 씀.
+            </p>
           </div>
 
-          <div className="home-directory-grid">
-            <aside className="home-category-drawer" aria-label="도구 분류">
-              <CategoryRail
-                items={categoryTabs}
-                value={activeCategory}
-                onValueChange={setActiveCategory}
-                controlsId="home-tool-directory"
-              />
-            </aside>
+          <div className="store-category-bar">
+            <CategoryRail
+              items={categoryTabs}
+              value={activeCategory}
+              onValueChange={setActiveCategory}
+              controlsId="store-tool-directory"
+            />
+          </div>
 
-            <div
-              id="home-tool-directory"
-              className="home-directory-content"
-              role="tabpanel"
-              aria-label="선택한 카테고리의 도구 목록"
-            >
-              {visibleSections.length > 0 ? (
-                visibleSections.map(({ section, items }) => (
-                  <ToolSection
-                    key={section.key}
-                    section={section}
-                    items={items}
-                    index={sections.findIndex((candidate) => candidate.key === section.key)}
-                  />
-                ))
-              ) : (
-                <div className="home-no-results" role="status">
-                  <p>“{query}”에 맞는 도구가 없습니다.</p>
-                  <button type="button" onClick={() => setQuery("")}>검색어 지우기</button>
-                </div>
-              )}
-            </div>
+          <div
+            id="store-tool-directory"
+            className="store-directory-content"
+            role="tabpanel"
+            aria-label="선택한 카테고리의 도구 목록"
+          >
+            {visibleSections.length > 0 ? (
+              visibleSections.map(({ section, items }) => (
+                <ToolSection
+                  key={section.key}
+                  section={section}
+                  items={items}
+                  index={sections.findIndex((candidate) => candidate.key === section.key)}
+                />
+              ))
+            ) : (
+              <div className="store-no-results" role="status">
+                <p>“{query}”은 아직 없음. 다른 걸 찾아볼까?</p>
+                <button type="button" onClick={() => setQuery("")}>처음부터 보기</button>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      <section className="home-trust" aria-label="서비스 안내">
-        <div className="home-container home-trust-grid">
-          <div>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeWidth="1.6" d="M12 3 5 6v5c0 4.5 2.8 8.2 7 10 4.2-1.8 7-5.5 7-10V6l-7-3Z" />
-              <path strokeWidth="1.6" d="m9 12 2 2 4-4" />
-            </svg>
-            <span><strong>개인정보 부담 없이</strong><small>지원되는 도구는 기기 안에서 처리</small></span>
-          </div>
-          <div>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeWidth="1.6" d="M13 2 4.5 13H11l-1 9 8.5-12H12l1-8Z" />
-            </svg>
-            <span><strong>설치 없이 바로</strong><small>웹에서 열고 즉시 사용</small></span>
-          </div>
-          <div>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeWidth="1.6" d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z" />
-            </svg>
-            <span><strong>전 도구 무료</strong><small>회원가입 없이 필요한 만큼</small></span>
-          </div>
+      <section className="store-promise" aria-label="서비스 안내">
+        <div className="store-wide store-promise-grid">
+          <p><strong>FREE</strong><span>결제창? 그런 거 없음</span></p>
+          <p><strong>CLICK</strong><span>로그인 없이 바로 시작</span></p>
+          <p><strong>PRIVATE</strong><span>가능한 건 브라우저에서 처리</span></p>
         </div>
+        <p className="store-credit">
+          Design direction adapted from{" "}
+          <a href="https://www.figma.com/community/file/1497434107110917186/hip-fashion-sale" target="_blank" rel="noreferrer">
+            Hip Fashion Sale
+          </a>{" "}
+          · CC BY 4.0
+        </p>
       </section>
     </main>
   );

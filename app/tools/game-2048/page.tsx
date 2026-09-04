@@ -25,61 +25,6 @@ function addRandomTile(grid: Grid): Grid {
   return newGrid;
 }
 
-function rotateGrid(grid: Grid): Grid {
-  const n = 4;
-  const rotated = createEmptyGrid();
-  for (let r = 0; r < n; r++) {
-    for (let c = 0; c < n; c++) {
-      rotated[c][n - 1 - r] = grid[r][c];
-    }
-  }
-  return rotated;
-}
-
-function slideLeft(grid: Grid): { grid: Grid; score: number; moved: boolean } {
-  let score = 0;
-  let moved = false;
-  const newGrid = createEmptyGrid();
-
-  for (let r = 0; r < 4; r++) {
-    const row = grid[r].filter((v) => v !== 0);
-    const merged: number[] = [];
-    let i = 0;
-    while (i < row.length) {
-      if (i + 1 < row.length && row[i] === row[i + 1]) {
-        const val = row[i] * 2;
-        merged.push(val);
-        score += val;
-        i += 2;
-      } else {
-        merged.push(row[i]);
-        i++;
-      }
-    }
-    for (let c = 0; c < 4; c++) {
-      newGrid[r][c] = merged[c] || 0;
-      if (newGrid[r][c] !== grid[r][c]) moved = true;
-    }
-  }
-
-  return { grid: newGrid, score, moved };
-}
-
-function move(grid: Grid, direction: "left" | "right" | "up" | "down"): { grid: Grid; score: number; moved: boolean } {
-  let rotated = grid;
-  const rotations = { left: 0, down: 1, right: 2, up: 3 };
-  const times = rotations[direction];
-
-  for (let i = 0; i < times; i++) rotated = rotateGrid(rotated);
-
-  const result = slideLeft(rotated);
-
-  let final = result.grid;
-  for (let i = 0; i < (4 - times) % 4; i++) final = rotateGrid(final);
-
-  return { grid: final, score: result.score, moved: result.moved };
-}
-
 function canMove(grid: Grid): boolean {
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
@@ -243,6 +188,15 @@ function gridToTiles(grid: Grid, idCounter: { current: number }): Tile[] {
   return tiles;
 }
 
+function createInitialTiles(): Tile[] {
+  // Static export and first browser render must be identical. Random tiles are
+  // still used for every move and when the player starts a new game.
+  return [
+    { id: 1, value: 2, row: 0, col: 0, isNew: true },
+    { id: 2, value: 2, row: 1, col: 1, isNew: true },
+  ];
+}
+
 /** Convert Tile[] back to Grid (for canMove / hasWon checks) */
 function tilesToGrid(tiles: Tile[]): Grid {
   const grid = createEmptyGrid();
@@ -341,11 +295,8 @@ const boardCSS = `
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function Game2048() {
-  const idCounterRef = useRef(1);
-  const [tiles, setTiles] = useState<Tile[]>(() => {
-    const grid = addRandomTile(addRandomTile(createEmptyGrid()));
-    return gridToTiles(grid, idCounterRef);
-  });
+  const idCounterRef = useRef(3);
+  const [tiles, setTiles] = useState<Tile[]>(createInitialTiles);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -357,6 +308,8 @@ export default function Game2048() {
 
   useEffect(() => {
     const stored = localStorage.getItem("best2048");
+    // Browser-persisted high score is synchronized after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored) setBestScore(parseInt(stored, 10));
   }, []);
 

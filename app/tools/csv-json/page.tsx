@@ -230,6 +230,7 @@ export default function CsvJsonConverter() {
               구분자:
             </label>
             <select
+              aria-label="CSV 구분자"
               value={delimiter}
               onChange={(e) => setDelimiter(e.target.value as Delimiter)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

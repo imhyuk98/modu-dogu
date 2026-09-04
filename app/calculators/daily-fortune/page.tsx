@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
 import ShareResultCard from "@/components/ShareResultCard";
 import DailyReturnCard from "@/components/viral/DailyReturnCard";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 // ─── Zodiac Data ────────────────────────────────────────────
 const 띠목록 = [
@@ -658,12 +659,14 @@ export default function DailyFortune() {
   const [result, setResult] = useState<FortuneResult | null>(null);
   const [activeZodiac, setActiveZodiac] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
-
-  const today = useMemo(() => {
-    const d = new Date();
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+  const today = (() => {
+    if (!clientReady) return "오늘";
+    const d = new Date(`${todayKey}T12:00:00`);
     const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
     return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${dayNames[d.getDay()]}요일)`;
-  }, []);
+  })();
 
   const handleSelectZodiac = (idx: number) => {
     setSelectedZodiac(idx);

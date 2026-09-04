@@ -15,8 +15,6 @@ function formatAmountLabel(manWon: number) {
 
 const AMOUNTS = [5000, 10000, 15000, 20000, 30000, 40000, 50000];
 const RATES = [3, 3.5, 4, 4.5, 5, 5.5, 6];
-const YEARS = [10, 20, 30];
-
 export default function LoanParamsPage() {
   const { params } = useParams<{ params: string }>();
   const [amountStr, rateStr, yearsStr] = params.split("-");

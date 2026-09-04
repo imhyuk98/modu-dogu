@@ -85,7 +85,7 @@ export default function DdayCalculator() {
         <div className="calc-card p-6 mb-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">목표 날짜</label>
-            <input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)}
+            <input type="date" aria-label="목표 날짜" value={targetDate} onChange={(e) => setTargetDate(e.target.value)}
               className="calc-input calc-input-lg" />
           </div>
           <div className="flex gap-3">
@@ -100,12 +100,12 @@ export default function DdayCalculator() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">시작 날짜</label>
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+              <input type="date" aria-label="시작 날짜" value={startDate} onChange={(e) => setStartDate(e.target.value)}
                 className="calc-input calc-input-lg" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">종료 날짜</label>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+              <input type="date" aria-label="종료 날짜" value={endDate} onChange={(e) => setEndDate(e.target.value)}
                 className="calc-input calc-input-lg" />
             </div>
           </div>

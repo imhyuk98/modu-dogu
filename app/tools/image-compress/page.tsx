@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Local blob previews require native image elements. */
 
 import { useState, useRef, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -125,14 +126,11 @@ export default function ImageCompress() {
       const isWebp = imageFile.file.type === "image/webp";
 
       let mimeType = "image/jpeg";
-      let ext = ".jpg";
       if (isWebp) {
         mimeType = "image/webp";
-        ext = ".webp";
       } else if (!isJpeg) {
         // PNG or other -> compress as WebP for better results
         mimeType = "image/webp";
-        ext = ".webp";
       }
 
       canvas.toBlob(
@@ -143,8 +141,6 @@ export default function ImageCompress() {
           }
 
           const blobUrl = URL.createObjectURL(blob);
-          const baseName = imageFile.name.replace(/\.[^.]+$/, "");
-
           setCompressed({
             id: imageFile.id,
             originalName: imageFile.name,

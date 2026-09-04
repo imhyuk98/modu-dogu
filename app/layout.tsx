@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Noto_Sans_KR } from "next/font/google";
+import { Gasoek_One, Geist_Mono, Noto_Sans_KR } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,6 +9,7 @@ import FloatingButtons from "@/components/FloatingButtons";
 import Breadcrumb from "@/components/Breadcrumb";
 import TrackVisit from "@/components/TrackVisit";
 import RegisterSW from "@/components/RegisterSW";
+import HtmlLanguageSync from "@/components/HtmlLanguageSync";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -19,6 +21,15 @@ const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
   display: "swap",
 });
+
+const gasoekOne = Gasoek_One({
+  variable: "--font-gasoek-one",
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://modu-dogu.pages.dev"),
@@ -41,7 +52,10 @@ export const metadata: Metadata = {
     "MBTI 궁합",
     "온라인 도구",
   ],
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: { ko: "/", en: "/en", "x-default": "/" },
+  },
   openGraph: {
     title: "친구와 같이 하고, 결과를 나눠보세요 | 모두의도구",
     description:
@@ -74,34 +88,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.lang=location.pathname==='/en'||location.pathname.startsWith('/en/')?'en':'ko'" }} />
         <meta name="naver-site-verification" content="8856760dc5a9e429adfe0c65cb1bfe4206d6fdb2" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#a93d28" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3204700288703280"
-          crossOrigin="anonymous"
-        ></script>
       </head>
       <body
-        className={`${notoSansKr.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${notoSansKr.variable} ${geistMono.variable} ${gasoekOne.variable} antialiased min-h-screen flex flex-col`}
       >
+        {adsenseId && (
+          <Script
+            id="google-adsense"
+            strategy="lazyOnload"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "모두의도구",
-              alternateName: "modu-dogu",
+              name: "모두의도구 · Modu Tools",
+              alternateName: ["modu-dogu", "Modu Tools"],
               url: "https://modu-dogu.pages.dev",
               description:
                 "친구와 함께 즐기고 결과를 공유하는 무료 테스트·게임과 생활 도구를 제공합니다.",
-              inLanguage: "ko",
+              inLanguage: ["ko", "en"],
               publisher: {
                 "@type": "Organization",
                 name: "모두의도구",
@@ -116,6 +134,7 @@ export default function RootLayout({
           }}
         />
         <GoogleAnalytics />
+        <HtmlLanguageSync />
         <Header />
         <main className="flex-1">
           <Breadcrumb />

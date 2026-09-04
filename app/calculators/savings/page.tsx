@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { calculateSavings, type SavingsResult, type SavingsType } from "@/lib/calculations";
+import { calculateSavings, type SavingsType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 interface SavingsRatesData {

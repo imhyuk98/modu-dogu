@@ -3,18 +3,21 @@
 import { useState, useMemo } from "react";
 import { calculateAge, type AgeResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 export default function AgeCalculator() {
   const [birthDate, setBirthDate] = useState("1990-01-01");
   const [copied, setCopied] = useState(false);
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
 
   const result = useMemo<AgeResult | null>(() => {
-    if (!birthDate) return null;
+    if (!clientReady || !birthDate) return null;
     const birth = new Date(birthDate);
-    const today = new Date();
+    const today = new Date(`${todayKey}T12:00:00`);
     if (birth > today) return null;
     return calculateAge(birth, today);
-  }, [birthDate]);
+  }, [birthDate, clientReady, todayKey]);
 
   const handleReset = () => {
     setBirthDate("");
@@ -46,7 +49,7 @@ export default function AgeCalculator() {
       <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">생년월일</label>
-          <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)}
+          <input type="date" aria-label="생년월일" value={birthDate} onChange={(e) => setBirthDate(e.target.value)}
             className="calc-input calc-input-lg" />
         </div>
         <div className="flex gap-3">

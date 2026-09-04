@@ -25,16 +25,16 @@ export default function AdBanner({
   const pushed = useRef(false);
 
   useEffect(() => {
-    if (!AD_CLIENT || pushed.current) return;
+    if (!AD_CLIENT || !/^\d+$/.test(slot) || pushed.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
       pushed.current = true;
     } catch {
       // AdSense not loaded yet
     }
-  }, []);
+  }, [slot]);
 
-  if (!AD_CLIENT) {
+  if (!AD_CLIENT || !/^\d+$/.test(slot)) {
     return (
       <div
         className={`bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 text-sm py-6 ${className}`}

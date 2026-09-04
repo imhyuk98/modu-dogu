@@ -73,20 +73,22 @@ export default function LiarGamePage() {
   };
 
   useEffect(() => {
-    if (timerRunning && timer > 0) {
-      timerRef.current = setInterval(() => setTimer((t) => t - 1), 1000);
-    }
+    if (!timerRunning) return;
+    timerRef.current = setInterval(() => {
+      setTimer((value) => {
+        if (value <= 1) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
+          setTimerRunning(false);
+          return 0;
+        }
+        return value - 1;
+      });
+    }, 1000);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [timerRunning, timer]);
-
-  useEffect(() => {
-    if (timer <= 0) {
-      setTimerRunning(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-  }, [timer]);
+  }, [timerRunning]);
 
   const formatTime = (s: number) =>
     `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;

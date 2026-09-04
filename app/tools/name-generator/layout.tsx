@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "https://modu-dogu.pages.dev/tools/name-generator",
+    languages: {
+      ko: "/tools/name-generator",
+      en: "/en/tools/name-generator",
+      "x-default": "/tools/name-generator",
+    },
   },
   openGraph: {
     images: ["/og-image.png"],

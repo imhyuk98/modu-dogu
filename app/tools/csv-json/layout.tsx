@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/tools/csv-json" },
+  alternates: {
+    canonical: "/tools/csv-json",
+    languages: { ko: "/tools/csv-json", en: "/en/tools/csv-json", "x-default": "/tools/csv-json" },
+  },
   title: "CSV JSON 변환기 - CSV를 JSON으로, JSON을 CSV로 변환",
   description:
     "CSV 데이터를 JSON으로, JSON 데이터를 CSV로 간편하게 변환할 수 있는 무료 온라인 도구입니다.",

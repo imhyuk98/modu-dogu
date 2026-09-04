@@ -53,39 +53,49 @@ const ACCOUNT_OPTIONS = [
   { label: "15년 이상", score: 17 },
 ];
 
-function getWinProbability(total: number) {
-  if (total >= 70) return { label: "높음 (수도권)", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "수도권 주요 단지에서도 당첨 가능성이 높습니다." };
-  if (total >= 65) return { label: "보통 (수도권)", color: "text-yellow-600", bg: "bg-yellow-50", border: "border-yellow-200", desc: "수도권 일부 단지에서 당첨이 가능한 점수대입니다." };
-  if (total >= 60) return { label: "높음 (서울 외곽/지방)", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "서울 외곽이나 지방 광역시에서 당첨 가능성이 높습니다." };
-  if (total >= 50) return { label: "보통 (지방)", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "지방 중소도시에서 당첨 가능성이 있는 점수대입니다." };
-  return { label: "낮음", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "가점이 낮아 당첨이 어려울 수 있습니다. 추첨제 물량을 노려보세요." };
+const SPOUSE_ACCOUNT_OPTIONS = [
+  { label: "배우자 없음 또는 통장 미가입", score: 0 },
+  { label: "1년 미만", score: 1 },
+  { label: "1년 이상 ~ 2년 미만", score: 2 },
+  { label: "2년 이상", score: 3 },
+];
+
+function getScoreGuide(total: number) {
+  if (total >= 70) return { label: "70점대 이상", color: "text-green-600", bg: "bg-green-50", border: "border-green-200", desc: "높은 가점 구간입니다. 실제 경쟁 결과는 해당 단지의 모집공고와 신청자 분포를 확인하세요." };
+  if (total >= 60) return { label: "60점대", color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200", desc: "60점대 가점 구간입니다. 지역·주택형·공급유형별 과거 커트라인을 함께 확인하세요." };
+  if (total >= 50) return { label: "50점대", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-200", desc: "50점대 가점 구간입니다. 모집공고의 가점제·추첨제 비율과 지원 자격을 함께 확인하세요." };
+  return { label: "50점 미만", color: "text-red-600", bg: "bg-red-50", border: "border-red-200", desc: "50점 미만 가점 구간입니다. 점수만으로 당첨 가능성을 판단할 수 없으니 추첨제·특별공급 자격도 확인하세요." };
 }
 
 export default function HousingSubscriptionCalculator() {
   const [homelessIdx, setHomelessIdx] = useState(0);
   const [dependentsIdx, setDependentsIdx] = useState(0);
   const [accountIdx, setAccountIdx] = useState(0);
+  const [spouseAccountIdx, setSpouseAccountIdx] = useState(0);
   const [copied, setCopied] = useState(false);
 
   const result = useMemo(() => {
     const homelessScore = HOMELESS_OPTIONS[homelessIdx].score;
     const dependentsScore = DEPENDENTS_OPTIONS[dependentsIdx].score;
-    const accountScore = ACCOUNT_OPTIONS[accountIdx].score;
+    const applicantAccountScore = ACCOUNT_OPTIONS[accountIdx].score;
+    const spouseAccountScore = SPOUSE_ACCOUNT_OPTIONS[spouseAccountIdx].score;
+    const accountScore = Math.min(17, applicantAccountScore + spouseAccountScore);
     const total = homelessScore + dependentsScore + accountScore;
-    return { homelessScore, dependentsScore, accountScore, total };
-  }, [homelessIdx, dependentsIdx, accountIdx]);
+    return { homelessScore, dependentsScore, applicantAccountScore, spouseAccountScore, accountScore, total };
+  }, [homelessIdx, dependentsIdx, accountIdx, spouseAccountIdx]);
 
-  const probability = useMemo(() => getWinProbability(result.total), [result.total]);
+  const scoreGuide = useMemo(() => getScoreGuide(result.total), [result.total]);
 
   const handleReset = () => {
     setHomelessIdx(0);
     setDependentsIdx(0);
     setAccountIdx(0);
+    setSpouseAccountIdx(0);
     setCopied(false);
   };
 
   const handleCopy = async () => {
-    const text = `청약 가점: ${result.total}점/84점\n- 무주택기간: ${result.homelessScore}점 (${HOMELESS_OPTIONS[homelessIdx].label})\n- 부양가족수: ${result.dependentsScore}점 (${DEPENDENTS_OPTIONS[dependentsIdx].label})\n- 청약통장 가입기간: ${result.accountScore}점 (${ACCOUNT_OPTIONS[accountIdx].label})\n- 당첨 가능성: ${probability.label}`;
+    const text = `청약 가점: ${result.total}점/84점\n- 무주택기간: ${result.homelessScore}점 (${HOMELESS_OPTIONS[homelessIdx].label})\n- 부양가족수: ${result.dependentsScore}점 (${DEPENDENTS_OPTIONS[dependentsIdx].label})\n- 청약통장 가입기간: ${result.accountScore}점 (신청자 ${result.applicantAccountScore}점 + 배우자 ${result.spouseAccountScore}점, 합산 최대 17점)\n- 점수 구간: ${scoreGuide.label}`;
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -108,7 +118,7 @@ export default function HousingSubscriptionCalculator() {
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">청약 점수 계산기</h1>
       <p className="text-gray-500 mb-8">
-        무주택기간, 부양가족수, 청약통장 가입기간을 선택하면 청약 가점(최대 84점)을 자동으로 계산합니다.
+        무주택기간, 부양가족수, 본인·배우자 청약통장 가입기간을 선택하면 민영주택 일반공급 가점(최대 84점)을 계산합니다.
       </p>
 
       {/* 입력 폼 */}
@@ -119,6 +129,7 @@ export default function HousingSubscriptionCalculator() {
             무주택기간 <span className="text-gray-400">(최대 32점)</span>
           </label>
           <select
+            aria-label="무주택기간"
             value={homelessIdx}
             onChange={(e) => setHomelessIdx(Number(e.target.value))}
             className="calc-input"
@@ -137,6 +148,7 @@ export default function HousingSubscriptionCalculator() {
             부양가족수 <span className="text-gray-400">(최대 35점)</span>
           </label>
           <select
+            aria-label="부양가족수"
             value={dependentsIdx}
             onChange={(e) => setDependentsIdx(Number(e.target.value))}
             className="calc-input"
@@ -152,9 +164,10 @@ export default function HousingSubscriptionCalculator() {
         {/* 청약통장 가입기간 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            청약통장 가입기간 <span className="text-gray-400">(최대 17점)</span>
+            신청자 청약통장 가입기간 <span className="text-gray-400">(배우자와 합산 최대 17점)</span>
           </label>
           <select
+            aria-label="신청자 청약통장 가입기간"
             value={accountIdx}
             onChange={(e) => setAccountIdx(Number(e.target.value))}
             className="calc-input"
@@ -165,6 +178,26 @@ export default function HousingSubscriptionCalculator() {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* 배우자 청약통장 가입기간 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            배우자 청약통장 가입기간 <span className="text-gray-400">(최대 3점 합산)</span>
+          </label>
+          <select
+            aria-label="배우자 청약통장 가입기간"
+            value={spouseAccountIdx}
+            onChange={(e) => setSpouseAccountIdx(Number(e.target.value))}
+            className="calc-input"
+          >
+            {SPOUSE_ACCOUNT_OPTIONS.map((opt, i) => (
+              <option key={i} value={i}>
+                {opt.label} ({opt.score}점)
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-gray-500">배우자 보유기간의 50%를 환산한 공식 점수표 기준입니다.</p>
         </div>
 
         <div className="flex gap-3">
@@ -182,8 +215,8 @@ export default function HousingSubscriptionCalculator() {
             <p className="text-5xl font-bold">{result.total}</p>
             <p className="text-2xl text-blue-200">/ 84점</p>
           </div>
-          <div className={`mt-3 inline-block px-4 py-1.5 rounded-full text-sm font-semibold ${probability.bg} ${probability.color}`}>
-            당첨 가능성: {probability.label}
+          <div className={`mt-3 inline-block px-4 py-1.5 rounded-full text-sm font-semibold ${scoreGuide.bg} ${scoreGuide.color}`}>
+            점수 구간: {scoreGuide.label}
           </div>
         </div>
 
@@ -210,7 +243,7 @@ export default function HousingSubscriptionCalculator() {
               </div>
             </div>
             <div className="flex justify-between text-[10px] text-gray-400 mt-1">
-              <span>낮음</span>
+              <span>0점</span>
               <span>60점</span>
               <span>65점</span>
               <span>70점</span>
@@ -265,10 +298,10 @@ export default function HousingSubscriptionCalculator() {
             </div>
           </div>
 
-          {/* 당첨 가능성 평가 */}
-          <div className={`p-4 rounded-lg border ${probability.bg} ${probability.border}`}>
-            <p className={`font-semibold ${probability.color} mb-1`}>당첨 가능성: {probability.label}</p>
-            <p className="text-sm text-gray-600">{probability.desc}</p>
+          {/* 점수 구간 안내 */}
+          <div className={`p-4 rounded-lg border ${scoreGuide.bg} ${scoreGuide.border}`}>
+            <p className={`font-semibold ${scoreGuide.color} mb-1`}>점수 구간: {scoreGuide.label}</p>
+            <p className="text-sm text-gray-600">{scoreGuide.desc}</p>
           </div>
         </div>
       </div>
@@ -280,8 +313,8 @@ export default function HousingSubscriptionCalculator() {
           <li className="flex gap-2">
             <span className="text-blue-500 font-bold shrink-0">1.</span>
             <span>
-              <strong>청약통장 일찍 가입하기</strong> - 만 17세부터 가입 가능하며, 가입 기간이 길수록 가점이 높습니다.
-              미성년자도 가입 가능하니 일찍 가입하세요.
+              <strong>청약통장 가입기간 확인하기</strong> - 가입 기간이 길수록 점수가 높고 배우자 가입기간도 최대 3점까지 합산됩니다.
+              청약홈의 가입확인용 순위확인서로 인정 기간을 확인하세요.
             </span>
           </li>
           <li className="flex gap-2">
@@ -301,15 +334,15 @@ export default function HousingSubscriptionCalculator() {
           <li className="flex gap-2">
             <span className="text-blue-500 font-bold shrink-0">4.</span>
             <span>
-              <strong>추첨제 병행 전략</strong> - 가점이 낮다면 추첨제 물량(전용 85m² 초과)도 함께 노려보세요.
-              추첨제는 가점과 무관하게 당첨 가능합니다.
+              <strong>추첨제 물량 확인</strong> - 가점이 낮다면 해당 입주자모집공고의 추첨제 공급 비율과 자격을 함께 확인하세요.
+              적용 비율은 지역·규제 여부·주택형에 따라 달라집니다.
             </span>
           </li>
           <li className="flex gap-2">
             <span className="text-blue-500 font-bold shrink-0">5.</span>
             <span>
               <strong>특별공급 확인</strong> - 신혼부부, 생애최초, 다자녀 등 특별공급 자격이 되는지 먼저 확인하세요.
-              가점제보다 당첨 가능성이 높을 수 있습니다.
+              공급유형마다 소득·자산·세대 요건이 다르므로 모집공고를 기준으로 판단해야 합니다.
             </span>
           </li>
         </ul>
@@ -339,7 +372,7 @@ export default function HousingSubscriptionCalculator() {
                 <td className="text-center py-2 px-3 border border-gray-200 font-semibold">35점</td>
               </tr>
               <tr>
-                <td className="py-2 px-3 border border-gray-200 font-medium">청약통장 가입기간</td>
+                <td className="py-2 px-3 border border-gray-200 font-medium">청약통장 가입기간 (배우자 점수 포함)</td>
                 <td className="text-center py-2 px-3 border border-gray-200">1 ~ 17점</td>
                 <td className="text-center py-2 px-3 border border-gray-200 font-semibold">17점</td>
               </tr>
@@ -351,6 +384,9 @@ export default function HousingSubscriptionCalculator() {
             </tbody>
           </table>
         </div>
+        <p className="mt-3 text-xs text-gray-500">
+          배우자 점수는 없음·미가입 0점, 1년 미만 1점, 1년 이상~2년 미만 2점, 2년 이상 3점이며 신청자 점수와 합쳐 최대 17점입니다.
+        </p>
       </div>
 
       {/* 복사/초기화 버튼 고정 바 (모바일) */}
@@ -381,9 +417,9 @@ export default function HousingSubscriptionCalculator() {
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">청약 가점제란?</h2>
           <p className="text-gray-600 leading-relaxed">
-            청약 가점제는 무주택기간, 부양가족수, 청약통장 가입기간 3가지 항목의 점수를 합산하여
-            높은 점수 순서대로 당첨자를 선정하는 제도입니다. 최대 84점 만점이며,
-            전용면적 85m² 이하 주택의 일반공급에 적용됩니다.
+            청약 가점제는 무주택기간, 부양가족수, 청약통장 가입기간 3가지 항목의 점수를 합산해
+            높은 점수 순서대로 당첨자를 선정하는 방식입니다. 최대 84점이며 이 계산기는 민영주택
+            일반공급 가점 산정을 돕습니다. 실제 적용 여부와 비율은 입주자모집공고를 확인해야 합니다.
           </p>
         </div>
 
@@ -408,11 +444,15 @@ export default function HousingSubscriptionCalculator() {
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">가점제 vs 추첨제</h2>
           <p className="text-gray-600 leading-relaxed">
-            전용면적 85m² 이하 주택은 가점제 75% + 추첨제 25%로 배정됩니다(수도권 과밀억제권역 기준).
-            가점이 낮은 경우 85m² 초과 주택의 추첨제(100% 추첨)를 노리거나,
-            특별공급(신혼부부, 생애최초, 다자녀 등)에 지원하는 것이 유리합니다.
+            민영주택의 가점제·추첨제 적용 비율은 지역, 규제지역 여부, 전용면적과 모집공고 조건에 따라
+            달라집니다. 가점이 낮다면 해당 공고의 추첨제 물량과 특별공급(신혼부부, 생애최초, 다자녀 등)
+            자격을 함께 비교하세요. 이 점수만으로 청약 자격이나 당첨 가능성을 판단할 수 없습니다.
           </p>
         </div>
+        <p className="rounded-lg bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+          계산 결과는 입력값에 따른 참고용 가점입니다. 주택 소유 예외, 세대원·부양가족 인정 여부와
+          동점자 처리 등은 청약홈 및 해당 단지 입주자모집공고를 반드시 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="housing-subscription" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface Purchase {
@@ -74,7 +74,7 @@ export default function AveragePriceCalculator() {
     );
   };
 
-  const result = useMemo(() => calculateAveragePrice(purchases), [purchases]);
+  const result = calculateAveragePrice(purchases);
 
   const addPurchase = () => {
     setPurchases((prev) => [...prev, { id: nextIdRef.current++, price: "", quantity: "" }]);

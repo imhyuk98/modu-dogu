@@ -23,12 +23,15 @@ interface GiftTaxResult {
   finalTax: number;
 }
 
-function getDeduction(relationship: Relationship): number {
+function getDeduction(
+  relationship: Relationship,
+  hasMarriageBirthDeduction: boolean
+): number {
   switch (relationship) {
     case "배우자":
       return 600_000_000;
     case "직계존속(성인)":
-      return 50_000_000;
+      return 50_000_000 + (hasMarriageBirthDeduction ? 100_000_000 : 0);
     case "직계존속(미성년)":
       return 20_000_000;
     case "직계비속":
@@ -42,9 +45,10 @@ function getDeduction(relationship: Relationship): number {
 
 function calculateGiftTax(
   giftAmount: number,
-  relationship: Relationship
+  relationship: Relationship,
+  hasMarriageBirthDeduction: boolean
 ): GiftTaxResult {
-  const deduction = getDeduction(relationship);
+  const deduction = getDeduction(relationship, hasMarriageBirthDeduction);
   const taxableIncome = Math.max(0, giftAmount - deduction);
 
   // 증여세율 + 누진공제
@@ -52,7 +56,9 @@ function calculateGiftTax(
   let progressiveDeduction = 0;
   let tax = 0;
 
-  if (taxableIncome <= 100_000_000) {
+  if (taxableIncome === 0) {
+    taxRate = 0;
+  } else if (taxableIncome <= 100_000_000) {
     taxRate = 10;
     progressiveDeduction = 0;
     tax = taxableIncome * 0.1;
@@ -96,6 +102,8 @@ export default function GiftTaxCalculator() {
   const [giftAmount, setGiftAmount] = useState("50,000,000");
   const [relationship, setRelationship] =
     useState<Relationship>("직계존속(성인)");
+  const [hasMarriageBirthDeduction, setHasMarriageBirthDeduction] =
+    useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -117,12 +125,17 @@ export default function GiftTaxCalculator() {
   const result = useMemo(() => {
     const amount = parseAmount(giftAmount);
     if (amount <= 0) return null;
-    return calculateGiftTax(amount, relationship);
-  }, [giftAmount, relationship]);
+    return calculateGiftTax(
+      amount,
+      relationship,
+      hasMarriageBirthDeduction
+    );
+  }, [giftAmount, relationship, hasMarriageBirthDeduction]);
 
   const handleReset = () => {
     setGiftAmount("50,000,000");
     setRelationship("직계존속(성인)");
+    setHasMarriageBirthDeduction(false);
     setError("");
     setCopied(false);
   };
@@ -156,7 +169,7 @@ export default function GiftTaxCalculator() {
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">증여세 계산기</h1>
       <p className="text-gray-500 mb-8">
-        2025년 기준 증여재산가액과 증여자와의 관계에 따른 증여세를 계산합니다.
+        2026년 일반 기준으로 관계별 공제와 혼인·출산 추가공제를 반영해 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -200,7 +213,12 @@ export default function GiftTaxCalculator() {
             {relationships.map((rel) => (
               <button
                 key={rel.value}
-                onClick={() => setRelationship(rel.value)}
+                onClick={() => {
+                  setRelationship(rel.value);
+                  if (rel.value !== "직계존속(성인)") {
+                    setHasMarriageBirthDeduction(false);
+                  }
+                }}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   relationship === rel.value
                     ? "bg-blue-600 text-white"
@@ -212,6 +230,27 @@ export default function GiftTaxCalculator() {
             ))}
           </div>
         </div>
+
+        {relationship === "직계존속(성인)" && (
+          <label className="flex items-start gap-3 mb-6 rounded-xl border border-gray-200 bg-gray-50 p-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={hasMarriageBirthDeduction}
+              onChange={(event) =>
+                setHasMarriageBirthDeduction(event.target.checked)
+              }
+              className="mt-0.5 h-5 w-5 rounded border-gray-300"
+            />
+            <span>
+              <span className="block text-sm font-medium text-gray-800">
+                혼인·출산 추가공제 요건 충족 (+1억원)
+              </span>
+              <span className="block text-xs text-gray-500 mt-1">
+                직계존속에게 받은 증여로서 혼인신고일 전후 2년 또는 출생·입양일부터 2년 이내인 경우만 선택하세요.
+              </span>
+            </span>
+          </label>
+        )}
 
         {error && <p className="text-red-500 text-sm mt-2 mb-4">{error}</p>}
 
@@ -323,6 +362,9 @@ export default function GiftTaxCalculator() {
           <p className="text-xs text-gray-400 mt-2">
             * 공제 한도는 동일 관계의 증여자로부터 10년간 합산하여 적용됩니다.
           </p>
+          <p className="text-xs text-gray-400 mt-1">
+            * 혼인·출산 추가공제는 직계존속 증여에 한해 통합 1억원 한도로 적용되며 기본공제와 합산할 수 있습니다.
+          </p>
         </div>
 
         <div>
@@ -366,6 +408,9 @@ export default function GiftTaxCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          최근 10년 내 동일인 증여, 증여재산 평가, 세대생략 할증, 부담부증여 등은 반영하지 않은 참고용 결과입니다. 신고 전 홈택스 또는 세무 전문가에게 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="gift-tax" />

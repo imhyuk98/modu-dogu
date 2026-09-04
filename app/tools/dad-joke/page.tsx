@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 
 /* ── Joke Data ── */
 interface Joke {
@@ -144,7 +144,8 @@ function shuffle<T>(arr: T[]): T[] {
 /* ── Main Component ── */
 export default function DadJokePage() {
   const [activeCategory, setActiveCategory] = useState<Category | "all">("all");
-  const [shuffledJokes, setShuffledJokes] = useState<Joke[]>([]);
+  // Keep the prerendered first joke stable; shuffle only after a user action.
+  const [shuffledJokes, setShuffledJokes] = useState<Joke[]>(ALL_JOKES);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [funnyCount, setFunnyCount] = useState(0);
@@ -162,13 +163,17 @@ export default function DadJokePage() {
     [activeCategory]
   );
 
-  useEffect(() => {
-    setShuffledJokes(shuffle(filteredBase));
+  const handleCategoryChange = (category: Category | "all") => {
+    const nextJokes = category === "all"
+      ? ALL_JOKES
+      : ALL_JOKES.filter((j) => j.category === category);
+    setActiveCategory(category);
+    setShuffledJokes(shuffle(nextJokes));
     setCurrentIndex(0);
     setRevealed(false);
     setRated(false);
     setSlideIn(true);
-  }, [filteredBase]);
+  };
 
   const totalJokes = shuffledJokes.length;
   const currentJoke = shuffledJokes[currentIndex] || null;
@@ -237,7 +242,7 @@ export default function DadJokePage() {
           {categories.map((cat) => (
             <button
               key={cat.key}
-              onClick={() => setActiveCategory(cat.key)}
+              onClick={() => handleCategoryChange(cat.key)}
               className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                 activeCategory === cat.key
                   ? "bg-white text-purple-900 shadow-lg shadow-white/20 scale-105"

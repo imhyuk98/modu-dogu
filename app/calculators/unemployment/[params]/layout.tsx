@@ -34,7 +34,7 @@ export async function generateMetadata({
   const result = calculateUnemployment(age, workedYears, monthlyPay * 10000);
 
   const title = `월급 ${monthlyPay}만원 ${workedYears}년 근무 실업급여 월 ${formatWon(result.monthlyAmount)}원 (2026) | 모두의도구`;
-  const description = `${age}세, 월급 ${monthlyPay}만원, ${workedYears}년 근무 시 실업급여: 일 ${formatWon(result.dailyAmount)}원, 월 ${formatWon(result.monthlyAmount)}원, 수급기간 ${result.totalDays}일, 총 수급액 ${formatWon(result.totalAmount)}원. 2026년 기준 실업급여 자동 계산 결과입니다.`;
+  const description = `${age}세, 월급 ${monthlyPay}만원, ${workedYears}년 근무 시 예상 실업급여: 일 ${formatWon(result.dailyAmount)}원, 월 ${formatWon(result.monthlyAmount)}원, 수급기간 ${result.totalDays}일, 총 수급액 ${formatWon(result.totalAmount)}원. 2026년 7월 이후 기준입니다.`;
 
   return {
     alternates: { canonical: "/calculators/unemployment" },

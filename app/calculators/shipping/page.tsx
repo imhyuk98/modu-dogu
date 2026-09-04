@@ -252,6 +252,7 @@ export default function ShippingCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">출발 지역</label>
             <select
+              aria-label="출발 지역"
               value={fromRegion}
               onChange={(e) => setFromRegion(e.target.value as Region)}
               className="calc-input"
@@ -264,6 +265,7 @@ export default function ShippingCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">도착 지역</label>
             <select
+              aria-label="도착 지역"
               value={toRegion}
               onChange={(e) => setToRegion(e.target.value as Region)}
               className="calc-input"

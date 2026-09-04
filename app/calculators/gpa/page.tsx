@@ -180,6 +180,7 @@ export default function GpaCalculator() {
                 className="calc-input"
               />
               <select
+                aria-label={`과목 ${idx + 1} 학점`}
                 value={subject.credits}
                 onChange={(e) =>
                   updateSubject(subject.id, "credits", Number(e.target.value))
@@ -193,6 +194,7 @@ export default function GpaCalculator() {
                 <option value={5}>5학점</option>
               </select>
               <select
+                aria-label={`과목 ${idx + 1} 성적`}
                 value={subject.grade}
                 onChange={(e) =>
                   updateSubject(subject.id, "grade", e.target.value)

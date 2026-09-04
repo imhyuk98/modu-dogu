@@ -244,6 +244,7 @@ export default function ColorConverterPage() {
           </label>
           <input
             type="color"
+            aria-label="컬러 피커"
             value={hex.length === 7 ? hex : "#000000"}
             onChange={handleColorPicker}
             className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
@@ -298,6 +299,7 @@ export default function ColorConverterPage() {
               </label>
               <input
                 type="number"
+                aria-label={`${label} RGB 값`}
                 min={0}
                 max={255}
                 value={value}
@@ -339,6 +341,7 @@ export default function ColorConverterPage() {
               </label>
               <input
                 type="number"
+                aria-label={`${label} HSL 값`}
                 min={0}
                 max={max}
                 value={value}

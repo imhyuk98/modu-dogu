@@ -372,7 +372,7 @@ export default function ImageWatermark() {
                   위치
                 </label>
                 <div className="inline-grid grid-cols-3 gap-1.5 bg-gray-50 p-2 rounded-xl border border-gray-200">
-                  {positionGrid.map((row, ri) =>
+                  {positionGrid.map((row) =>
                     row.map((pos) => (
                       <button
                         key={pos}
@@ -502,7 +502,7 @@ export default function ImageWatermark() {
             <p><strong className="text-gray-900">적절한 투명도:</strong> 30~50% 투명도가 이미지를 방해하지 않으면서도 워터마크가 보이는 적절한 수준입니다.</p>
             <p><strong className="text-gray-900">대비 색상 사용:</strong> 밝은 이미지에는 어두운 색상, 어두운 이미지에는 밝은 색상의 워터마크가 잘 보입니다.</p>
             <p><strong className="text-gray-900">크롭 방지:</strong> 타일 반복이나 중앙 배치를 사용하면 이미지를 잘라도 워터마크가 남아있어 더 효과적입니다.</p>
-            <p><strong className="text-gray-900">저작권 표시:</strong> "(c) 2026 홍길동" 또는 "@ yoursite.com" 형태가 일반적입니다.</p>
+            <p><strong className="text-gray-900">저작권 표시:</strong> &quot;(c) 2026 홍길동&quot; 또는 &quot;@ yoursite.com&quot; 형태가 일반적입니다.</p>
           </div>
         </div>
 

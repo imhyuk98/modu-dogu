@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { calculateSalary, type SalaryResult } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
@@ -61,7 +61,7 @@ export default function SalaryCalculator() {
     },
     {
       q: "국민연금에 상한선이 있나요?",
-      a: "네, 국민연금은 월 소득 590만원을 상한으로 합니다. 즉, 월 급여가 590만원 이상이어도 국민연금은 590만원 기준으로 계산됩니다. 하한선은 월 37만원입니다.",
+      a: "2026년 7월부터 국민연금 기준소득월액은 상한 659만원, 하한 41만원입니다. 월 급여가 상한을 넘거나 하한보다 낮으면 해당 한도를 기준으로 보험료를 계산합니다.",
     },
     {
       q: "부양가족 수에 따라 세금이 달라지나요?",
@@ -81,7 +81,7 @@ export default function SalaryCalculator() {
           연봉 실수령액 계산기
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          2025년 기준 4대보험과 소득세를 공제한 월 실수령액을 계산합니다.
+          2026년 7월 이후 4대보험 요율과 소득세 추정치를 반영해 월 실수령액을 계산합니다.
         </p>
       </div>
 
@@ -203,6 +203,10 @@ export default function SalaryCalculator() {
               </div>
             </div>
           </div>
+          <p className="px-6 pb-5 text-xs leading-relaxed text-gray-500">
+            본인 1인, 비과세 급여·상여금 없음 기준의 예상액입니다. 실제 원천징수액은
+            부양가족, 비과세 항목, 회사 급여 규정에 따라 달라질 수 있습니다.
+          </p>
         </div>
       )}
 
@@ -219,7 +223,7 @@ export default function SalaryCalculator() {
         </div>
 
         <div className="calc-seo-card">
-          <h2 className="calc-seo-title">4대보험 요율 (2025년 기준)</h2>
+          <h2 className="calc-seo-title">4대보험 요율 (2026년 7월 이후)</h2>
           <div className="overflow-x-auto -mx-2">
             <table className="calc-table">
               <thead>
@@ -231,9 +235,9 @@ export default function SalaryCalculator() {
                 </tr>
               </thead>
               <tbody>
-                <tr><td>국민연금</td><td className="text-right">4.5%</td><td className="text-right">4.5%</td><td className="text-right font-medium">9.0%</td></tr>
-                <tr><td>건강보험</td><td className="text-right">3.545%</td><td className="text-right">3.545%</td><td className="text-right font-medium">7.09%</td></tr>
-                <tr><td>장기요양보험</td><td className="text-right" colSpan={2}>건강보험료의 12.95%</td><td className="text-right font-medium">12.95%</td></tr>
+                <tr><td>국민연금</td><td className="text-right">4.75%</td><td className="text-right">4.75%</td><td className="text-right font-medium">9.5%</td></tr>
+                <tr><td>건강보험</td><td className="text-right">3.595%</td><td className="text-right">3.595%</td><td className="text-right font-medium">7.19%</td></tr>
+                <tr><td>장기요양보험</td><td className="text-right" colSpan={2}>건강보험료의 약 13.14%</td><td className="text-right font-medium">소득의 0.9448%</td></tr>
                 <tr><td>고용보험</td><td className="text-right">0.9%</td><td className="text-right">0.9%~</td><td className="text-right font-medium">1.8%~</td></tr>
               </tbody>
             </table>

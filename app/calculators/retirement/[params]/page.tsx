@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { calculateRetirement } from "@/lib/calculations";
 
+const AVAILABLE_YEARS = [1, 2, 3, 5, 7, 10, 15, 20];
+
 function formatWon(v: number) {
   return Math.round(v).toLocaleString("ko-KR");
 }
@@ -26,15 +28,11 @@ export default function RetirementParamsPage() {
     recentThreeMonthDays
   );
 
-  // Related years: +-1, +-2, +-5
-  const nearYears = [
-    years - 5,
-    years - 2,
-    years - 1,
-    years + 1,
-    years + 2,
-    years + 5,
-  ].filter((y) => y >= 1 && y <= 20);
+  // Only link to combinations included in the static export.
+  const nearYears = AVAILABLE_YEARS
+    .filter((candidate) => candidate !== years)
+    .sort((a, b) => Math.abs(a - years) - Math.abs(b - years))
+    .slice(0, 6);
 
   // Related salaries: +-50만
   const nearSalaries = [

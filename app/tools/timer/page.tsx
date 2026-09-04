@@ -186,6 +186,7 @@ function TimerTab() {
               <label className="block text-xs text-gray-500 mb-1">시간</label>
               <input
                 type="number"
+                aria-label="타이머 시간"
                 min={0}
                 max={99}
                 value={hours}
@@ -200,6 +201,7 @@ function TimerTab() {
               <label className="block text-xs text-gray-500 mb-1">분</label>
               <input
                 type="number"
+                aria-label="타이머 분"
                 min={0}
                 max={59}
                 value={minutes}
@@ -214,6 +216,7 @@ function TimerTab() {
               <label className="block text-xs text-gray-500 mb-1">초</label>
               <input
                 type="number"
+                aria-label="타이머 초"
                 min={0}
                 max={59}
                 value={seconds}

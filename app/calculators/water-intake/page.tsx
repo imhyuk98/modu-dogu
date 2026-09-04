@@ -106,6 +106,7 @@ export default function WaterIntakeCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">활동량</label>
             <select
+              aria-label="활동량"
               value={activityIdx}
               onChange={(e) => setActivityIdx(Number(e.target.value))}
               className="calc-input calc-input-lg"
@@ -118,6 +119,7 @@ export default function WaterIntakeCalculator() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">날씨/환경</label>
             <select
+              aria-label="날씨 및 환경"
               value={weatherIdx}
               onChange={(e) => setWeatherIdx(Number(e.target.value))}
               className="calc-input calc-input-lg"

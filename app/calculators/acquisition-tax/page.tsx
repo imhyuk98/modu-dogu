@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
-type HousingCount = "1주택" | "2주택" | "3주택 이상";
+type HousingCount = "1주택" | "2주택" | "3주택" | "4주택 이상";
 
 interface AcquisitionTaxResult {
   housePrice: number;
@@ -43,19 +43,22 @@ function calculateAcquisitionTax(
         taxRate = 3;
       }
     }
-  } else {
-    // 3주택 이상
+  } else if (housingCount === "3주택") {
     taxRate = isRegulated ? 12 : 8;
+  } else {
+    taxRate = 12;
   }
 
   const acquisitionTax = Math.round(housePrice * (taxRate / 100));
 
-  // 농어촌특별세: 85㎡ 이하 면제, 초과 0.2%
-  const ruralSpecialTax =
-    area <= 85 ? 0 : Math.round(housePrice * 0.002);
+  // 중과세율은 농어촌특별세와 지방교육세의 부가세율도 달라진다.
+  const ruralSpecialTaxRate =
+    area <= 85 ? 0 : taxRate === 8 ? 0.6 : taxRate === 12 ? 1 : 0.2;
+  const ruralSpecialTax = Math.round(
+    housePrice * (ruralSpecialTaxRate / 100)
+  );
 
-  // 지방교육세: 취득세율의 10% (취득세율이 1~3%면 0.1~0.3%)
-  const localEducationTaxRate = taxRate * 0.1;
+  const localEducationTaxRate = taxRate >= 8 ? 0.4 : taxRate * 0.1;
   const localEducationTax = Math.round(
     housePrice * (localEducationTaxRate / 100)
   );
@@ -139,7 +142,7 @@ export default function AcquisitionTaxCalculator() {
         부동산 취득세 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2025년 기준 주택 취득세, 농어촌특별세, 지방교육세를 계산합니다.
+        2026년 일반 주택 기준 취득세, 농어촌특별세, 지방교육세를 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -203,8 +206,8 @@ export default function AcquisitionTaxCalculator() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               주택 수
             </label>
-            <div className="flex gap-2">
-              {(["1주택", "2주택", "3주택 이상"] as HousingCount[]).map(
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {(["1주택", "2주택", "3주택", "4주택 이상"] as HousingCount[]).map(
                 (count) => (
                   <button
                     key={count}
@@ -322,7 +325,7 @@ export default function AcquisitionTaxCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            주택 수별 취득세율 (2025년 기준)
+            주택 수별 취득세율 (2026년 일반 기준)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -338,7 +341,8 @@ export default function AcquisitionTaxCalculator() {
                 <tr><td className="py-2 px-3 border border-gray-200">1주택 (6~9억)</td><td className="text-right py-2 px-3 border border-gray-200">1~3%</td><td className="text-right py-2 px-3 border border-gray-200">1~3%</td></tr>
                 <tr><td className="py-2 px-3 border border-gray-200">1주택 (9억 초과)</td><td className="text-right py-2 px-3 border border-gray-200">3%</td><td className="text-right py-2 px-3 border border-gray-200">3%</td></tr>
                 <tr><td className="py-2 px-3 border border-gray-200">2주택</td><td className="text-right py-2 px-3 border border-gray-200">1~3%</td><td className="text-right py-2 px-3 border border-gray-200">8%</td></tr>
-                <tr><td className="py-2 px-3 border border-gray-200">3주택 이상</td><td className="text-right py-2 px-3 border border-gray-200">8%</td><td className="text-right py-2 px-3 border border-gray-200">12%</td></tr>
+                <tr><td className="py-2 px-3 border border-gray-200">3주택</td><td className="text-right py-2 px-3 border border-gray-200">8%</td><td className="text-right py-2 px-3 border border-gray-200">12%</td></tr>
+                <tr><td className="py-2 px-3 border border-gray-200">4주택 이상</td><td className="text-right py-2 px-3 border border-gray-200">12%</td><td className="text-right py-2 px-3 border border-gray-200">12%</td></tr>
               </tbody>
             </table>
           </div>
@@ -349,7 +353,7 @@ export default function AcquisitionTaxCalculator() {
           <div className="space-y-4">
             <div>
               <h3 className="font-medium text-gray-900">농어촌특별세는 모든 주택에 적용되나요?</h3>
-              <p className="text-gray-600 text-sm mt-1">전용면적 85㎡ 이하의 주택은 농어촌특별세가 면제됩니다. 85㎡를 초과하는 경우 취득가액의 0.2%가 부과됩니다.</p>
+              <p className="text-gray-600 text-sm mt-1">전용면적 85㎡ 이하의 주택은 농어촌특별세가 면제됩니다. 85㎡ 초과 시 일반세율은 취득가액의 0.2%, 취득세 중과 8%는 0.6%, 중과 12%는 1.0%로 간이 계산합니다.</p>
             </div>
             <div>
               <h3 className="font-medium text-gray-900">조정대상지역이란 무엇인가요?</h3>
@@ -361,6 +365,9 @@ export default function AcquisitionTaxCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          생애최초 감면, 일시적 2주택, 상속주택·저가주택 등 주택 수 제외 특례와 법인 취득은 반영하지 않은 참고용 결과입니다. 신고 전 위택스 또는 세무 전문가에게 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="acquisition-tax" />

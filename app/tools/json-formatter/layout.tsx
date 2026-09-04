@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/tools/json-formatter" },
+  alternates: {
+    canonical: "/tools/json-formatter",
+    languages: { ko: "/tools/json-formatter", en: "/en/tools/json-formatter", "x-default": "/tools/json-formatter" },
+  },
   title: "JSON 포매터 - JSON 정리, 검증, 미니파이",
   description:
     "JSON 데이터를 보기 좋게 정리(포맷)하거나, 유효성을 검증하고, 미니파이(압축)할 수 있는 무료 온라인 도구입니다.",

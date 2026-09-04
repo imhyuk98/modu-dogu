@@ -154,6 +154,7 @@ export default function PasswordGenerator() {
           </label>
           <input
             type="range"
+            aria-label="비밀번호 길이"
             min={8}
             max={64}
             value={length}

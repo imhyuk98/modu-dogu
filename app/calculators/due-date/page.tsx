@@ -230,6 +230,7 @@ export default function DueDateCalculator() {
             </label>
             <input
               type="date"
+              aria-label="마지막 생리 시작일"
               value={lmpStr}
               onChange={(e) => setLmpStr(e.target.value)}
               max={formatDateInput(new Date())}
@@ -244,6 +245,7 @@ export default function DueDateCalculator() {
             <div className="flex items-center gap-3">
               <input
                 type="range"
+                aria-label="평균 생리 주기"
                 min={21}
                 max={35}
                 value={cycleLength}

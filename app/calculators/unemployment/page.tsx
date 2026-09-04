@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { calculateUnemployment, type UnemploymentResult } from "@/lib/calculations";
+import { calculateUnemployment } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 export default function UnemploymentCalculator() {
@@ -43,7 +43,7 @@ export default function UnemploymentCalculator() {
   return (
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">실업급여 계산기</h1>
-      <p className="text-gray-500 mb-8">나이, 근속연수, 평균 월급을 입력하면 예상 실업급여를 계산합니다.</p>
+      <p className="text-gray-500 mb-8">2026년 7월 이후 기준으로 나이, 근속연수, 평균 월급에 따른 예상 실업급여를 계산합니다.</p>
 
       <div className="calc-card p-6 mb-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -123,7 +123,7 @@ export default function UnemploymentCalculator() {
               <li><strong>구직등록:</strong> 고용센터에 구직등록을 하고, 수급자격 인정 신청을 해야 합니다.</li>
             </ul>
             <p className="text-gray-600 leading-relaxed mt-3">
-              구직급여 일액은 퇴직 전 3개월 평균임금의 60%이며, 상한액은 1일 66,000원, 하한액은 최저임금의 80% x 1일 소정근로시간(8시간)입니다. 2025년 기준 하한액은 약 63,104원입니다.
+              구직급여 일액은 퇴직 전 평균임금의 60%입니다. 2026년 7월 1일 이후 기준 1일 상한액은 68,100원이며, 8시간 근로자의 하한액은 2026년 최저임금의 80%를 적용한 66,048원입니다. 실제 인정액은 소정근로시간과 피보험 이력 등에 따라 달라질 수 있습니다.
             </p>
           </div>
 

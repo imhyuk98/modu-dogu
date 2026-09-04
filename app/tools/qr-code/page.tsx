@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Generated data URLs require native image elements. */
 
 import { useState } from "react";
 import QRCode from "qrcode";

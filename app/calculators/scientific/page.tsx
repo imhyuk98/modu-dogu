@@ -10,6 +10,29 @@ interface HistoryEntry {
   result: string;
 }
 
+function Btn({
+  label,
+  onClick,
+  className = "",
+  colSpan,
+}: {
+  label: string;
+  onClick: () => void;
+  className?: string;
+  colSpan?: number;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`py-3 rounded-lg font-medium text-sm transition-all active:scale-95 ${
+        colSpan === 2 ? "col-span-2" : ""
+      } ${className}`}
+    >
+      {label}
+    </button>
+  );
+}
+
 // 함수 호출에서 매칭되는 괄호 내용을 추출하여 치환하는 헬퍼
 function replaceFunc(
   str: string,
@@ -17,7 +40,6 @@ function replaceFunc(
   callback: (inner: string) => string
 ): string {
   let result = str;
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const idx = result.indexOf(funcName + "(");
     if (idx === -1) break;
@@ -103,7 +125,6 @@ function safeEval(expr: string, angleMode: AngleMode): number {
     throw new Error("Invalid expression");
   }
 
-  // eslint-disable-next-line no-new-func
   const result = new Function(`"use strict"; return (${processed})`)();
   if (typeof result !== "number" || !isFinite(result)) {
     throw new Error("Invalid result");
@@ -274,27 +295,6 @@ export default function ScientificCalculator() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [appendToDisplay, handleCalculate]);
-
-  const Btn = ({
-    label,
-    onClick,
-    className = "",
-    colSpan,
-  }: {
-    label: string;
-    onClick: () => void;
-    className?: string;
-    colSpan?: number;
-  }) => (
-    <button
-      onClick={onClick}
-      className={`py-3 rounded-lg font-medium text-sm transition-all active:scale-95 ${
-        colSpan === 2 ? "col-span-2" : ""
-      } ${className}`}
-    >
-      {label}
-    </button>
-  );
 
   return (
     <div className="py-6">

@@ -14,9 +14,6 @@ interface Anniversary {
 }
 
 function getAnniversaries(startDate: Date, today: Date): Anniversary[] {
-  const diffMs = today.getTime() - startDate.getTime();
-  const daysTogether = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
   const dayMilestones = [100, 200, 300, 500, 1000];
   const yearMilestones = [1, 2, 3, 4, 5, 10];
 
@@ -174,6 +171,7 @@ export default function CoupleDdayCalculator() {
         <div className="flex gap-3">
           <input
             type="date"
+            aria-label="사귄 날짜"
             value={startDateStr}
             max={today.toISOString().split("T")[0]}
             onChange={(e) => {

@@ -12,7 +12,7 @@ export default function RentConversionCalculator() {
   const [newDeposit, setNewDeposit] = useState("50,000,000");
   const [monthlyRent, setMonthlyRent] = useState("800,000");
   const [currentDeposit, setCurrentDeposit] = useState("50,000,000");
-  const [convRate, setConvRate] = useState("4.5");
+  const [convRate, setConvRate] = useState("5.0");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -45,7 +45,7 @@ export default function RentConversionCalculator() {
     setNewDeposit("50,000,000");
     setMonthlyRent("800,000");
     setCurrentDeposit("50,000,000");
-    setConvRate("4.5");
+    setConvRate("5.0");
     setError("");
     setCopied(false);
   };
@@ -121,11 +121,11 @@ export default function RentConversionCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">전월세 전환율</label>
           <div className="relative">
-            <input type="number" step="0.1" value={convRate} onChange={(e) => setConvRate(e.target.value)}
+            <input type="number" aria-label="전월세 전환율" step="0.1" value={convRate} onChange={(e) => setConvRate(e.target.value)}
               className="calc-input calc-input-lg" />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
           </div>
-          <p className="text-xs text-gray-400 mt-1">2025년 법정 전환율 상한: 한국은행 기준금리 + 2%</p>
+          <p className="text-xs text-gray-400 mt-1">법정 상한은 연 10%와 한국은행 기준금리 + 2% 중 낮은 값입니다. 현재 5.00% (기준금리 3.00%, 2026-08-27 확인)</p>
         </div>
 
         {error && <p className="text-red-500 text-sm mt-2 mb-4">{error}</p>}
@@ -193,7 +193,7 @@ export default function RentConversionCalculator() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">전월세 전환율이란?</h2>
             <p className="text-gray-600 leading-relaxed mb-3">
               전월세 전환율은 전세 보증금을 월세로 전환하거나, 반대로 월세를 전세로 전환할 때 적용하는 이율입니다.
-              주택임대차보호법 제7조의2에 따라 전환율의 상한은 <strong>한국은행 기준금리 + 2%</strong>로 제한됩니다.
+              보증금을 월세로 전환할 때 주택임대차보호법 제7조의2에 따른 상한은 <strong>연 10%와 한국은행 기준금리 + 2% 중 낮은 비율</strong>입니다.
             </p>
             <p className="text-gray-600 leading-relaxed mb-3">
               전환 공식은 다음과 같습니다:
@@ -205,8 +205,8 @@ export default function RentConversionCalculator() {
               </p>
             </div>
             <p className="text-gray-600 leading-relaxed">
-              예를 들어 전세 3억 원인 주택을 보증금 5,000만 원에 월세로 전환하고 전환율이 4.5%라면,
-              월세는 (3억 - 5,000만) x 4.5% / 12 = 93.75만 원이 됩니다.
+              예를 들어 전세 3억 원인 주택을 보증금 5,000만 원에 월세로 전환하고 전환율이 5%라면,
+              월세는 (3억 - 5,000만) x 5% / 12 = 약 104.17만 원이 됩니다.
             </p>
           </div>
 
@@ -255,7 +255,7 @@ export default function RentConversionCalculator() {
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">전월세 전환 시 주의사항</h2>
             <ul className="text-gray-600 space-y-2">
-              <li><strong>법정 전환율 상한 준수:</strong> 전환율은 한국은행 기준금리 + 2%를 초과할 수 없습니다. 이를 초과하는 부분은 무효이며, 임차인은 초과 지급한 월세의 반환을 청구할 수 있습니다.</li>
+              <li><strong>법정 전환율 상한 준수:</strong> 보증금을 월세로 전환할 때는 연 10%와 한국은행 기준금리 + 2% 중 낮은 비율을 초과할 수 없습니다. 계약일의 기준금리를 다시 확인하세요.</li>
               <li><strong>임대인 동의 필요:</strong> 전월세 전환은 임대인과 임차인 양측의 합의가 필요합니다. 임차인이 일방적으로 전환을 요구할 수 없으며, 계약 갱신 시 협의를 통해 진행합니다.</li>
               <li><strong>계약서 변경:</strong> 전월세 전환 시 반드시 변경된 내용으로 계약서를 새로 작성하거나 특약을 추가해야 합니다. 구두 합의만으로는 분쟁 시 보호받기 어렵습니다.</li>
               <li><strong>전입신고 및 확정일자:</strong> 보증금이 변경되면 확정일자를 다시 받아야 우선변제권이 유지됩니다. 전입신고도 변경사항이 있으면 갱신하세요.</li>
@@ -269,7 +269,7 @@ export default function RentConversionCalculator() {
               <div>
                 <h3 className="text-base font-semibold text-gray-800">Q. 전환율이 법정 상한을 초과하면 어떻게 되나요?</h3>
                 <p className="text-gray-600 leading-relaxed mt-1">
-                  법정 상한(기준금리 + 2%)을 초과하는 전환율은 그 초과 부분이 무효입니다.
+                  법정 상한(연 10%와 기준금리 + 2% 중 낮은 비율)을 초과하는 전환율은 그 초과 부분이 무효입니다.
                   임차인은 초과 지급한 차임(월세)의 반환을 청구할 수 있으며, 향후 월세도 법정 상한 기준으로 감액을 요구할 수 있습니다.
                 </p>
               </div>
@@ -300,6 +300,9 @@ export default function RentConversionCalculator() {
           </div>
         </div>
       </section>
+      <p className="mt-6 text-xs text-gray-400 leading-relaxed">
+        월세를 전세로 바꾸는 역산 결과는 비교용이며 법정 상한 규정이 그대로 적용되는 산식은 아닙니다. 실제 계약에는 계약일 기준금리와 개별 특약을 확인하세요.
+      </p>
       <RelatedTools current="rent-conversion" />
 
       {result && (

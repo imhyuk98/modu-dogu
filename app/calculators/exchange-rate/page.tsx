@@ -57,9 +57,15 @@ export default function ExchangeRateCalculator() {
   useEffect(() => {
     // Fetch latest and previous day rates for change calculation
     Promise.all([
-      fetch("https://api.frankfurter.app/latest?base=USD").then((r) => r.json()),
+      fetch("https://api.frankfurter.dev/v1/latest?base=USD").then((r) => {
+        if (!r.ok) throw new Error(`Latest exchange-rate request failed: ${r.status}`);
+        return r.json();
+      }),
       // Fetch rates from 2 business days ago to ensure we get a different date
-      fetch(`https://api.frankfurter.app/${getPrevBusinessDay()}?base=USD`).then((r) => r.json()),
+      fetch(`https://api.frankfurter.dev/v1/${getPrevBusinessDay()}?base=USD`).then((r) => {
+        if (!r.ok) throw new Error(`Historical exchange-rate request failed: ${r.status}`);
+        return r.json();
+      }),
     ])
       .then(([latest, prev]) => {
         const allRates: Record<string, number> = { USD: 1, ...latest.rates };
@@ -236,18 +242,20 @@ export default function ExchangeRateCalculator() {
     <div className="py-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">환율 계산기</h1>
       <p className="text-gray-500 mb-8">
-        실시간 환율 기반으로 주요 외화 간 환율을 계산합니다.
+        평일 하루 한 번 갱신되는 최근 기준환율로 주요 외화 간 금액을 계산합니다.
       </p>
 
       {/* 환율 변환기 */}
       <div className="calc-card p-6 mb-6">
         {/* From */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="from-currency" className="block text-sm font-medium text-gray-700 mb-2">
             보내는 통화
           </label>
           <div className="flex flex-col sm:flex-row gap-3">
             <select
+              id="from-currency"
+              aria-label="보내는 통화"
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
               className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-auto sm:min-w-[180px]"
@@ -259,6 +267,7 @@ export default function ExchangeRateCalculator() {
               ))}
             </select>
             <input
+              aria-label="보내는 금액"
               type="text"
               value={fromAmount}
               onChange={handleFromAmountChange}
@@ -282,11 +291,13 @@ export default function ExchangeRateCalculator() {
 
         {/* To */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="to-currency" className="block text-sm font-medium text-gray-700 mb-2">
             받는 통화
           </label>
           <div className="flex flex-col sm:flex-row gap-3">
             <select
+              id="to-currency"
+              aria-label="받는 통화"
               value={toCurrency}
               onChange={(e) => setToCurrency(e.target.value)}
               className="px-3 py-3 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-auto sm:min-w-[180px]"
@@ -298,6 +309,7 @@ export default function ExchangeRateCalculator() {
               ))}
             </select>
             <input
+              aria-label="받는 금액"
               type="text"
               value={toAmount}
               onChange={handleToAmountChange}
@@ -447,15 +459,14 @@ export default function ExchangeRateCalculator() {
           </h2>
           <div className="space-y-2 text-gray-600 leading-relaxed">
             <p>
-              <strong className="text-gray-800">은행 vs 환전소:</strong> 시중
-              은행의 환전 수수료율은 보통 1.5~1.75% 수준이며, 사설 환전소는 이보다
-              낮은 수수료를 적용하는 경우가 많습니다. 다만 공인된 환전소인지
-              확인이 필요합니다.
+              <strong className="text-gray-800">은행 vs 환전소:</strong> 통화와
+              사업자마다 스프레드와 우대율이 다릅니다. 최종 수령액과 공인 환전소
+              여부를 함께 비교하세요.
             </p>
             <p>
-              <strong className="text-gray-800">우대율 활용:</strong> 대부분의
-              은행에서 인터넷뱅킹이나 모바일뱅킹을 통해 환전하면 50~90%의 환율
-              우대를 받을 수 있습니다. 창구 환전보다 온라인 환전이 유리합니다.
+              <strong className="text-gray-800">우대율 활용:</strong> 인터넷뱅킹이나
+              모바일뱅킹에는 통화·고객 조건별 우대가 적용될 수 있으므로 창구 환율과
+              앱의 최종 결제액을 비교하세요.
             </p>
             <p>
               <strong className="text-gray-800">환전 시기:</strong> 여행 계획이

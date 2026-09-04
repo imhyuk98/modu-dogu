@@ -19,6 +19,57 @@ interface FuelData {
   stations: Station[];
 }
 
+type KakaoLatLng = object;
+
+interface KakaoMap {
+  addControl(control: object, position: unknown): void;
+  setCenter(position: KakaoLatLng): void;
+  setLevel(level: number): void;
+}
+
+interface KakaoMarker {
+  setMap(map: KakaoMap | null): void;
+}
+
+interface KakaoInfoWindow {
+  close(): void;
+  open(map: KakaoMap, marker: KakaoMarker): void;
+}
+
+interface KakaoMaps {
+  Map: new (
+    container: HTMLElement,
+    options: { center: KakaoLatLng; level: number }
+  ) => KakaoMap;
+  LatLng: new (lat: number, lng: number) => KakaoLatLng;
+  ZoomControl: new () => object;
+  ControlPosition: { RIGHT: unknown };
+  Size: new (width: number, height: number) => object;
+  Point: new (x: number, y: number) => object;
+  MarkerImage: new (src: string, size: object, options: object) => object;
+  Marker: new (options: {
+    map: KakaoMap;
+    position: KakaoLatLng;
+    image: object;
+    title: string;
+  }) => KakaoMarker;
+  InfoWindow: new (options: { content: string; removable: boolean }) => KakaoInfoWindow;
+  event: {
+    addListener(target: object, eventName: string, handler: () => void): void;
+  };
+  load(callback: () => void): void;
+}
+
+type KakaoWindow = Window & typeof globalThis & {
+  kakao?: { maps: KakaoMaps };
+};
+
+function getKakaoMaps(): { maps: KakaoMaps } {
+  const sdk = (window as KakaoWindow).kakao;
+  if (!sdk) throw new Error("Kakao Maps SDK is not available");
+  return sdk;
+}
+
 /* ── Area codes & centers ── */
 const AREAS: { code: string; name: string; lat: number; lng: number }[] = [
   { code: "01", name: "서울", lat: 37.5665, lng: 126.978 },
@@ -79,13 +130,13 @@ export default function FuelMapPage() {
   const [showList, setShowList] = useState(true);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const infoWindowRef = useRef<any>(null);
+  const mapRef = useRef<KakaoMap | null>(null);
+  const markersRef = useRef<KakaoMarker[]>([]);
+  const infoWindowRef = useRef<KakaoInfoWindow | null>(null);
 
   /* ── Load Kakao Maps SDK ── */
   useEffect(() => {
-    const w = window as any;
+    const w = window as KakaoWindow;
     if (w.kakao && w.kakao.maps) {
       if (w.kakao.maps.Map) {
         setMapReady(true);
@@ -100,7 +151,7 @@ export default function FuelMapPage() {
       "https://dapi.kakao.com/v2/maps/sdk.js?appkey=119e121dca3dca3aa9c4985cd6d8be52&autoload=false";
     script.async = true;
     script.onload = () => {
-      const k = (window as any).kakao;
+      const k = (window as KakaoWindow).kakao;
       if (k && k.maps) {
         k.maps.load(() => setMapReady(true));
       } else {
@@ -116,7 +167,7 @@ export default function FuelMapPage() {
   /* ── Initialize map ── */
   useEffect(() => {
     if (!mapReady || !mapContainerRef.current) return;
-    const kakao = (window as any).kakao;
+    const kakao = getKakaoMaps();
 
     const options = {
       center: new kakao.maps.LatLng(selectedArea.lat, selectedArea.lng),
@@ -163,7 +214,7 @@ export default function FuelMapPage() {
   /* ── Update markers when data changes ── */
   useEffect(() => {
     if (!mapReady || !mapRef.current || !data) return;
-    const kakao = (window as any).kakao;
+    const kakao = getKakaoMaps();
     const map = mapRef.current;
 
     // Clear existing markers
@@ -248,7 +299,7 @@ export default function FuelMapPage() {
   const focusStation = useCallback(
     (station: Station) => {
       if (!mapReady || !mapRef.current) return;
-      const kakao = (window as any).kakao;
+      const kakao = getKakaoMaps();
       const map = mapRef.current;
 
       const position = new kakao.maps.LatLng(station.lat, station.lng);

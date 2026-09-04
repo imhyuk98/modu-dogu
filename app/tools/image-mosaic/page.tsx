@@ -40,12 +40,6 @@ export default function ImageMosaic() {
   // Scale factor between displayed canvas and actual image
   const scaleRef = useRef({ sx: 1, sy: 1 });
 
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-  };
-
   const loadImage = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
     const url = URL.createObjectURL(file);
@@ -121,6 +115,8 @@ export default function ImageMosaic() {
       ctx.strokeRect(ix, iy, iw, ih);
       ctx.setLineDash([]);
     }
+    // Helper declarations are stable for the lifetime of this render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [originalImage, mosaicAreas, brushStrokes, currentRect, currentBrush, effectType, blockSize]);
 
   // Update scale ref when canvas is resized

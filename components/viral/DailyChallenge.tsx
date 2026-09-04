@@ -2,22 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import { shiftLocalDateKey, useLocalDateKey } from "@/lib/use-client-date";
 
 interface Challenge { label: string; target: number; }
 interface Props { id: string; challenges: Challenge[]; currentValue: number; unit: string; }
-
-function dateKey(offset = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + offset);
-  return date.toLocaleDateString("sv-SE");
-}
 
 function hash(text: string) {
   return [...text].reduce((value, character) => ((value * 31) + character.charCodeAt(0)) >>> 0, 7);
 }
 
 export default function DailyChallenge({ id, challenges, currentValue, unit }: Props) {
-  const key = dateKey();
+  const key = useLocalDateKey();
   const challenge = useMemo(() => challenges[hash(`${id}-${key}`) % challenges.length], [challenges, id, key]);
   const [record, setRecord] = useState({ last: "", streak: 0 });
 
@@ -33,7 +28,7 @@ export default function DailyChallenge({ id, challenges, currentValue, unit }: P
 
   useEffect(() => {
     if (currentValue < challenge.target || record.last === key) return;
-    const next = { last: key, streak: record.last === dateKey(-1) ? record.streak + 1 : 1 };
+    const next = { last: key, streak: record.last === shiftLocalDateKey(key, -1) ? record.streak + 1 : 1 };
     localStorage.setItem(`dailyChallenge:${id}`, JSON.stringify(next));
     trackEvent("daily_challenge_complete", { tool: id, target: challenge.target, streak: next.streak });
     // Completion is caused by the external game score reaching today's target.

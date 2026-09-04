@@ -77,7 +77,7 @@ export default function ToolSearch({
       }}
     >
       <label className="home-search-label" htmlFor="home-tool-search">
-        도구 검색
+        뭐 할지 검색
       </label>
       <div className="home-search-field">
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -88,7 +88,7 @@ export default function ToolSearch({
           id="home-tool-search"
           type="search"
           value={query}
-          placeholder="예: 연봉 실수령액, 환율, 이미지 압축"
+          placeholder="뭐 하지? 운세, 케미, 연봉 계산…"
           autoComplete="off"
           role="combobox"
           aria-expanded={open && query.trim().length > 0}
@@ -147,7 +147,7 @@ export default function ToolSearch({
               </Link>
             ))
           ) : (
-            <p className="home-search-empty">일치하는 도구가 없습니다.</p>
+            <p className="home-search-empty">그건 아직 없음. 다른 검색어는 어때?</p>
           )}
         </div>
       )}

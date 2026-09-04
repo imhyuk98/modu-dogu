@@ -68,7 +68,9 @@ function calculateInheritanceTax(
   let progressiveDeduction = 0;
   let tax = 0;
 
-  if (taxableIncome <= 100_000_000) {
+  if (taxableIncome === 0) {
+    taxRate = 0;
+  } else if (taxableIncome <= 100_000_000) {
     taxRate = 10;
     progressiveDeduction = 0;
     tax = taxableIncome * 0.1;
@@ -179,7 +181,7 @@ export default function InheritanceTaxCalculator() {
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">상속세 계산기</h1>
       <p className="text-gray-500 mb-8">
-        2025년 기준 상속재산에 대한 상속세를 각종 공제를 적용하여 계산합니다.
+        2026년 일반 기준으로 순상속재산과 기본 공제를 반영해 상속세를 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -450,6 +452,9 @@ export default function InheritanceTaxCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          사전증여재산, 금융재산·동거주택 공제, 감정평가, 실제 배우자 상속액과 상속인 구성은 반영하지 않은 간이 예상치입니다. 상속세 신고 전 세무 전문가에게 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="inheritance-tax" />

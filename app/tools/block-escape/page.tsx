@@ -266,8 +266,8 @@ export default function BlockEscapePage() {
     LEVELS[0].map((b) => ({ ...b }))
   );
   const [moves, setMoves] = useState(0);
-  const [won, setWon] = useState(false);
   const [showWin, setShowWin] = useState(false);
+  const won = checkWin(blocks);
 
   // Drag state
   const dragRef = useRef<{
@@ -287,17 +287,15 @@ export default function BlockEscapePage() {
     setLevelIdx(idx);
     setBlocks(LEVELS[idx].map((b) => ({ ...b })));
     setMoves(0);
-    setWon(false);
     setShowWin(false);
   }, []);
 
-  // Check win after blocks change
+  // Delay the celebration slightly after the winning move.
   useEffect(() => {
-    if (!won && checkWin(blocks)) {
-      setWon(true);
-      setTimeout(() => setShowWin(true), 100);
-    }
-  }, [blocks, won]);
+    if (!won) return;
+    const timer = setTimeout(() => setShowWin(true), 100);
+    return () => clearTimeout(timer);
+  }, [won]);
 
   const handleNextLevel = useCallback(() => {
     const next = levelIdx + 1;
@@ -397,8 +395,6 @@ export default function BlockEscapePage() {
   );
 
   /* ──────── Render ──────── */
-  const cellSize = typeof window !== "undefined" ? getCellSize() : 60;
-
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
       {/* Title */}

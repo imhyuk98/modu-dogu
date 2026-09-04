@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/calculators/exchange-rate" },
-  title: "환율 계산기 - 실시간 환율 변환 (달러, 엔화, 유로, 위안)",
+  title: "환율 계산기 - 최신 기준환율 변환 (달러, 엔화, 유로, 위안)",
   description:
-    "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",
+    "평일 하루 한 번 갱신되는 최근 기준환율로 원화(KRW)와 주요 외화 간 금액을 계산하는 무료 환율 계산기입니다.",
   keywords: [
     "환율 계산기",
     "달러 환율",
@@ -15,9 +15,9 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     images: ["/og-image.png"],
-    title: "환율 계산기 - 실시간 환율 변환 (달러, 엔화, 유로, 위안)",
+    title: "환율 계산기 - 최신 기준환율 변환 (달러, 엔화, 유로, 위안)",
     description:
-      "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",
+      "평일 하루 한 번 갱신되는 최근 기준환율로 원화(KRW)와 주요 외화 간 금액을 계산하는 무료 환율 계산기입니다.",
     url: "https://modu-dogu.pages.dev/calculators/exchange-rate",
   },
 };
@@ -37,7 +37,7 @@ export default function ExchangeRateLayout({
             "@type": "WebApplication",
             name: "환율 계산기",
             description:
-              "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",
+              "평일 하루 한 번 갱신되는 최근 기준환율로 원화(KRW)와 주요 외화 간 금액을 계산하는 무료 환율 계산기입니다.",
             url: "https://modu-dogu.pages.dev/calculators/exchange-rate",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

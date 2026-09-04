@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 import ShareResultCard from "@/components/ShareResultCard";
 
 const 천간 = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
@@ -142,7 +143,9 @@ function calculateSaju(year: number, month: number, day: number, hour: number): 
 }
 
 export default function SajuCalculator() {
-  const currentYear = new Date().getFullYear();
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+  const currentYear = clientReady ? Number(todayKey.slice(0, 4)) : 2026;
   const [year, setYear] = useState(1990);
   const [month, setMonth] = useState(1);
   const [day, setDay] = useState(1);

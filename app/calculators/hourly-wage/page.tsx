@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
-const MINIMUM_WAGE_2026 = 10_030; // 2026년 최저시급
+const MINIMUM_WAGE_2026 = 10_320;
 const WEEKS_PER_MONTH = 365 / 7 / 12; // ≈ 4.345
 
 type Mode = "hourly-to-monthly" | "monthly-to-hourly";
@@ -128,7 +128,7 @@ export default function HourlyWageCalculator() {
 
   const weeklyHoursOptions = [15, 20, 25, 30, 35, 40];
 
-  const quickHourly = [9860, 10030, 11000, 12000, 15000, 20000];
+  const quickHourly = [10030, 10320, 11000, 12000, 15000, 20000];
   const quickMonthly = [200, 250, 300, 350, 400, 500];
 
   const faqs = [
@@ -138,7 +138,7 @@ export default function HourlyWageCalculator() {
     },
     {
       q: "2026년 최저시급은 얼마인가요?",
-      a: "2026년 최저시급은 10,030원입니다. 주 40시간 근무, 주휴수당 포함 기준 월 환산액은 약 2,096,270원입니다.",
+      a: "2026년 최저시급은 10,320원입니다. 주 40시간 근무, 주휴수당 포함 월 209시간 기준 환산액은 2,156,880원입니다.",
     },
     {
       q: "월 근로시간은 어떻게 계산하나요?",
@@ -199,7 +199,7 @@ export default function HourlyWageCalculator() {
             value={inputValue}
             onChange={handleInputChange}
             placeholder={
-              mode === "hourly-to-monthly" ? "예: 10,030" : "예: 2,096,270"
+              mode === "hourly-to-monthly" ? "예: 10,320" : "예: 2,156,880"
             }
             className="calc-input calc-input-lg pr-10"
           />
@@ -274,6 +274,10 @@ export default function HourlyWageCalculator() {
           </div>
           <button
             onClick={() => setIncludePaidRest(!includePaidRest)}
+            type="button"
+            role="switch"
+            aria-label="주휴수당 포함"
+            aria-checked={includePaidRest}
             className={`relative w-12 h-7 rounded-full transition-colors ${
               includePaidRest ? "bg-blue-600" : "bg-gray-300"
             }`}
@@ -541,7 +545,7 @@ export default function HourlyWageCalculator() {
                   { year: 2023, wage: 9620, rate: "5.0%" },
                   { year: 2024, wage: 9860, rate: "2.5%" },
                   { year: 2025, wage: 10030, rate: "1.7%" },
-                  { year: 2026, wage: 10030, rate: "0.0%" },
+                  { year: 2026, wage: 10320, rate: "2.9%" },
                 ].map((row) => (
                   <tr key={row.year}>
                     <td className="font-medium">{row.year}년</td>

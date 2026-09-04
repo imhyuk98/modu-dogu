@@ -155,7 +155,6 @@ export default function ImageGamePage() {
   const [newPlayerName, setNewPlayerName] = useState("");
   const [gamePhase, setGamePhase] = useState<GamePhase>("setup");
   const [votes, setVotes] = useState<Record<string, number>>({});
-  const [hasVoted, setHasVoted] = useState<Set<string>>(new Set());
   const [currentVoter, setCurrentVoter] = useState(0);
 
   const filteredQuestions = useMemo(() => {
@@ -178,19 +177,27 @@ export default function ImageGamePage() {
     }, 200);
   }, []);
 
+  const resetVotes = useCallback(() => {
+    setVotes({});
+    setCurrentVoter(0);
+    if (gamePhase === "result" || gamePhase === "vote") {
+      setGamePhase("question");
+    }
+  }, [gamePhase]);
+
   const handleNext = useCallback(() => {
     if (currentIndex < filteredQuestions.length - 1) {
       animateFlip(() => setCurrentIndex((i) => i + 1));
     }
     resetVotes();
-  }, [currentIndex, filteredQuestions.length, animateFlip]);
+  }, [currentIndex, filteredQuestions.length, animateFlip, resetVotes]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
       animateFlip(() => setCurrentIndex((i) => i - 1));
     }
     resetVotes();
-  }, [currentIndex, animateFlip]);
+  }, [currentIndex, animateFlip, resetVotes]);
 
   const handleShuffle = useCallback(() => {
     const newShuffled = shuffleArray(QUESTIONS);
@@ -199,14 +206,14 @@ export default function ImageGamePage() {
     setCurrentIndex(0);
     resetVotes();
     setFlipKey((k) => k + 1);
-  }, []);
+  }, [resetVotes]);
 
   const handleCategoryChange = useCallback((cat: Category) => {
     setSelectedCategory(cat);
     setCurrentIndex(0);
     resetVotes();
     setFlipKey((k) => k + 1);
-  }, []);
+  }, [resetVotes]);
 
   // Player management
   const addPlayer = () => {
@@ -229,26 +236,14 @@ export default function ImageGamePage() {
     }
   };
 
-  const resetVotes = () => {
-    setVotes({});
-    setHasVoted(new Set());
-    setCurrentVoter(0);
-    if (gamePhase === "result" || gamePhase === "vote") {
-      setGamePhase("question");
-    }
-  };
-
   const startVoting = () => {
     setVotes({});
-    setHasVoted(new Set());
     setCurrentVoter(0);
     setGamePhase("vote");
   };
 
   const castVote = (votedFor: string) => {
-    const voter = players[currentVoter];
     setVotes((prev) => ({ ...prev, [votedFor]: (prev[votedFor] || 0) + 1 }));
-    setHasVoted((prev) => new Set(prev).add(voter));
     if (currentVoter + 1 >= players.length) {
       setGamePhase("result");
     } else {
@@ -275,7 +270,6 @@ export default function ImageGamePage() {
       animateFlip(() => setCurrentIndex((i) => i + 1));
     }
     setVotes({});
-    setHasVoted(new Set());
     setCurrentVoter(0);
     setGamePhase("question");
   };

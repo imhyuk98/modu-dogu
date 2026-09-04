@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 interface ZodiacAnimal {
   name: string;
@@ -261,7 +262,9 @@ export default function ZodiacCalculator() {
     }
   };
 
-  const currentYear = new Date().getFullYear();
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+  const currentYear = clientReady ? Number(todayKey.slice(0, 4)) : 2026;
   const quickYears = [
     currentYear - 30,
     currentYear - 25,

@@ -23,15 +23,14 @@ export default function LadderGamePage() {
   const [rungs, setRungs] = useState<Rung[]>([]);
   const [ladderReady, setLadderReady] = useState(false);
   const [animating, setAnimating] = useState(false);
-  const [animPath, setAnimPath] = useState<{ x: number; y: number }[]>([]);
-  const [animIdx, setAnimIdx] = useState(0);
+  const [, setAnimPath] = useState<{ x: number; y: number }[]>([]);
+  const [, setAnimIdx] = useState(0);
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
   const [allResults, setAllResults] = useState<Record<number, number> | null>(null);
-  const [showAllPaths, setShowAllPaths] = useState(false);
+  const [, setShowAllPaths] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
 
-  const n = participants.length;
   const totalRows = density === "low" ? 6 : density === "medium" ? 10 : 15;
 
   /* ─── Input Handlers ─── */

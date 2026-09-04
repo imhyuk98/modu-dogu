@@ -25,16 +25,14 @@ function calculateLottoTax(amount: number): LottoTaxResult {
 
   let incomeTax = 0;
 
-  const nonTaxable = 2_000_000;
   const threshold = 300_000_000;
-  const taxableAmount = amount - nonTaxable;
 
   if (amount <= threshold) {
-    // 200만원 초과 ~ 3억원 이하: 소득세 20%
-    incomeTax = taxableAmount * 0.2;
+    // 건별 당첨금이 200만원을 초과하면 당첨금 전액에 소득세 20%
+    incomeTax = amount * 0.2;
   } else {
-    // 200만원 초과 ~ 3억원 구간: 20%
-    incomeTax = (threshold - nonTaxable) * 0.2;
+    // 3억원까지: 20%
+    incomeTax = threshold * 0.2;
     // 3억원 초과분: 30%
     incomeTax += (amount - threshold) * 0.3;
   }
@@ -270,7 +268,7 @@ export default function LottoTaxCalculator() {
         <h3 className="font-semibold text-yellow-800 mb-2">참고사항</h3>
         <ul className="text-sm text-yellow-700 space-y-1.5">
           <li>- 복권 당첨금 200만원 이하는 비과세입니다 (세금 없음).</li>
-          <li>- 3억원 이하: 소득세 20% + 지방소득세 2% = 총 22%</li>
+          <li>- 건별 당첨금이 200만원을 초과하면 3억원까지 당첨금 전액에 총 22%</li>
           <li>- 3억원 초과분: 소득세 30% + 지방소득세 3% = 총 33%</li>
           <li>- 지방소득세는 소득세의 10%입니다.</li>
         </ul>
@@ -284,8 +282,8 @@ export default function LottoTaxCalculator() {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             로또 당첨금은 &quot;기타소득&quot;으로 분류되어 소득세와 지방소득세가 부과됩니다.
-            당첨금 200만원 이하는 비과세이며, 200만원을 초과하는 당첨금에 대해
-            3억원 이하 구간은 22% (소득세 20% + 지방소득세 2%), 3억원 초과 구간은
+            건별 당첨금 200만원 이하는 비과세입니다. 200만원을 초과하면 공제 없이
+            당첨금 전액 중 3억원까지는 22% (소득세 20% + 지방소득세 2%), 3억원 초과분은
             33% (소득세 30% + 지방소득세 3%)의 세율이 적용됩니다. 세금은 당첨금
             지급 시 원천징수되므로 별도로 신고할 필요가 없습니다.
           </p>
@@ -361,12 +359,16 @@ export default function LottoTaxCalculator() {
             <div>
               <h3 className="font-medium text-gray-900">200만원 이하 비과세 기준은 무엇인가요?</h3>
               <p className="text-gray-600 text-sm mt-1">
-                복권 및 복권기금법에 따라 당첨금 200만원 이하는 비과세입니다. 로또 4등(5만원)과 5등(5천원)은 세금 없이 전액 수령할 수 있습니다.
+                소득세법상 건별 복권 당첨금 200만원 이하는 과세최저한에 해당합니다. 200만원을 초과하면 200만원을 빼지 않고 당첨금 전액에 해당 세율이 적용됩니다.
               </p>
             </div>
           </div>
         </div>
       </section>
+
+      <p className="mt-6 rounded-lg bg-gray-50 p-4 text-sm leading-relaxed text-gray-600">
+        이 결과는 일반적인 국내 복권 원천징수 기준의 예상값입니다. 실제 지급액은 당첨금 지급기관의 원천징수 내역을 확인하세요.
+      </p>
 
       <RelatedTools current="lotto-tax" />
     </div>

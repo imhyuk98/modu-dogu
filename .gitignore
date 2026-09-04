@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/docs/audits/
+/docs/performances/
+/scratchpad/
+/.stitch/
 
 # next.js
 /.next/

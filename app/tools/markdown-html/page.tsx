@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 // ── Pure JS Markdown → HTML parser ──────────────────────────────
@@ -16,7 +16,7 @@ function escapeHtml(text: string): string {
 function markdownToHtml(md: string): string {
   // 1. Extract code blocks and replace with placeholders
   const codeBlocks: string[] = [];
-  let text = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
+  const text = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
     const idx = codeBlocks.length;
     const langAttr = lang ? ` class="language-${escapeHtml(lang)}"` : "";
     codeBlocks.push(
@@ -255,18 +255,9 @@ type Tab = "preview" | "html" | "side";
 
 export default function MarkdownHtmlPage() {
   const [markdown, setMarkdown] = useState("");
-  const [html, setHtml] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("preview");
   const [copied, setCopied] = useState(false);
-
-  const convert = useCallback(() => {
-    setHtml(markdownToHtml(markdown));
-  }, [markdown]);
-
-  // Real-time conversion
-  useEffect(() => {
-    convert();
-  }, [convert]);
+  const html = useMemo(() => markdownToHtml(markdown), [markdown]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(html);
@@ -376,12 +367,6 @@ ${html}
           className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
         >
           샘플 마크다운
-        </button>
-        <button
-          onClick={convert}
-          className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-        >
-          변환하기
         </button>
         <button
           onClick={handleCopy}

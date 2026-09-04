@@ -3,21 +3,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import { shiftLocalDateKey, useLocalDateKey } from "@/lib/use-client-date";
 
-function dateKey(offset = 0) {
-  const date = new Date();
-  date.setDate(date.getDate() + offset);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function calculateStreak(days: string[]) {
+function calculateStreak(days: string[], todayKey: string) {
   const completed = new Set(days);
-  let offset = completed.has(dateKey()) ? 0 : -1;
+  let offset = completed.has(todayKey) ? 0 : -1;
   let streak = 0;
-  while (completed.has(dateKey(offset))) {
+  while (completed.has(shiftLocalDateKey(todayKey, offset))) {
     streak += 1;
     offset -= 1;
   }
@@ -25,6 +17,7 @@ function calculateStreak(days: string[]) {
 }
 
 export default function DailyReturnCard({ id, completed }: { id: string; completed: boolean }) {
+  const todayKey = useLocalDateKey();
   const [days, setDays] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
   const [shared, setShared] = useState(false);
@@ -42,17 +35,17 @@ export default function DailyReturnCard({ id, completed }: { id: string; complet
   }, [storageKey]);
 
   useEffect(() => {
-    if (!ready || !completed || days.includes(dateKey())) return;
-    const next = [...days, dateKey()].slice(-60);
+    if (!ready || !completed || days.includes(todayKey)) return;
+    const next = [...days, todayKey].slice(-60);
     localStorage.setItem(storageKey, JSON.stringify(next));
     setDays(next);
-    trackEvent("daily_return_complete", { tool: id, streak: calculateStreak(next) });
-  }, [completed, days, id, ready, storageKey]);
+    trackEvent("daily_return_complete", { tool: id, streak: calculateStreak(next, todayKey) });
+  }, [completed, days, id, ready, storageKey, todayKey]);
 
-  const streak = useMemo(() => calculateStreak(days), [days]);
+  const streak = useMemo(() => calculateStreak(days, todayKey), [days, todayKey]);
   const week = Array.from({ length: 7 }, (_, index) => {
     const offset = index - 6;
-    const key = dateKey(offset);
+    const key = shiftLocalDateKey(todayKey, offset);
     return { key, done: days.includes(key), label: new Date(`${key}T12:00:00`).toLocaleDateString("ko-KR", { weekday: "short" }) };
   });
 

@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calculators/gift-tax" },
   title: "증여세 계산기 - 증여재산 공제/세율/신고세액공제 자동 계산",
   description:
-    "2025년 기준 증여세를 자동으로 계산합니다. 배우자, 직계존속, 직계비속 등 관계별 공제액과 증여세율을 적용하여 최종 납부세액을 확인하세요.",
+    "2026년 일반 기준 증여세를 간이 계산합니다. 관계별 공제와 혼인·출산 추가공제, 증여세율을 반영해 예상 납부세액을 확인하세요.",
   keywords: [
     "증여세 계산기",
     "증여세 세율",
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     "배우자 증여 공제",
     "직계존속 증여",
     "증여세 신고",
-    "2025 증여세",
+    "2026 증여세",
   ],
   openGraph: {
     images: ["/og-image.png"],
     title: "증여세 계산기 - 증여재산 공제/세율/신고세액공제 자동 계산",
     description:
-      "2025년 기준 관계별 공제액과 증여세율을 적용하여 증여세를 자동으로 계산합니다.",
+      "2026년 일반 기준 관계별 공제와 혼인·출산 추가공제, 증여세율을 반영해 간이 계산합니다.",
     url: "https://modu-dogu.pages.dev/calculators/gift-tax",
   },
 };
@@ -38,7 +38,7 @@ export default function GiftTaxLayout({
             "@type": "WebApplication",
             name: "증여세 계산기",
             description:
-              "2025년 기준 증여세를 자동으로 계산합니다. 관계별 공제액과 증여세율, 신고세액공제를 적용합니다.",
+              "2026년 일반 기준 증여세를 간이 계산합니다. 관계별 공제, 혼인·출산 추가공제와 신고세액공제를 반영합니다.",
             url: "https://modu-dogu.pages.dev/calculators/gift-tax",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

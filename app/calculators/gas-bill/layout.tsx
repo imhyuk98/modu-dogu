@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "도시가스 요금 계산기 - 난방/취사 가스비 계산",
+  title: "도시가스 요금 계산기 - 고지서 단가로 가스비 예상",
   description:
-    "도시가스 사용량을 입력하면 난방용·취사용 가스요금을 실시간으로 계산합니다. 기본요금, 사용요금, 부가세 포함 총 요금을 확인하세요.",
+    "최근 도시가스 고지서의 사용량, 환산 사용단가와 기본요금으로 다음 가스비를 간이 계산합니다. 지역·공급사별 요금 차이를 직접 반영할 수 있습니다.",
   keywords: [
     "도시가스 요금 계산기",
     "가스비 계산",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
     title: "도시가스 요금 계산기 | 모두의도구",
     description:
-      "도시가스 사용량을 입력하면 난방용·취사용 가스요금을 실시간으로 계산합니다. 기본요금, 사용요금, 부가세 포함 총 요금을 확인하세요.",
+      "최근 고지서의 환산단가와 기본요금으로 다음 도시가스 요금을 간이 계산합니다.",
     url: "https://modu-dogu.pages.dev/calculators/gas-bill",
   },
   alternates: {
@@ -39,7 +39,7 @@ export default function GasBillLayout({
             "@type": "WebApplication",
             name: "도시가스 요금 계산기",
             description:
-              "도시가스 사용량을 입력하면 난방용·취사용 가스요금을 실시간으로 계산합니다. 기본요금, 사용요금, 부가세 포함 총 요금을 확인하세요.",
+              "최근 고지서의 환산단가와 기본요금으로 다음 도시가스 요금을 간이 계산합니다.",
             url: "https://modu-dogu.pages.dev/calculators/gas-bill",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

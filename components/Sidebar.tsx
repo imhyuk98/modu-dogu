@@ -45,8 +45,8 @@ export default function Sidebar({ type }: { type: "calculators" | "tools" }) {
             );
           })}
         </ul>
-        <Link href="/#home-tool-directory" className="mt-3 block border-t border-[#eee6e1] px-2 pt-3 text-xs font-bold text-gray-500 hover:text-[#a93d28]">
-          모든 도구 검색 →
+        <Link href="/#store-tool-directory" className="mt-3 block border-t border-[#eee6e1] px-2 pt-3 text-xs font-bold text-gray-500 hover:text-[#a93d28]">
+          다른 도구도 구경하기 →
         </Link>
       </nav>
     </aside>

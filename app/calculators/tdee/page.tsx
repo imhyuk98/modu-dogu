@@ -150,6 +150,7 @@ export default function TDEECalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">활동량</label>
           <select
+            aria-label="활동량"
             value={activityIndex}
             onChange={(e) => setActivityIndex(Number(e.target.value))}
             className="calc-input calc-input-lg"

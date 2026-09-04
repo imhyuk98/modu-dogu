@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/privacy" },
+  alternates: { canonical: "/privacy", languages: { ko: "/privacy", en: "/en/privacy", "x-default": "/privacy" } },
   title: "개인정보처리방침",
   description: "모두의도구 개인정보처리방침 - 쿠키, Google Analytics, Google AdSense 등 제3자 서비스 이용에 대한 안내입니다.",
   keywords: ["개인정보처리방침", "모두의도구", "쿠키정책", "개인정보보호"],

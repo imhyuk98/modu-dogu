@@ -1,6 +1,7 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Local blob previews require native image elements. */
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 interface ImageFile {

@@ -145,7 +145,7 @@ function saveBestRecord(record: BestRecord) {
 
 export default function TypingTestPage() {
   const [difficulty, setDifficulty] = useState<Difficulty>("normal");
-  const [currentSentence, setCurrentSentence] = useState("");
+  const [currentSentence, setCurrentSentence] = useState(sentences.normal[0]);
   const [userInput, setUserInput] = useState("");
   const [isStarted, setIsStarted] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -159,6 +159,8 @@ export default function TypingTestPage() {
 
   // Load best record on mount
   useEffect(() => {
+    // Browser-persisted record is synchronized after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBestRecord(loadBestRecord());
   }, []);
 
@@ -171,11 +173,6 @@ export default function TypingTestPage() {
     },
     []
   );
-
-  // Initialize sentence
-  useEffect(() => {
-    pickSentence(difficulty);
-  }, [difficulty, pickSentence]);
 
   // Clear timer on unmount
   useEffect(() => {
@@ -277,13 +274,14 @@ export default function TypingTestPage() {
     (diff: Difficulty) => {
       if (isStarted && !isFinished) return; // prevent changing mid-test
       setDifficulty(diff);
+      pickSentence(diff);
       setUserInput("");
       setIsStarted(false);
       setIsFinished(false);
       setResult(null);
       setElapsedDisplay(0);
     },
-    [isStarted, isFinished]
+    [isStarted, isFinished, pickSentence]
   );
 
   // Build character-by-character comparison for display

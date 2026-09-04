@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/faq" },
+  alternates: { canonical: "/faq", languages: { ko: "/faq", en: "/en/faq", "x-default": "/faq" } },
   title: "자주 묻는 질문 (FAQ) - 모두의도구",
   description:
     "모두의도구 이용 방법, 계산 정확도, 개인정보 처리, AI 기능 등 자주 묻는 질문과 답변을 확인하세요.",
@@ -49,7 +49,7 @@ const faqs = [
       },
       {
         q: "연봉 계산기의 세금 기준은 언제 것인가요?",
-        a: "2025년 기준 소득세율, 4대보험 요율을 적용하고 있습니다. 세법이나 요율이 변경되면 업데이트합니다.",
+        a: "4대보험은 2026년 7월 이후 요율과 국민연금 상·하한액을 적용합니다. 소득세는 본인 1인, 비과세 급여 없음 기준의 추정치이며 실제 원천징수액은 부양가족과 비과세 항목 등에 따라 달라질 수 있습니다.",
       },
       {
         q: "금리 데이터는 실시간인가요?",

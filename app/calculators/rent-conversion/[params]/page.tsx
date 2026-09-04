@@ -16,7 +16,6 @@ function formatAmountLabel(manWon: number) {
 }
 
 const JEONSE = [10000, 15000, 20000, 25000, 30000, 40000, 50000];
-const DEPOSITS = [1000, 3000, 5000];
 const RATES = [4, 4.5, 5, 5.5, 6];
 
 export default function RentConversionParamsPage() {

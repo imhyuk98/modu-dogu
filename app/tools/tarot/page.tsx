@@ -656,7 +656,7 @@ export default function TarotPage() {
               <style>{`
                 @keyframes shuffleCard {
                   0% { transform: translateY(0) rotate(0deg); }
-                  100% { transform: translateY(-12px) rotate(${Math.random() > 0.5 ? "" : "-"}8deg); }
+                  100% { transform: translateY(-12px) rotate(8deg); }
                 }
               `}</style>
             </div>

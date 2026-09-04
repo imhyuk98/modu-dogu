@@ -58,7 +58,7 @@ export default function UnemploymentParamsPage() {
         월급 {monthlyPay}만원 {workedYears}년 근무 실업급여
       </h1>
       <p className="text-gray-500 mb-8">
-        {age}세 기준, 2026년 고용보험 실업급여 계산 결과입니다.
+        {age}세 기준, 2026년 7월 이후 고용보험 실업급여 예상 결과입니다.
       </p>
 
       {/* 핵심 결과 카드 2개 */}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Standalone CommonJS data-fetch script. */
 const https = require('https');
 const fs = require('fs');
 const path = require('path');

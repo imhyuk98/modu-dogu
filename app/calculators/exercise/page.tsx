@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
 /* ═══════════════════════════════════════════
@@ -202,13 +202,6 @@ function bmiCategory(bmi: number): string {
   return "고도 비만";
 }
 
-function bmiColor(bmi: number): string {
-  if (bmi < 18.5) return "text-blue-500";
-  if (bmi < 23) return "text-green-600";
-  if (bmi < 25) return "text-yellow-600";
-  return "text-red-500";
-}
-
 /** Goal → category ratio { strength, cardio, stretching, hiit } summing to 1 */
 function goalRatio(goal: Goal): Record<Category, number> {
   switch (goal) {
@@ -294,7 +287,7 @@ function generateRoutine(
   }
 
   // Tips
-  const tips = generateTips(goal, level, bmi, age, gender);
+  const tips = generateTips(goal, level, bmi, age);
   const warnings = generateWarnings(injury, age, bmi);
 
   return { bmi, bmiCategory: bmiCat, weeklyPlan, weeklyCalories, tips, warnings };
@@ -456,7 +449,7 @@ function makeScheduled(
   };
 }
 
-function generateTips(goal: Goal, level: Level, bmi: number, age: number, gender: Gender): string[] {
+function generateTips(goal: Goal, level: Level, bmi: number, age: number): string[] {
   const tips: string[] = [];
 
   if (goal === "diet") {
@@ -623,21 +616,21 @@ export default function ExerciseRecommendation() {
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1.5">나이</label>
             <div className="relative">
-              <input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="calc-input text-center pr-7" min={10} max={100} />
+              <input type="number" aria-label="나이" value={age} onChange={(e) => setAge(e.target.value)} className="calc-input text-center pr-7" min={10} max={100} />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">세</span>
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1.5">키</label>
             <div className="relative">
-              <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} className="calc-input text-center pr-7" min={100} max={250} />
+              <input type="number" aria-label="키" value={height} onChange={(e) => setHeight(e.target.value)} className="calc-input text-center pr-7" min={100} max={250} />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">cm</span>
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1.5">몸무게</label>
             <div className="relative">
-              <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} className="calc-input text-center pr-7" min={30} max={200} />
+              <input type="number" aria-label="몸무게" value={weight} onChange={(e) => setWeight(e.target.value)} className="calc-input text-center pr-7" min={30} max={200} />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">kg</span>
             </div>
           </div>

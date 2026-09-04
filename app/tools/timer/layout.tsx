@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/tools/timer" },
+  alternates: {
+    canonical: "/tools/timer",
+    languages: { ko: "/tools/timer", en: "/en/tools/timer", "x-default": "/tools/timer" },
+  },
   title: "타이머 & 스톱워치 - 온라인 타이머, 카운트다운",
   description:
     "온라인 타이머와 스톱워치를 무료로 사용하세요. 카운트다운 타이머, 스톱워치, 랩 타임 기록이 가능합니다.",

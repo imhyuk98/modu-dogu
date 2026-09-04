@@ -8,6 +8,7 @@ interface CapitalGainsTaxResult {
   sellingPrice: number;
   expenses: number;
   capitalGain: number;
+  taxableCapitalGain: number;
   longTermDeductionRate: number;
   longTermDeduction: number;
   basicDeduction: number;
@@ -24,6 +25,7 @@ function calculateCapitalGainsTax(
   sellingPrice: number,
   expenses: number,
   holdingYears: number,
+  residenceYears: number,
   isOneHousehold: boolean
 ): CapitalGainsTaxResult {
   // 양도차익
@@ -35,6 +37,7 @@ function calculateCapitalGainsTax(
       sellingPrice,
       expenses,
       capitalGain: Math.max(0, capitalGain),
+      taxableCapitalGain: 0,
       longTermDeductionRate: 0,
       longTermDeduction: 0,
       basicDeduction: 0,
@@ -47,13 +50,26 @@ function calculateCapitalGainsTax(
     };
   }
 
+  // 1세대 1주택 비과세 요건을 충족하면 12억원 초과분에 대응하는 양도차익만 과세한다.
+  const qualifiesForOneHouseExemption = isOneHousehold && holdingYears >= 2;
+  const taxableCapitalGain = qualifiesForOneHouseExemption
+    ? sellingPrice <= 1_200_000_000
+      ? 0
+      : Math.round(
+          capitalGain * ((sellingPrice - 1_200_000_000) / sellingPrice)
+        )
+    : capitalGain;
+
   // 장기보유특별공제
   let longTermDeductionRate = 0;
-  if (isOneHousehold && holdingYears >= 2) {
-    // 1세대 1주택: 보유기간별 연 8%, 거주기간별 연 8%, 합산 최대 80%
-    // 여기서는 보유기간 기준 간이 계산 (거주기간 = 보유기간으로 가정)
+  if (
+    qualifiesForOneHouseExemption &&
+    holdingYears >= 3 &&
+    residenceYears >= 2
+  ) {
+    // 고가 1세대 1주택: 보유 연 4% + 거주 연 4%, 각각 최대 40%
     const holdingRate = Math.min(holdingYears, 10) * 4; // 보유: 연 4%, 최대 40%
-    const residenceRate = Math.min(holdingYears, 10) * 4; // 거주: 연 4%, 최대 40%
+    const residenceRate = Math.min(residenceYears, 10) * 4; // 거주: 연 4%, 최대 40%
     longTermDeductionRate = Math.min(holdingRate + residenceRate, 80);
   } else if (holdingYears >= 3) {
     // 일반: 연 2%, 최대 30% (15년)
@@ -61,16 +77,16 @@ function calculateCapitalGainsTax(
   }
 
   const longTermDeduction = Math.round(
-    capitalGain * (longTermDeductionRate / 100)
+    taxableCapitalGain * (longTermDeductionRate / 100)
   );
 
   // 기본공제 250만원
-  const basicDeduction = 2_500_000;
+  const basicDeduction = taxableCapitalGain > 0 ? 2_500_000 : 0;
 
   // 과세표준
   const taxableIncome = Math.max(
     0,
-    capitalGain - longTermDeduction - basicDeduction
+    taxableCapitalGain - longTermDeduction - basicDeduction
   );
 
   // 종합소득세율 적용
@@ -78,7 +94,9 @@ function calculateCapitalGainsTax(
   let taxRate = 0;
   let progressiveDeduction = 0;
 
-  if (taxableIncome <= 14_000_000) {
+  if (taxableIncome === 0) {
+    taxRate = 0;
+  } else if (taxableIncome <= 14_000_000) {
     taxRate = 6;
     progressiveDeduction = 0;
     tax = taxableIncome * 0.06;
@@ -121,6 +139,7 @@ function calculateCapitalGainsTax(
     sellingPrice,
     expenses,
     capitalGain,
+    taxableCapitalGain,
     longTermDeductionRate,
     longTermDeduction,
     basicDeduction,
@@ -138,6 +157,7 @@ export default function CapitalGainsTaxCalculator() {
   const [sellingPrice, setSellingPrice] = useState("500,000,000");
   const [expenses, setExpenses] = useState("10,000,000");
   const [holdingYears, setHoldingYears] = useState("5");
+  const [residenceYears, setResidenceYears] = useState("5");
   const [isOneHousehold, setIsOneHousehold] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
@@ -169,15 +189,24 @@ export default function CapitalGainsTaxCalculator() {
     const sell = parseAmount(sellingPrice);
     const exp = parseAmount(expenses);
     const years = parseInt(holdingYears, 10) || 0;
+    const livedYears = parseInt(residenceYears, 10) || 0;
     if (acq <= 0 || sell <= 0) return null;
-    return calculateCapitalGainsTax(acq, sell, exp, years, isOneHousehold);
-  }, [acquisitionPrice, sellingPrice, expenses, holdingYears, isOneHousehold]);
+    return calculateCapitalGainsTax(
+      acq,
+      sell,
+      exp,
+      years,
+      livedYears,
+      isOneHousehold
+    );
+  }, [acquisitionPrice, sellingPrice, expenses, holdingYears, residenceYears, isOneHousehold]);
 
   const handleReset = () => {
     setAcquisitionPrice("300,000,000");
     setSellingPrice("500,000,000");
     setExpenses("10,000,000");
     setHoldingYears("5");
+    setResidenceYears("5");
     setIsOneHousehold(false);
     setError("");
     setCopied(false);
@@ -196,7 +225,7 @@ export default function CapitalGainsTaxCalculator() {
         양도소득세 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2025년 기준 부동산 양도소득세를 장기보유특별공제를 적용하여 계산합니다.
+        2026년 일반 기준으로 1세대 1주택 12억원 비과세와 장기보유특별공제를 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -300,9 +329,31 @@ export default function CapitalGainsTaxCalculator() {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              1세대 1주택 (2년 이상 거주)
+              비과세 요건 충족 1세대 1주택
             </button>
           </div>
+          <p className="text-xs text-gray-400 mt-2">
+            2년 이상 보유 등 비과세 요건을 모두 충족한 경우에만 선택하세요. 조정대상지역 취득분 등은 거주요건이 추가될 수 있습니다.
+          </p>
+          {isOneHousehold && (
+            <div className="mt-4 max-w-xs">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                실제 거주기간
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={residenceYears}
+                  onChange={handleInputChange(setResidenceYears, true)}
+                  placeholder="예: 5"
+                  className="calc-input calc-input-lg"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  년
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {error && <p className="text-red-500 text-sm mt-2 mb-4">{error}</p>}
@@ -351,6 +402,12 @@ export default function CapitalGainsTaxCalculator() {
               <Row label="필요경비" value={result.expenses} />
               <div className="border-t border-gray-100 pt-3">
                 <Row label="양도차익" value={result.capitalGain} bold />
+                {isOneHousehold && (
+                  <Row
+                    label="12억원 비과세 반영 후 양도차익"
+                    value={result.taxableCapitalGain}
+                  />
+                )}
               </div>
               <div className="border-t border-gray-100 pt-3">
                 <Row
@@ -456,6 +513,9 @@ export default function CapitalGainsTaxCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          실제 세액은 취득 시점·지역, 거주요건, 공동명의, 일시적 2주택, 중과 배제, 필요경비 인정 여부 등에 따라 달라집니다. 이 계산기는 예정신고 전 비교를 위한 간이 예상치입니다.
+        </p>
       </section>
 
       <RelatedTools current="capital-gains-tax" />

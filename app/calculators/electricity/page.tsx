@@ -37,12 +37,12 @@ const LOW_VOLTAGE = {
   summer: {
     tiers: [300, 450, 1000, Infinity],
     basic: [910, 1600, 7300, 7300],
-    unit: [120.0, 214.6, 307.3, 307.3],
+    unit: [120.0, 214.6, 307.3, 736.2],
   },
   winter: {
-    tiers: [200, 400, Infinity],
-    basic: [910, 1600, 7300],
-    unit: [120.0, 214.6, 307.3],
+    tiers: [200, 400, 1000, Infinity],
+    basic: [910, 1600, 7300, 7300],
+    unit: [120.0, 214.6, 307.3, 736.2],
   },
 };
 
@@ -56,19 +56,19 @@ const HIGH_VOLTAGE = {
   summer: {
     tiers: [300, 450, 1000, Infinity],
     basic: [730, 1260, 6060, 6060],
-    unit: [105.0, 174.0, 242.3, 242.3],
+    unit: [105.0, 174.0, 242.3, 601.3],
   },
   winter: {
-    tiers: [200, 400, Infinity],
-    basic: [730, 1260, 6060],
-    unit: [105.0, 174.0, 242.3],
+    tiers: [200, 400, 1000, Infinity],
+    basic: [730, 1260, 6060, 6060],
+    unit: [105.0, 174.0, 242.3, 601.3],
   },
 };
 
 const CLIMATE_FEE_PER_KWH = 9;
 const FUEL_ADJUST_PER_KWH = 5;
 const VAT_RATE = 0.1;
-const FUND_RATE = 0.037;
+const FUND_RATE = 0.027;
 
 function calculateElectricity(
   usage: number,
@@ -94,7 +94,7 @@ function calculateElectricity(
   let prevLimit = 0;
 
   const tierLabels =
-    season === "summer" && table.tiers.length === 4
+    table.tiers.length === 4
       ? ["1구간", "2구간", "3구간", "슈퍼유저"]
       : ["1구간", "2구간", "3구간"];
 
@@ -124,7 +124,7 @@ function calculateElectricity(
 
   const subtotal = basicFee + energyFee + climateFee + fuelAdjustFee;
   const vat = Math.round(subtotal * VAT_RATE);
-  const fundFee = Math.round(subtotal * FUND_RATE);
+  const fundFee = Math.floor((subtotal * FUND_RATE) / 10) * 10;
 
   // 10원 미만 절사
   const total = Math.floor((subtotal + vat + fundFee) / 10) * 10;
@@ -188,7 +188,7 @@ export default function ElectricityCalculator() {
         전기요금 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2025년 한국전력 기준 가정용 전기요금을 누진제로 계산합니다.
+        2026년 3분기 확인 단가로 가정용 전기요금을 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -341,7 +341,7 @@ export default function ElectricityCalculator() {
               </div>
               <div className="border-t border-gray-100 pt-3">
                 <Row label="부가가치세 (10%)" value={result.vat} />
-                <Row label="전력산업기반기금 (3.7%)" value={result.fundFee} />
+                <Row label="전력산업기반기금 (2.7%)" value={result.fundFee} />
               </div>
               <div className="border-t border-gray-200 pt-3">
                 <Row label="월 전기요금 합계" value={result.total} bold />
@@ -407,10 +407,10 @@ export default function ElectricityCalculator() {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             전기요금 누진제는 전력 사용량이 많을수록 더 높은 단가가 적용되는
-            요금 체계입니다. 2025년 기준 가정용 전기요금은 3구간 누진 체계로
+            요금 체계입니다. 2026년 확인 기준 가정용 전기요금은 3구간 누진 체계로
             운영되며, 사용량이 많아질수록 기본요금과 kWh당 단가가 모두
             올라갑니다. 하계(7~8월)에는 냉방 수요를 고려하여 구간 기준이
-            완화되며, 1,000kWh를 초과하는 슈퍼유저 구간이 별도로 적용됩니다.
+            완화됩니다. 하계와 동계에는 1,000kWh 초과분에 슈퍼유저 단가가 별도로 적용됩니다.
           </p>
         </div>
 
@@ -476,17 +476,20 @@ export default function ElectricityCalculator() {
                     전력산업기반기금
                   </td>
                   <td className="py-2 px-3 border border-gray-200">
-                    전기요금 합계의 3.7%
+                    전기요금 합계의 2.7%
                   </td>
                 </tr>
               </tbody>
             </table></div>
           </div>
+          <p className="text-xs text-gray-400 mt-2">
+            * 하계·동계 1,000kWh 초과분은 저압 736.2원/kWh, 고압 601.3원/kWh를 적용합니다.
+          </p>
         </div>
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            주택용(저압) 전기요금표 (2025년 기준)
+            주택용(저압) 전기요금표 (2026년 3분기 확인)
           </h2>
           <div className="overflow-x-auto">
             <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">
@@ -641,6 +644,9 @@ export default function ElectricityCalculator() {
           </div>
         </div>
       </section>
+      <p className="mt-6 text-xs text-gray-400 leading-relaxed">
+        기후환경요금 9원/kWh, 2026년 3분기 연료비조정단가 5원/kWh, 전력산업기반기금 2.7%를 가정한 예상치입니다. 검침일수, 복지할인, 공동설비와 이후 분기 단가에 따라 실제 고지액은 달라질 수 있습니다.
+      </p>
       <RelatedTools current="electricity" />
     </div>
   );

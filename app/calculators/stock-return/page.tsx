@@ -60,7 +60,7 @@ export default function StockReturnCalculator() {
   const [sellPrice, setSellPrice] = useState("55,000");
   const [quantity, setQuantity] = useState("100");
   const [feeRate, setFeeRate] = useState("0.015");
-  const [taxRate, setTaxRate] = useState("0.18");
+  const [taxRate, setTaxRate] = useState("0.20");
   const [copied, setCopied] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString("ko-KR");
@@ -92,7 +92,7 @@ export default function StockReturnCalculator() {
     setSellPrice("");
     setQuantity("");
     setFeeRate("0.015");
-    setTaxRate("0.18");
+    setTaxRate("0.20");
     setCopied(false);
   };
 
@@ -226,7 +226,7 @@ export default function StockReturnCalculator() {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   setTaxRate(v);
                 }}
-                placeholder="0.18"
+                placeholder="0.20"
                 className="calc-input calc-input-lg"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -235,9 +235,9 @@ export default function StockReturnCalculator() {
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {[
-                { label: "코스피 0.18%", value: "0.18" },
-                { label: "코스닥 0.18%", value: "0.18" },
-                { label: "K-OTC 0.18%", value: "0.18" },
+                { label: "코스피 0.20%", value: "0.20" },
+                { label: "코스닥 0.20%", value: "0.20" },
+                { label: "코넥스 0.10%", value: "0.10" },
               ].map((opt, i) => (
                 <button
                   key={i}
@@ -383,7 +383,7 @@ export default function StockReturnCalculator() {
             <p className="text-gray-700 font-mono text-sm">매도금액 = 매도가 x 수량</p>
             <p className="text-gray-700 font-mono text-sm">매수수수료 = 매수금액 x 수수료율</p>
             <p className="text-gray-700 font-mono text-sm">매도수수료 = 매도금액 x 수수료율</p>
-            <p className="text-gray-700 font-mono text-sm">증권거래세 = 매도금액 x 0.18%</p>
+            <p className="text-gray-700 font-mono text-sm">증권거래세 = 매도금액 x 입력 세율</p>
             <p className="text-gray-700 font-mono text-sm">순수익 = 매도금액 - 매수금액 - 수수료합계 - 세금</p>
             <p className="text-gray-700 font-mono text-sm">수익률 = 순수익 / (매수금액 + 매수수수료) x 100</p>
           </div>
@@ -391,7 +391,7 @@ export default function StockReturnCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            증권거래세 안내 (2025년 기준)
+            증권거래세 안내 (2026년 기준)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -406,15 +406,15 @@ export default function StockReturnCalculator() {
               <tbody className="text-gray-600">
                 <tr>
                   <td className="py-2 px-3 border border-gray-200">코스피</td>
-                  <td className="text-right py-2 px-3 border border-gray-200">0.03%</td>
+                  <td className="text-right py-2 px-3 border border-gray-200">0.05%</td>
                   <td className="text-right py-2 px-3 border border-gray-200">0.15%</td>
-                  <td className="text-right py-2 px-3 border border-gray-200 font-medium">0.18%</td>
+                  <td className="text-right py-2 px-3 border border-gray-200 font-medium">0.20%</td>
                 </tr>
                 <tr>
                   <td className="py-2 px-3 border border-gray-200">코스닥</td>
-                  <td className="text-right py-2 px-3 border border-gray-200">0.18%</td>
+                  <td className="text-right py-2 px-3 border border-gray-200">0.20%</td>
                   <td className="text-right py-2 px-3 border border-gray-200">-</td>
-                  <td className="text-right py-2 px-3 border border-gray-200 font-medium">0.18%</td>
+                  <td className="text-right py-2 px-3 border border-gray-200 font-medium">0.20%</td>
                 </tr>
                 <tr>
                   <td className="py-2 px-3 border border-gray-200">코넥스</td>
@@ -426,7 +426,7 @@ export default function StockReturnCalculator() {
             </table>
           </div>
           <p className="text-xs text-gray-400 mt-2">
-            * 증권거래세는 매도 시에만 부과됩니다. 매수 시에는 부과되지 않습니다.
+            * 코스피 합계는 증권거래세 0.05%와 농어촌특별세 0.15%를 더한 값입니다. 세율은 매도 시에만 적용되며 직접 수정할 수 있습니다.
           </p>
         </div>
 
@@ -469,6 +469,9 @@ export default function StockReturnCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          거래 수수료는 증권사·계좌·이벤트별로 다르며, 이 결과에는 양도소득세와 배당소득세가 포함되지 않습니다. 실제 체결내역의 수수료율을 입력해 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="stock-return" />

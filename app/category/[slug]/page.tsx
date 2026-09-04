@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { sections, sectionColors } from "@/lib/sections";
 import type { Item } from "@/lib/sections";
 
-function ToolCard({ item, colorKey, index, featured }: { item: Item; colorKey: string; index: number; featured?: boolean }) {
+function ToolCard({ item, colorKey, index }: { item: Item; colorKey: string; index: number }) {
   const colors = sectionColors[colorKey] || sectionColors.tools;
   return (
     <div className="group card-enter" style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}>
@@ -20,7 +20,7 @@ function ToolCard({ item, colorKey, index, featured }: { item: Item; colorKey: s
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-xs sm:text-[0.8125rem] font-bold text-gray-900 truncate group-hover:text-gray-800">{item.title}</p>
-            <p className="hidden sm:block text-[0.6875rem] text-gray-400 mt-0.5 truncate group-hover:text-gray-500 transition-colors">{item.desc}</p>
+            <p className="hidden sm:line-clamp-2 text-[0.6875rem] leading-snug text-gray-400 mt-0.5 group-hover:text-gray-500 transition-colors">{item.desc}</p>
           </div>
           <svg className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -68,7 +68,7 @@ export default function CategoryPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
                 {section.fullLabel}
               </h1>
-              <p className="text-gray-500 text-sm mt-1">{section.items.length}개의 도구</p>
+              <p className="text-gray-500 text-sm mt-1">도구 {section.items.length}개 싹 모음</p>
             </div>
           </div>
           <p className="text-gray-600 text-sm sm:text-base max-w-2xl">{section.description}</p>
@@ -79,13 +79,13 @@ export default function CategoryPage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {section.items.map((item, i) => (
-            <ToolCard key={item.href} item={item} colorKey={section.key} index={i} featured={item.featured} />
+            <ToolCard key={item.href} item={item} colorKey={section.key} index={i} />
           ))}
         </div>
 
         {/* Other categories */}
         <section className="mt-14 pt-8 border-t border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-5">다른 카테고리</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-5">다른 것도 볼래?</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {otherSections.map((s) => {
               const c = sectionColors[s.key];
@@ -111,10 +111,10 @@ export default function CategoryPage() {
         {/* SEO content */}
         <section className="mt-14">
           <div className="calc-seo-card">
-            <h2 className="calc-seo-title">{section.fullLabel} 안내</h2>
+            <h2 className="calc-seo-title">도구 사용 전 확인</h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              {section.description} 모든 도구는 설치 없이 브라우저에서 바로 사용할 수 있으며, 입력한 데이터는 서버로 전송되지 않고 내 기기에서만 처리됩니다.
-              계산 결과는 참고용이며, 정확한 금액은 관련 기관에 문의하시기 바랍니다.
+              계산과 테스트 결과는 참고용입니다. 이미지·텍스트 등 브라우저에서 처리할 수 있는 데이터는 가능한 한 내 기기 안에서 처리합니다.
+              세금·건강처럼 전문적인 판단이 필요한 결과는 관련 기관이나 전문가에게 다시 확인해 주세요.
             </p>
           </div>
         </section>

@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/calculators/stock-return" },
   title: "주식 수익률 계산기 - 매수 매도 수수료 세금 포함 순수익 계산",
   description:
-    "주식 매수가와 매도가를 입력하면 수수료, 증권거래세를 포함한 순수익과 수익률을 자동으로 계산합니다. 2025년 증권거래세 0.18% 기준.",
+    "주식 매수가와 매도가를 입력하면 수수료와 증권거래세를 포함한 순수익과 수익률을 계산합니다. 2026년 국내 상장주식 세율 선택값을 제공합니다.",
   keywords: [
     "주식 수익률 계산기",
     "주식 수익 계산",

@@ -14,6 +14,7 @@ interface CategoryRailProps {
   value: string;
   onValueChange: (value: string) => void;
   controlsId: string;
+  ariaLabel?: string;
 }
 
 // Roving-focus keyboard behavior adapted from the 21st.dev accessible Tabs pattern.
@@ -22,6 +23,7 @@ export default function CategoryRail({
   value,
   onValueChange,
   controlsId,
+  ariaLabel = "도구 카테고리",
 }: CategoryRailProps) {
   const baseId = useId();
   const buttons = useRef<Array<HTMLButtonElement | null>>([]);
@@ -58,7 +60,7 @@ export default function CategoryRail({
     <div
       className="home-category-rail"
       role="tablist"
-      aria-label="도구 카테고리"
+      aria-label={ariaLabel}
     >
       {items.map((item, index) => {
         const selected = item.key === value;

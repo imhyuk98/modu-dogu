@@ -22,7 +22,6 @@ export default function BombGamePage() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [exploded, setExploded] = useState(false);
   const [penalty, setPenalty] = useState("");
-  const [timeLeft, setTimeLeft] = useState(0);
   const [shaking, setShaking] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const endTimeRef = useRef(0);
@@ -43,7 +42,6 @@ export default function BombGamePage() {
     if (names.length < 2) return;
     const duration = Math.floor(Math.random() * 26) + 5;
     endTimeRef.current = Date.now() + duration * 1000;
-    setTimeLeft(duration);
     setCurrentIdx(0);
     setExploded(false);
     setStarted(true);
@@ -54,7 +52,6 @@ export default function BombGamePage() {
     if (started && !exploded) {
       timerRef.current = setInterval(() => {
         const remaining = Math.max(0, Math.ceil((endTimeRef.current - Date.now()) / 1000));
-        setTimeLeft(remaining);
         if (remaining <= 5 && remaining > 0) {
           setShaking(true);
         }

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 type VehicleType = "non-business" | "business" | "electric" | "hybrid";
 
@@ -22,9 +23,9 @@ interface CarTaxResult {
 function calculateCarTax(
   vehicleType: VehicleType,
   displacement: number,
-  registrationYear: number
+  registrationYear: number,
+  currentYear: number,
 ): CarTaxResult {
-  const currentYear = new Date().getFullYear();
   const vehicleAge = currentYear - registrationYear;
 
   // 기본 자동차세 계산
@@ -33,11 +34,9 @@ function calculateCarTax(
   if (vehicleType === "electric") {
     baseTax = 100000;
   } else if (vehicleType === "business") {
-    if (displacement <= 1000) {
+    if (displacement <= 1600) {
       baseTax = displacement * 18;
-    } else if (displacement <= 1600) {
-      baseTax = displacement * 18;
-    } else if (displacement <= 2000) {
+    } else if (displacement <= 2500) {
       baseTax = displacement * 19;
     } else {
       baseTax = displacement * 24;
@@ -53,31 +52,35 @@ function calculateCarTax(
     }
   }
 
-  // 차령별 감면율
+  // 비영업용 승용차 차령별 경감률(영업용·전기차에는 적용하지 않음)
   let reductionRate = 0;
-  if (vehicleAge >= 12) reductionRate = 50;
-  else if (vehicleAge >= 11) reductionRate = 45;
-  else if (vehicleAge >= 10) reductionRate = 40;
-  else if (vehicleAge >= 9) reductionRate = 35;
-  else if (vehicleAge >= 8) reductionRate = 30;
-  else if (vehicleAge >= 7) reductionRate = 25;
-  else if (vehicleAge >= 6) reductionRate = 20;
-  else if (vehicleAge >= 5) reductionRate = 15;
-  else if (vehicleAge >= 4) reductionRate = 10;
-  else if (vehicleAge >= 3) reductionRate = 5;
+  if (vehicleType === "non-business" || vehicleType === "hybrid") {
+    if (vehicleAge >= 12) reductionRate = 50;
+    else if (vehicleAge >= 11) reductionRate = 45;
+    else if (vehicleAge >= 10) reductionRate = 40;
+    else if (vehicleAge >= 9) reductionRate = 35;
+    else if (vehicleAge >= 8) reductionRate = 30;
+    else if (vehicleAge >= 7) reductionRate = 25;
+    else if (vehicleAge >= 6) reductionRate = 20;
+    else if (vehicleAge >= 5) reductionRate = 15;
+    else if (vehicleAge >= 4) reductionRate = 10;
+    else if (vehicleAge >= 3) reductionRate = 5;
+  }
 
   const reductionAmount = Math.floor(baseTax * (reductionRate / 100));
   const afterReduction = baseTax - reductionAmount;
 
-  // 지방교육세 30%
-  const localEducationTax = Math.floor(afterReduction * 0.3);
+  // 자동차분 지방교육세 30%는 비영업용 승용자동차에 부과
+  const localEducationTax = vehicleType === "business"
+    ? 0
+    : Math.floor(afterReduction * 0.3);
 
   const annualTotal = afterReduction + localEducationTax;
   const firstHalf = Math.floor(annualTotal / 2);
   const secondHalf = annualTotal - firstHalf;
 
-  // 연납 할인 (약 5%)
-  const earlyPaymentDiscount = Math.floor(annualTotal * 0.05);
+  // 1월 연납: 2월~12월 세액의 5% 공제(연세액 기준 약 4.58%)
+  const earlyPaymentDiscount = Math.floor(annualTotal * (11 / 12) * 0.05);
   const earlyPaymentTotal = annualTotal - earlyPaymentDiscount;
 
   return {
@@ -114,21 +117,23 @@ const popularCars = [
 export default function CarTaxCalculator() {
   const [vehicleType, setVehicleType] = useState<VehicleType>("non-business");
   const [displacement, setDisplacement] = useState("1,999");
-  const [registrationYear, setRegistrationYear] = useState(String(new Date().getFullYear() - 3));
+  const [registrationYear, setRegistrationYear] = useState("");
   const [copied, setCopied] = useState(false);
-
-  const currentYear = new Date().getFullYear();
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+  const currentYear = clientReady ? Number(todayKey.slice(0, 4)) : 2026;
+  const displayedRegistrationYear = registrationYear || String(currentYear - 3);
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
 
   const isElectric = vehicleType === "electric";
 
   const result = useMemo<CarTaxResult | null>(() => {
     const cc = parseInt(displacement.replace(/,/g, ""), 10);
-    const year = parseInt(registrationYear, 10);
+    const year = parseInt(displayedRegistrationYear, 10);
     if (!isElectric && (!cc || cc <= 0)) return null;
     if (!year) return null;
-    return calculateCarTax(vehicleType, isElectric ? 0 : cc, year);
-  }, [vehicleType, displacement, registrationYear, isElectric]);
+    return calculateCarTax(vehicleType, isElectric ? 0 : cc, year, currentYear);
+  }, [vehicleType, displacement, displayedRegistrationYear, isElectric, currentYear]);
 
   const handleReset = () => {
     setVehicleType("non-business");
@@ -232,7 +237,8 @@ export default function CarTaxCalculator() {
             최초등록연도
           </label>
           <select
-            value={registrationYear}
+            aria-label="최초등록연도"
+            value={displayedRegistrationYear}
             onChange={(e) => setRegistrationYear(e.target.value)}
             className="calc-input calc-input-lg bg-white"
           >
@@ -330,7 +336,7 @@ export default function CarTaxCalculator() {
               <div className="border-t border-gray-100 pt-3">
                 <div className="flex justify-between items-center py-1">
                   <span className="text-sm text-green-700 font-medium">
-                    연납 시 (1월 납부, 약 5% 할인)
+                    연납 시 (1월 납부, 연세액의 약 4.58% 공제)
                   </span>
                   <span className="text-sm font-semibold text-green-700">
                     {formatNumber(result.earlyPaymentTotal)}원
@@ -370,8 +376,9 @@ export default function CarTaxCalculator() {
             자동차세는 자동차를 소유한 사람에게 부과되는 지방세입니다. 매년
             6월(1기분)과 12월(2기분)에 나누어 납부하며, 차량의 배기량(cc)과
             차령(연식)에 따라 세액이 결정됩니다. 영업용과 비영업용에 따라 세율이
-            다르게 적용되며, 지방교육세(자동차세의 30%)가 함께 부과됩니다. 1월에
-            연간 세액을 한꺼번에 납부하면 약 5%의 할인 혜택을 받을 수 있습니다.
+            다르게 적용되며, 비영업용 승용차에는 지방교육세(자동차세의 30%)가 함께 부과됩니다.
+            1월에 연납하면 2월부터 12월까지의 세액에 공제율 5%가 적용되어,
+            연세액 기준 약 4.58%를 공제받을 수 있습니다.
           </p>
         </div>
 
@@ -422,7 +429,7 @@ export default function CarTaxCalculator() {
                 </tr>
                 <tr>
                   <td className="py-2 px-3 border border-gray-200">
-                    1,600cc 초과 ~ 2,000cc 이하
+                    1,600cc 초과 ~ 2,500cc 이하
                   </td>
                   <td className="text-right py-2 px-3 border border-gray-200">
                     200원
@@ -433,7 +440,7 @@ export default function CarTaxCalculator() {
                 </tr>
                 <tr>
                   <td className="py-2 px-3 border border-gray-200">
-                    2,000cc 초과
+                    2,500cc 초과
                   </td>
                   <td className="text-right py-2 px-3 border border-gray-200">
                     200원
@@ -446,8 +453,8 @@ export default function CarTaxCalculator() {
             </table></div>
           </div>
           <p className="text-gray-500 text-sm">
-            * 전기차는 배기량과 관계없이 연 100,000원 고정, 하이브리드는 일반
-            승용차와 동일하게 배기량 기준으로 과세됩니다.
+            * 비영업용 전기차는 배기량과 관계없이 자동차세 연 100,000원이며,
+            하이브리드는 일반 승용차와 동일하게 배기량 기준으로 과세됩니다.
           </p>
         </div>
 
@@ -551,9 +558,9 @@ export default function CarTaxCalculator() {
             <div>
               <h3 className="font-medium text-gray-900">1. 연납 할인 활용</h3>
               <p className="text-sm mt-1">
-                매년 1월에 연간 자동차세를 한꺼번에 납부하면 약 5%의 할인을 받을
-                수 있습니다. 3월, 6월, 9월에도 신청 가능하지만 할인율이
-                줄어듭니다.
+                매년 1월에 연납하면 2월~12월 세액의 5%, 즉 연세액 기준 약
+                4.58%를 공제받을 수 있습니다. 3월, 6월, 9월에도 신청할 수
+                있지만 남은 기간이 짧아져 공제액이 줄어듭니다.
               </p>
             </div>
             <div>
@@ -600,7 +607,7 @@ export default function CarTaxCalculator() {
               <p className="text-gray-600 text-sm mt-1">
                 위택스(wetax.go.kr)에서 온라인으로 신청하거나, 관할 지방자치단체
                 세무과에 전화 또는 방문하여 신청할 수 있습니다. 1월 16일~31일
-                사이에 신청하면 연세액의 약 5% 할인을 받을 수 있습니다.
+                사이에 신청하면 2월~12월분 세액의 5%를 공제받을 수 있습니다.
               </p>
             </div>
             <div>
@@ -637,6 +644,10 @@ export default function CarTaxCalculator() {
           </div>
         </div>
       </section>
+      <p className="mt-6 rounded-lg bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+        이 결과는 최초등록연도의 연 단위 차령과 연간 보유를 가정한 예상값입니다. 실제 고지액은 등록일,
+        보유 일수, 차량 용도, 지방자치단체 조례와 개별 감면에 따라 달라질 수 있으므로 위택스 고지서를 확인하세요.
+      </p>
       <RelatedTools current="car-tax" />
     </div>
   );

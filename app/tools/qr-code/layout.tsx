@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/tools/qr-code" },
+  alternates: {
+    canonical: "/tools/qr-code",
+    languages: { ko: "/tools/qr-code", en: "/en/tools/qr-code", "x-default": "/tools/qr-code" },
+  },
   title: "QR 코드 생성기 - 무료 온라인 QR 코드 만들기",
   description:
     "텍스트, URL, 연락처 등을 QR 코드로 변환할 수 있는 무료 온라인 QR 코드 생성기입니다.",

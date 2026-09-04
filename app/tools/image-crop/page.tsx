@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Local blob previews require native image elements. */
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -259,8 +260,8 @@ export default function ImageCrop() {
           const curYNat = my2 / scale;
           const nx = Math.min(sc.x, curXNat);
           const ny = Math.min(sc.y, curYNat);
-          let nw = Math.abs(curXNat - sc.x);
-          let nh = ar ? nw / ar : Math.abs(curYNat - sc.y);
+          const nw = Math.abs(curXNat - sc.x);
+          const nh = ar ? nw / ar : Math.abs(curYNat - sc.y);
           newCrop = { x: nx, y: ar ? (curYNat < sc.y ? sc.y - nh : sc.y) : ny, w: nw, h: nh };
           break;
         }
@@ -268,50 +269,50 @@ export default function ImageCrop() {
           newCrop = { x: sc.x + dxNat, y: sc.y + dyNat, w: sc.w, h: sc.h };
           break;
         case "se": {
-          let nw = sc.w + dxNat;
-          let nh = ar ? nw / ar : sc.h + dyNat;
+          const nw = sc.w + dxNat;
+          const nh = ar ? nw / ar : sc.h + dyNat;
           newCrop = { x: sc.x, y: sc.y, w: nw, h: nh };
           break;
         }
         case "sw": {
-          let nw = sc.w - dxNat;
-          let nh = ar ? nw / ar : sc.h + dyNat;
+          const nw = sc.w - dxNat;
+          const nh = ar ? nw / ar : sc.h + dyNat;
           newCrop = { x: sc.x + dxNat, y: sc.y, w: nw, h: nh };
           break;
         }
         case "ne": {
-          let nw = sc.w + dxNat;
-          let nh = ar ? nw / ar : sc.h - dyNat;
+          const nw = sc.w + dxNat;
+          const nh = ar ? nw / ar : sc.h - dyNat;
           newCrop = { x: sc.x, y: ar ? sc.y - (nw / ar - sc.h) : sc.y + dyNat, w: nw, h: nh };
           break;
         }
         case "nw": {
-          let nw = sc.w - dxNat;
-          let nh = ar ? nw / ar : sc.h - dyNat;
+          const nw = sc.w - dxNat;
+          const nh = ar ? nw / ar : sc.h - dyNat;
           newCrop = { x: sc.x + dxNat, y: ar ? sc.y + sc.h - nw / ar : sc.y + dyNat, w: nw, h: nh };
           break;
         }
         case "n": {
-          let nh = sc.h - dyNat;
-          let nw = ar ? nh * ar : sc.w;
+          const nh = sc.h - dyNat;
+          const nw = ar ? nh * ar : sc.w;
           newCrop = { x: ar ? sc.x + (sc.w - nw) / 2 : sc.x, y: sc.y + dyNat, w: nw, h: nh };
           break;
         }
         case "s": {
-          let nh = sc.h + dyNat;
-          let nw = ar ? nh * ar : sc.w;
+          const nh = sc.h + dyNat;
+          const nw = ar ? nh * ar : sc.w;
           newCrop = { x: ar ? sc.x + (sc.w - nw) / 2 : sc.x, y: sc.y, w: nw, h: nh };
           break;
         }
         case "w": {
-          let nw = sc.w - dxNat;
-          let nh = ar ? nw / ar : sc.h;
+          const nw = sc.w - dxNat;
+          const nh = ar ? nw / ar : sc.h;
           newCrop = { x: sc.x + dxNat, y: ar ? sc.y + (sc.h - nh) / 2 : sc.y, w: nw, h: nh };
           break;
         }
         case "e": {
-          let nw = sc.w + dxNat;
-          let nh = ar ? nw / ar : sc.h;
+          const nw = sc.w + dxNat;
+          const nh = ar ? nw / ar : sc.h;
           newCrop = { x: sc.x, y: ar ? sc.y + (sc.h - nh) / 2 : sc.y, w: nw, h: nh };
           break;
         }

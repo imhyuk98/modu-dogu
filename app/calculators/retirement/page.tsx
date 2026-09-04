@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { calculateRetirement, type RetirementResult } from "@/lib/calculations";
+import { calculateRetirement } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 export default function RetirementCalculator() {
@@ -55,12 +55,12 @@ export default function RetirementCalculator() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">입사일</label>
-            <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); }}
+            <input type="date" aria-label="입사일" value={startDate} onChange={(e) => { setStartDate(e.target.value); }}
               className="calc-input" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">퇴사일</label>
-            <input type="date" value={endDate} onChange={(e) => { setEndDate(e.target.value); }}
+            <input type="date" aria-label="퇴사일" value={endDate} onChange={(e) => { setEndDate(e.target.value); }}
               className="calc-input" />
           </div>
         </div>

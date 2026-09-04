@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { useClientReady, useLocalDateKey } from "@/lib/use-client-date";
 
 type Branch = "army" | "navy" | "airforce" | "marines" | "police" | "social";
 
@@ -18,10 +19,6 @@ const branches: Record<Branch, BranchInfo> = {
   police: { label: "의무경찰", months: 18 },
   social: { label: "사회복무요원", months: 21 },
 };
-
-function getTodayStr(): string {
-  return new Date().toISOString().split("T")[0];
-}
 
 function addMonths(date: Date, months: number): Date {
   const result = new Date(date);
@@ -50,19 +47,22 @@ function formatDate(d: Date): string {
 }
 
 export default function MilitaryCalculator() {
-  const [enlistDate, setEnlistDate] = useState(getTodayStr);
+  const [enlistDate, setEnlistDate] = useState("");
   const [branch, setBranch] = useState<Branch>("army");
   const [copied, setCopied] = useState(false);
+  const clientReady = useClientReady();
+  const todayKey = useLocalDateKey();
+  const displayedEnlistDate = enlistDate || (clientReady ? todayKey : "");
 
   const result = useMemo(() => {
-    if (!enlistDate) return null;
+    if (!clientReady || !displayedEnlistDate) return null;
 
-    const enlist = new Date(enlistDate);
+    const enlist = new Date(`${displayedEnlistDate}T00:00:00`);
     enlist.setHours(0, 0, 0, 0);
     const info = branches[branch];
     const discharge = calcDischargeDate(enlist, info.months);
 
-    const today = new Date();
+    const today = new Date(`${todayKey}T00:00:00`);
     today.setHours(0, 0, 0, 0);
 
     const totalDays = diffDays(enlist, discharge);
@@ -81,10 +81,10 @@ export default function MilitaryCalculator() {
       branchLabel: info.label,
       months: info.months,
     };
-  }, [enlistDate, branch]);
+  }, [branch, clientReady, displayedEnlistDate, todayKey]);
 
   const handleReset = () => {
-    setEnlistDate(getTodayStr());
+    setEnlistDate("");
     setBranch("army");
     setCopied(false);
   };
@@ -127,7 +127,8 @@ export default function MilitaryCalculator() {
           </label>
           <input
             type="date"
-            value={enlistDate}
+            aria-label="입대일"
+            value={displayedEnlistDate}
             onChange={(e) => setEnlistDate(e.target.value)}
             className="calc-input calc-input-lg"
           />

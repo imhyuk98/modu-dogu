@@ -124,19 +124,6 @@ export default function ImageRotate() {
     setUseCustomAngle(false);
   };
 
-  // Compute display size for canvas (limit to container)
-  const canvasDisplayStyle = (): React.CSSProperties => {
-    const canvas = canvasRef.current;
-    if (!canvas) return {};
-    const maxW = Math.min(600, window.innerWidth - 64);
-    const maxH = 450;
-    const cw = canvas.width;
-    const ch = canvas.height;
-    if (cw <= maxW && ch <= maxH) return { width: cw, height: ch };
-    const s = Math.min(maxW / cw, maxH / ch);
-    return { width: Math.round(cw * s), height: Math.round(ch * s) };
-  };
-
   return (
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
@@ -273,7 +260,6 @@ export default function ImageRotate() {
               <canvas
                 ref={canvasRef}
                 className="max-w-full max-h-[450px] object-contain"
-                style={canvasDisplayStyle()}
               />
             </div>
             <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-gray-600">

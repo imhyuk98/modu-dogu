@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { SALARY_CALCULATION_BASIS } from "@/lib/calculations";
 
 // 근로소득공제 계산
 function calcEarnedIncomeDeduction(salary: number): number {
@@ -9,7 +10,7 @@ function calcEarnedIncomeDeduction(salary: number): number {
   if (salary <= 15_000_000) return 3_500_000 + (salary - 5_000_000) * 0.4;
   if (salary <= 45_000_000) return 7_500_000 + (salary - 15_000_000) * 0.15;
   if (salary <= 100_000_000) return 12_000_000 + (salary - 45_000_000) * 0.05;
-  return 14_750_000 + (salary - 100_000_000) * 0.02;
+  return Math.min(20_000_000, 14_750_000 + (salary - 100_000_000) * 0.02);
 }
 
 // 산출세액 계산 (과세표준에 세율 적용)
@@ -28,9 +29,24 @@ function calcComputedTax(taxBase: number): number {
 // 자녀세액공제 계산
 function calcChildTaxCredit(children: number): number {
   if (children <= 0) return 0;
-  if (children === 1) return 150_000;
-  if (children === 2) return 350_000;
-  return 350_000 + (children - 2) * 300_000;
+  if (children === 1) return 250_000;
+  if (children === 2) return 550_000;
+  return 550_000 + (children - 2) * 400_000;
+}
+
+function calcEarnedIncomeTaxCredit(computedTax: number, salary: number): number {
+  const calculated = computedTax <= 1_300_000
+    ? computedTax * 0.55
+    : 715_000 + (computedTax - 1_300_000) * 0.3;
+  let limit = 740_000;
+  if (salary > 120_000_000) {
+    limit = Math.max(200_000, 500_000 - (salary - 120_000_000) * 0.5);
+  } else if (salary > 70_000_000) {
+    limit = Math.max(500_000, 660_000 - (salary - 70_000_000) * 0.5);
+  } else if (salary > 33_000_000) {
+    limit = Math.max(660_000, 740_000 - (salary - 33_000_000) * 0.008);
+  }
+  return Math.round(Math.min(calculated, limit));
 }
 
 // 연금저축 공제율 (총급여 기준)
@@ -54,6 +70,7 @@ interface CalcResult {
   taxBase: number;
   computedTax: number;
   // 세액공제
+  earnedIncomeTaxCredit: number;
   childTaxCredit: number;
   pensionSavingsCredit: number;
   medicalCredit: number;
@@ -71,8 +88,7 @@ interface CalcResult {
 
 export default function YearEndTaxCalculator() {
   const [totalSalary, setTotalSalary] = useState("40,000,000");
-  const [taxAlreadyPaid, setTaxAlreadyPaid] = useState(""); // 빈값이면 자동계산
-  const [taxPaidAuto, setTaxPaidAuto] = useState(true);
+  const [taxAlreadyPaid, setTaxAlreadyPaid] = useState("0");
 
   // 인적공제
   const [hasSpouse, setHasSpouse] = useState(false);
@@ -120,8 +136,24 @@ export default function YearEndTaxCalculator() {
 
     // 2. 소득공제
     const personalDeduction = 1_500_000 + (hasSpouse ? 1_500_000 : 0) + dependents * 1_500_000;
-    const nationalPension = Math.round(salary * 0.045);
-    const healthInsurance = Math.round(salary * 0.03545);
+    const monthlySalary = salary / 12;
+    const pensionBase = Math.min(
+      Math.max(monthlySalary, SALARY_CALCULATION_BASIS.pensionLowerLimit),
+      SALARY_CALCULATION_BASIS.pensionUpperLimit
+    );
+    const nationalPension = Math.round(
+      pensionBase * SALARY_CALCULATION_BASIS.nationalPension * 12
+    );
+    const healthPremium = Math.round(
+      salary * SALARY_CALCULATION_BASIS.healthInsurance
+    );
+    const longTermCare = Math.round(
+      healthPremium * SALARY_CALCULATION_BASIS.longTermCare
+    );
+    const employmentInsurance = Math.round(
+      salary * SALARY_CALCULATION_BASIS.employmentInsurance
+    );
+    const healthInsurance = healthPremium + longTermCare + employmentInsurance;
 
     // 신용카드 공제: 급여 25% 초과분의 15%, max 300만
     const threshold = salary * 0.25;
@@ -130,14 +162,19 @@ export default function YearEndTaxCalculator() {
     const totalCardSpent = creditCardVal + debitCardVal;
     let creditCardDeduction = 0;
     let debitCardDeduction = 0;
+    const cardDeductionLimit = salary <= 70_000_000
+      ? 3_000_000
+      : salary <= 120_000_000
+        ? 2_500_000
+        : 2_000_000;
     if (totalCardSpent > threshold) {
       // 신용카드부터 threshold 차감
       if (creditCardVal >= threshold) {
-        creditCardDeduction = Math.min(Math.round((creditCardVal - threshold) * 0.15), 3_000_000);
-        debitCardDeduction = Math.min(Math.round(debitCardVal * 0.3), Math.max(0, 3_000_000 - creditCardDeduction));
+        creditCardDeduction = Math.min(Math.round((creditCardVal - threshold) * 0.15), cardDeductionLimit);
+        debitCardDeduction = Math.min(Math.round(debitCardVal * 0.3), Math.max(0, cardDeductionLimit - creditCardDeduction));
       } else {
         const remainThreshold = threshold - creditCardVal;
-        debitCardDeduction = Math.min(Math.round(Math.max(0, debitCardVal - remainThreshold) * 0.3), 3_000_000);
+        debitCardDeduction = Math.min(Math.round(Math.max(0, debitCardVal - remainThreshold) * 0.3), cardDeductionLimit);
       }
     }
 
@@ -150,8 +187,9 @@ export default function YearEndTaxCalculator() {
     const computedTax = calcComputedTax(taxBase);
 
     // 5. 세액공제
+    const earnedIncomeTaxCredit = calcEarnedIncomeTaxCredit(computedTax, salary);
     const childTaxCredit = calcChildTaxCredit(childrenCount);
-    const pensionVal = Math.min(parseNum(pensionSavings), 4_000_000);
+    const pensionVal = Math.min(parseNum(pensionSavings), 6_000_000);
     const pensionRate = getPensionCreditRate(salary);
     const pensionSavingsCredit = Math.round(pensionVal * pensionRate);
 
@@ -165,10 +203,9 @@ export default function YearEndTaxCalculator() {
       ? Math.round(donationVal * 0.15)
       : Math.round(10_000_000 * 0.15 + (donationVal - 10_000_000) * 0.3);
 
-    // 표준세액공제 (다른 세액공제 없을 때 13만원, 여기서는 세액공제 합이 13만 미만이면 적용)
-    const sumCredits = childTaxCredit + pensionSavingsCredit + medicalCredit + educationCredit + donationCredit;
-    const standardTaxCredit = sumCredits < 130_000 ? 130_000 : 0;
-    const totalTaxCredit = standardTaxCredit > 0 ? standardTaxCredit : sumCredits;
+    // 건강보험료 등 특별소득공제를 적용하므로 표준세액공제는 중복 적용하지 않는다.
+    const standardTaxCredit = 0;
+    const totalTaxCredit = earnedIncomeTaxCredit + childTaxCredit + pensionSavingsCredit + medicalCredit + educationCredit + donationCredit;
 
     // 6. 결정세액
     const determinedTax = Math.max(0, computedTax - totalTaxCredit);
@@ -176,14 +213,7 @@ export default function YearEndTaxCalculator() {
     const totalDeterminedTax = determinedTax + localTax;
 
     // 7. 기납부세액
-    let paid: number;
-    if (taxPaidAuto || !taxAlreadyPaid) {
-      // 자동: 간이세액표 근사 (산출세액 기준으로 80% 수준 + 지방세)
-      const autoIncomeTax = Math.round(computedTax * 0.8);
-      paid = autoIncomeTax + Math.round(autoIncomeTax * 0.1);
-    } else {
-      paid = parseNum(taxAlreadyPaid);
-    }
+    const paid = parseNum(taxAlreadyPaid);
 
     const refundOrPayment = paid - totalDeterminedTax;
 
@@ -199,6 +229,7 @@ export default function YearEndTaxCalculator() {
       totalIncomeDeduction,
       taxBase,
       computedTax,
+      earnedIncomeTaxCredit,
       childTaxCredit,
       pensionSavingsCredit,
       medicalCredit,
@@ -212,7 +243,7 @@ export default function YearEndTaxCalculator() {
       taxAlreadyPaid: paid,
       refundOrPayment,
     };
-  }, [totalSalary, taxAlreadyPaid, taxPaidAuto, hasSpouse, dependents, creditCardSpent, debitCardSpent, childrenCount, pensionSavings, medicalExpense, educationExpense, donation]);
+  }, [totalSalary, taxAlreadyPaid, hasSpouse, dependents, creditCardSpent, debitCardSpent, childrenCount, pensionSavings, medicalExpense, educationExpense, donation]);
 
   const handleCopy = async () => {
     if (!result) return;
@@ -225,8 +256,7 @@ export default function YearEndTaxCalculator() {
 
   const handleReset = () => {
     setTotalSalary("40,000,000");
-    setTaxAlreadyPaid("");
-    setTaxPaidAuto(true);
+    setTaxAlreadyPaid("0");
     setHasSpouse(false);
     setDependents(0);
     setCreditCardSpent("0");
@@ -253,7 +283,7 @@ export default function YearEndTaxCalculator() {
     },
     {
       q: "연금저축 공제율은 어떻게 되나요?",
-      a: "총급여 5,500만원 이하는 15%, 초과는 12% 세액공제율이 적용됩니다. 연간 납입한도는 400만원이며, IRP 포함 시 최대 700만원까지 공제 가능합니다.",
+      a: "총급여 5,500만원 이하는 15%, 초과는 12% 세액공제율이 적용됩니다. 연금저축은 연 600만원, 퇴직연금계좌를 합하면 연 900만원 한도입니다. 이 계산기는 연금저축 입력만 지원합니다.",
     },
   ];
 
@@ -265,7 +295,7 @@ export default function YearEndTaxCalculator() {
           연말정산 계산기
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          2026년 기준 소득공제·세액공제를 반영하여 예상 환급액 또는 추가납부액을 계산합니다.
+          2026년 일반 기준 주요 공제만 반영한 근로소득 연말정산 간이 시뮬레이션입니다.
         </p>
       </div>
 
@@ -306,29 +336,17 @@ export default function YearEndTaxCalculator() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">기납부 세액 (원천징수 합계)</label>
-              <div className="flex items-center gap-3 mb-2">
-                <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={taxPaidAuto}
-                    onChange={(e) => { setTaxPaidAuto(e.target.checked); if (e.target.checked) setTaxAlreadyPaid(""); }}
-                    className="rounded border-gray-300"
-                  />
-                  자동 계산 (산출세액의 약 80%)
-                </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={taxAlreadyPaid}
+                  onChange={handleNumberInput(setTaxAlreadyPaid)}
+                  placeholder="원천징수영수증의 결정세액 합계"
+                  className="calc-input pr-10"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">원</span>
               </div>
-              {!taxPaidAuto && (
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={taxAlreadyPaid}
-                    onChange={handleNumberInput(setTaxAlreadyPaid)}
-                    placeholder="직접 입력"
-                    className="calc-input pr-10"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">원</span>
-                </div>
-              )}
+              <p className="text-xs text-gray-400 mt-1">회사 급여명세서 또는 원천징수영수증에서 소득세와 지방소득세 기납부 합계를 입력하세요.</p>
             </div>
           </div>
         </div>
@@ -357,6 +375,7 @@ export default function YearEndTaxCalculator() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-700">부양가족</span>
                   <select
+                    aria-label="부양가족 수"
                     value={dependents}
                     onChange={(e) => setDependents(Number(e.target.value))}
                     className="calc-input !py-1.5 !px-2 w-20"
@@ -371,7 +390,7 @@ export default function YearEndTaxCalculator() {
             </div>
 
             <div className="border-t border-gray-100 pt-4">
-              <p className="text-xs text-gray-400 mb-3">국민연금·건강보험료는 급여 기준 자동 계산됩니다.</p>
+              <p className="text-xs text-gray-400 mb-3">국민연금·건강보험·장기요양·고용보험의 본인부담분은 급여 기준으로 간이 계산합니다.</p>
             </div>
 
             {/* 카드 사용액 */}
@@ -384,6 +403,7 @@ export default function YearEndTaxCalculator() {
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="신용카드 사용액"
                     value={creditCardSpent}
                     onChange={handleNumberInput(setCreditCardSpent)}
                     className="calc-input pr-10"
@@ -399,6 +419,7 @@ export default function YearEndTaxCalculator() {
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="체크카드 및 현금영수증 사용액"
                     value={debitCardSpent}
                     onChange={handleNumberInput(setDebitCardSpent)}
                     className="calc-input pr-10"
@@ -421,6 +442,7 @@ export default function YearEndTaxCalculator() {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">자녀 수</label>
                 <select
+                  aria-label="자녀 수"
                   value={childrenCount}
                   onChange={(e) => setChildrenCount(Number(e.target.value))}
                   className="calc-input"
@@ -433,11 +455,12 @@ export default function YearEndTaxCalculator() {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   연금저축 납입액
-                  <span className="font-normal text-gray-400 ml-1">(max 400만)</span>
+                  <span className="font-normal text-gray-400 ml-1">(최대 600만)</span>
                 </label>
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="연금저축 납입액"
                     value={pensionSavings}
                     onChange={handleNumberInput(setPensionSavings)}
                     className="calc-input pr-10"
@@ -455,6 +478,7 @@ export default function YearEndTaxCalculator() {
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="의료비 지출액"
                     value={medicalExpense}
                     onChange={handleNumberInput(setMedicalExpense)}
                     className="calc-input pr-10"
@@ -470,6 +494,7 @@ export default function YearEndTaxCalculator() {
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="교육비 지출액"
                     value={educationExpense}
                     onChange={handleNumberInput(setEducationExpense)}
                     className="calc-input pr-10"
@@ -485,6 +510,7 @@ export default function YearEndTaxCalculator() {
                 <div className="relative">
                   <input
                     type="text"
+                    aria-label="기부금"
                     value={donation}
                     onChange={handleNumberInput(setDonation)}
                     className="calc-input pr-10"
@@ -579,8 +605,8 @@ export default function YearEndTaxCalculator() {
             </h3>
             <div className="space-y-1">
               <Row label="인적공제 (본인+배우자+부양가족)" value={result.personalDeduction} />
-              <Row label="국민연금 (4.5%)" value={result.nationalPension} />
-              <Row label="건강보험 (3.545%)" value={result.healthInsurance} />
+              <Row label="국민연금 (본인 4.75%)" value={result.nationalPension} />
+              <Row label="건강·장기요양·고용보험" value={result.healthInsurance} />
               <Row label="신용카드 공제" value={result.creditCardDeduction} />
               <Row label="체크카드/현금영수증 공제" value={result.debitCardDeduction} />
               <div className="border-t border-gray-100 mt-2 pt-2">
@@ -596,17 +622,12 @@ export default function YearEndTaxCalculator() {
               세액공제 상세 내역
             </h3>
             <div className="space-y-1">
-              {result.standardTaxCredit > 0 ? (
-                <Row label="표준세액공제" value={result.standardTaxCredit} />
-              ) : (
-                <>
-                  <Row label="자녀세액공제" value={result.childTaxCredit} />
-                  <Row label="연금저축 세액공제" value={result.pensionSavingsCredit} />
-                  <Row label="의료비 세액공제" value={result.medicalCredit} />
-                  <Row label="교육비 세액공제" value={result.educationCredit} />
-                  <Row label="기부금 세액공제" value={result.donationCredit} />
-                </>
-              )}
+              <Row label="근로소득세액공제" value={result.earnedIncomeTaxCredit} />
+              <Row label="자녀세액공제" value={result.childTaxCredit} />
+              <Row label="연금저축 세액공제" value={result.pensionSavingsCredit} />
+              <Row label="의료비 세액공제" value={result.medicalCredit} />
+              <Row label="교육비 세액공제" value={result.educationCredit} />
+              <Row label="기부금 세액공제" value={result.donationCredit} />
               <div className="border-t border-gray-100 mt-2 pt-2">
                 <Row label="세액공제 합계" value={result.totalTaxCredit} bold />
               </div>
@@ -712,6 +733,10 @@ export default function YearEndTaxCalculator() {
           </div>
         </div>
       </section>
+
+      <p className="mt-6 text-xs text-gray-400 leading-relaxed">
+        부양가족의 소득·나이 요건, 비과세소득, 보험료·주택·월세 공제, 카드 사용처별 추가공제, 교육비·의료비 한도 등은 모두 반영하지 못한 간이 예상치입니다. 최종 금액은 국세청 연말정산 간소화 자료와 원천징수영수증으로 확인하세요.
+      </p>
 
       <RelatedTools current="year-end-tax" />
 

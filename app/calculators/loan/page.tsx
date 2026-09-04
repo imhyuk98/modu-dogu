@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { calculateLoan, type LoanResult, type RepaymentType } from "@/lib/calculations";
+import { calculateLoan, type RepaymentType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
 
 interface LoanRateEntry {

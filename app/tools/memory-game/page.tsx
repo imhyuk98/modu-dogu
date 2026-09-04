@@ -76,6 +76,8 @@ export default function MemoryGame() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("memory-game-best");
+      // Browser-persisted record is synchronized after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (saved) setBestRecords(JSON.parse(saved));
     } catch {
       // ignore

@@ -199,7 +199,8 @@ export default function ChosungQuizPage() {
     }, 1000);
   }, [timerSec, stopTimer]);
 
-  // Handle timeout
+  // Handle the state transition caused by the asynchronous timer reaching zero.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (timeLeft === 0 && state === "playing") {
       stopTimer();
@@ -225,6 +226,7 @@ export default function ChosungQuizPage() {
       setState("timeout");
     }
   }, [timeLeft, state, gameMode, currentPlayerIdx, stopTimer]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const startGame = () => {
     const initialScores: PlayerScore[] =

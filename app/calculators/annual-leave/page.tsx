@@ -54,7 +54,7 @@ export default function AnnualLeaveCalculator() {
       <div className="calc-card p-6 mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">입사일</label>
-          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+          <input type="date" aria-label="입사일" value={startDate} onChange={(e) => setStartDate(e.target.value)}
             className="calc-input calc-input-lg" />
         </div>
 

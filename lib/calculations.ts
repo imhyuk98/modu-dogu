@@ -1,14 +1,17 @@
-// 2025년 기준 4대보험 요율
-const INSURANCE_RATES = {
-  nationalPension: 0.045, // 국민연금 4.5%
-  healthInsurance: 0.03545, // 건강보험 3.545%
-  longTermCare: 0.1295, // 장기요양보험 (건강보험의 12.95%)
+// 2026년 7월 이후 직장가입자 근로자 부담 기준
+export const SALARY_CALCULATION_BASIS = {
+  effectiveFrom: "2026-07-01",
+  nationalPension: 0.0475, // 국민연금 4.75% (총 9.5%)
+  healthInsurance: 0.03595, // 건강보험 3.595% (총 7.19%)
+  longTermCare: 0.1314, // 장기요양보험 (건강보험료의 약 13.14%)
   employmentInsurance: 0.009, // 고용보험 0.9%
-};
+  pensionUpperLimit: 6_590_000,
+  pensionLowerLimit: 410_000,
+} as const;
 
-// 국민연금 상한/하한 (월 기준)
-const PENSION_UPPER_LIMIT = 5_900_000; // 월 590만원
-const PENSION_LOWER_LIMIT = 370_000; // 월 37만원
+const INSURANCE_RATES = SALARY_CALCULATION_BASIS;
+const PENSION_UPPER_LIMIT = SALARY_CALCULATION_BASIS.pensionUpperLimit;
+const PENSION_LOWER_LIMIT = SALARY_CALCULATION_BASIS.pensionLowerLimit;
 
 // 근로소득세 간이세액표 (월급여 기준, 부양가족 1인 기준 근사치)
 function calculateIncomeTax(monthlyGross: number): number {
@@ -54,7 +57,7 @@ function calculateIncomeTax(monthlyGross: number): number {
     earnedIncome - personalDeduction - pensionDeduction - healthDeduction - employmentDeduction
   );
 
-  // 소득세율 (2025년 기준)
+  // 소득세 기본세율 기준 근사 계산
   let tax = 0;
   if (taxableIncome <= 14_000_000) {
     tax = taxableIncome * 0.06;
@@ -104,7 +107,7 @@ export function calculateSalary(annualSalary: number): SalaryResult {
   // 건강보험
   const healthInsurance = Math.round(monthlyGross * INSURANCE_RATES.healthInsurance);
 
-  // 장기요양보험 (건강보험료의 12.95%)
+  // 장기요양보험 (건강보험료의 약 13.14%)
   const longTermCare = Math.round(healthInsurance * INSURANCE_RATES.longTermCare);
 
   // 고용보험
@@ -555,9 +558,9 @@ export function calculateUnemployment(
   const dailyWage = Math.round(avgMonthlyPay / 30);
   let dailyAmount = Math.round(dailyWage * 0.6);
 
-  // 상한: 66,000원 / 하한: 최저임금의 80% × 1일 소정근로시간(8h)
-  const lowerLimit = Math.round(10030 * 0.8 * 8); // 2025 최저임금 기준
-  dailyAmount = Math.min(66000, Math.max(lowerLimit, dailyAmount));
+  // 2026-07-01 이후: 상한 68,100원 / 하한: 최저임금의 80% × 8시간
+  const lowerLimit = Math.round(10_320 * 0.8 * 8);
+  dailyAmount = Math.min(68_100, Math.max(lowerLimit, dailyAmount));
 
   // 소정급여일수 (나이 + 근속연수 기준)
   let totalDays: number;

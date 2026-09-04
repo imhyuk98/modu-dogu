@@ -20,9 +20,12 @@ export const LINK_TOPICS = [
 ];
 
 function pickTopicIndexes(count: number) {
-  const seed = new Date().toISOString().slice(0, 10).split("").reduce((sum, character) => sum + character.charCodeAt(0), 0);
-  const start = (seed + Math.floor(Math.random() * LINK_TOPICS.length)) % LINK_TOPICS.length;
+  const start = Math.floor(Math.random() * LINK_TOPICS.length);
   return Array.from({ length: count }, (_, index) => (start + index * 7) % LINK_TOPICS.length);
+}
+
+function getInitialTopicIndexes(count: number) {
+  return Array.from({ length: count }, (_, index) => (index * 7) % LINK_TOPICS.length);
 }
 
 async function shareLink(url: string, text: string) {
@@ -44,7 +47,9 @@ export default function TelepathyLinkChallenge() {
   const [creator, setCreator] = useState("나");
   const [friend, setFriend] = useState("친구");
   const [count, setCount] = useState(5);
-  const [topicIndexes, setTopicIndexes] = useState<number[]>(() => pickTopicIndexes(5));
+  // The first render must match the statically generated HTML. Later user actions
+  // intentionally randomize the questions.
+  const [topicIndexes, setTopicIndexes] = useState<number[]>(() => getInitialTopicIndexes(5));
   const [answers, setAnswers] = useState<string[]>(Array(5).fill(""));
   const [friendAnswers, setFriendAnswers] = useState<string[]>([]);
   const [challengeUrl, setChallengeUrl] = useState("");

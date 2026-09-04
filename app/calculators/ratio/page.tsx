@@ -714,9 +714,10 @@ function PropInput({
         <input
           type="number"
           value={value}
+          disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="calc-input calc-input-lg text-center"
+          className="calc-input calc-input-lg text-center disabled:cursor-not-allowed disabled:opacity-60"
         />
       )}
 </div>

@@ -324,6 +324,7 @@ export default function ConstellationCalculator() {
         </label>
         <div className="flex flex-col sm:flex-row gap-3">
           <select
+            aria-label="생일 월"
             value={month}
             onChange={(e) => handleMonthChange(Number(e.target.value))}
             className="calc-input calc-input-lg bg-white"
@@ -337,6 +338,7 @@ export default function ConstellationCalculator() {
           </select>
 
           <select
+            aria-label="생일 일"
             value={day}
             onChange={(e) => {
               setDay(Number(e.target.value));

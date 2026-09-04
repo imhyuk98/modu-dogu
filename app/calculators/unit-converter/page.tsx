@@ -129,14 +129,14 @@ export default function UnitConverter() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">변환 전</label>
-            <select value={fromIdx} onChange={(e) => setFromIdx(Number(e.target.value))}
+            <select aria-label="변환 전 단위" value={fromIdx} onChange={(e) => setFromIdx(Number(e.target.value))}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               {cat.units.map((u, i) => <option key={i} value={i}>{u.label}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">변환 후</label>
-            <select value={toIdx} onChange={(e) => setToIdx(Number(e.target.value))}
+            <select aria-label="변환 후 단위" value={toIdx} onChange={(e) => setToIdx(Number(e.target.value))}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
               {cat.units.map((u, i) => <option key={i} value={i}>{u.label}</option>)}
             </select>

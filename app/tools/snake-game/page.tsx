@@ -41,15 +41,14 @@ export default function SnakeGamePage() {
   const [gameState, setGameState] = useState<GameState>("ready");
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
+  const [speed, setSpeed] = useState(INITIAL_SPEED);
 
   const snakeRef = useRef<Position[]>(getInitialSnake());
   const directionRef = useRef<Direction>("RIGHT");
   const nextDirectionRef = useRef<Direction>("RIGHT");
   const appleRef = useRef<Position>(getRandomApple(getInitialSnake()));
-  const speedRef = useRef(INITIAL_SPEED);
   const scoreRef = useRef(0);
   const gameStateRef = useRef<GameState>("ready");
-  const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync gameState to ref
   useEffect(() => {
@@ -60,6 +59,8 @@ export default function SnakeGamePage() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("bestSnake");
+      // Browser-persisted record is synchronized after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (saved) setBestScore(parseInt(saved, 10));
     } catch {}
   }, []);
@@ -138,10 +139,6 @@ export default function SnakeGamePage() {
   }, []);
 
   const gameOver = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
     setGameState("gameover");
     const s = scoreRef.current;
     try {
@@ -188,10 +185,7 @@ export default function SnakeGamePage() {
       appleRef.current = getRandomApple(snake);
 
       // Speed up
-      speedRef.current = Math.max(MIN_SPEED, speedRef.current - SPEED_DECREASE);
-      // Restart interval with new speed
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(tick, speedRef.current);
+      setSpeed((current) => Math.max(MIN_SPEED, current - SPEED_DECREASE));
     } else {
       snake.pop();
     }
@@ -200,34 +194,34 @@ export default function SnakeGamePage() {
     draw();
   }, [draw, gameOver]);
 
+  // Recreate the game clock only when play state or speed changes.
+  useEffect(() => {
+    if (gameState !== "playing") return;
+    const interval = setInterval(tick, speed);
+    return () => clearInterval(interval);
+  }, [gameState, speed, tick]);
+
   const startGame = useCallback(() => {
     snakeRef.current = getInitialSnake();
     directionRef.current = "RIGHT";
     nextDirectionRef.current = "RIGHT";
     appleRef.current = getRandomApple(getInitialSnake());
-    speedRef.current = INITIAL_SPEED;
+    setSpeed(INITIAL_SPEED);
     scoreRef.current = 0;
     setScore(0);
     setGameState("playing");
 
     draw();
 
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(tick, speedRef.current);
-  }, [draw, tick]);
+  }, [draw]);
 
   const togglePause = useCallback(() => {
     if (gameStateRef.current === "playing") {
       setGameState("paused");
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
     } else if (gameStateRef.current === "paused") {
       setGameState("playing");
-      intervalRef.current = setInterval(tick, speedRef.current);
     }
-  }, [tick]);
+  }, []);
 
   const changeDirection = useCallback((newDir: Direction) => {
     const cur = directionRef.current;
@@ -279,13 +273,6 @@ export default function SnakeGamePage() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [changeDirection, togglePause]);
-
-  // Cleanup interval on unmount
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
 
   // Draw initial canvas on ready
   useEffect(() => {

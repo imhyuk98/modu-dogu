@@ -100,10 +100,6 @@ function getCharStrokes(char: string): number {
   );
 }
 
-function getNameStrokes(name: string): number[] {
-  return Array.from(name).map(getCharStrokes);
-}
-
 function interleaveNames(name1: string, name2: string): string[] {
   const chars1 = Array.from(name1);
   const chars2 = Array.from(name2);

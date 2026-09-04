@@ -22,8 +22,11 @@ function calculateBrokerageFee(
   let targetAmount = amount;
 
   if (type === "월세" && deposit !== undefined && monthlyRent !== undefined) {
-    // 환산보증금 = 보증금 + (월세 × 100)
+    // 먼저 월세의 100배를 더하고, 합계가 5천만원 미만이면 70배로 다시 계산한다.
     targetAmount = deposit + monthlyRent * 100;
+    if (targetAmount < 50_000_000) {
+      targetAmount = deposit + monthlyRent * 70;
+    }
   }
 
   let rate = 0;
@@ -151,7 +154,7 @@ export default function BrokerageFeeCalculator() {
         부동산 중개수수료 계산기
       </h1>
       <p className="text-gray-500 mb-8">
-        2025년 기준 매매, 전세, 월세 거래의 중개수수료(복비)를 계산합니다.
+        2026년 주택 중개보수 상한요율 기준으로 매매·전세·월세 비용을 간이 계산합니다.
       </p>
 
       {/* 입력 영역 */}
@@ -327,7 +330,7 @@ export default function BrokerageFeeCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            2025년 매매 중개수수료 요율표
+            주택 매매 중개보수 상한요율 (2026년 확인)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -352,7 +355,7 @@ export default function BrokerageFeeCalculator() {
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
-            2025년 전세/월세 중개수수료 요율표
+            주택 임대차 중개보수 상한요율 (2026년 확인)
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
@@ -381,8 +384,9 @@ export default function BrokerageFeeCalculator() {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             월세 거래 시 중개수수료는 환산보증금을 기준으로 계산합니다.
-            환산보증금은 &quot;보증금 + (월세 x 100)&quot;으로 산출하며, 이 금액에
-            전세 요율표를 적용합니다. 예를 들어 보증금 1,000만원에 월세 50만원이면
+            먼저 &quot;보증금 + (월세 x 100)&quot;으로 산출하고, 그 금액이 5,000만원
+            미만이면 &quot;보증금 + (월세 x 70)&quot;으로 다시 계산해 전세 요율표를
+            적용합니다. 예를 들어 보증금 1,000만원에 월세 50만원이면
             환산보증금은 1,000만 + 5,000만 = 6,000만원이 됩니다.
           </p>
         </div>
@@ -404,6 +408,9 @@ export default function BrokerageFeeCalculator() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          표시 금액은 법정 상한을 기준으로 한 참고값입니다. 실제 보수는 상한 안에서 협의하며, 부가세는 일반과세자 10%를 가정했습니다. 지역 조례와 중개업소 과세유형을 계약 전에 확인하세요.
+        </p>
       </section>
 
       <RelatedTools current="brokerage-fee" />

@@ -78,8 +78,8 @@ export default function PlanetMerge() {
 
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [currentPlanet, setCurrentPlanet] = useState(0);
+  const [, setGameOver] = useState(false);
+  const [, setCurrentPlanet] = useState(0);
   const [nextPlanet, setNextPlanet] = useState(0);
   const animRef = useRef<number>(0);
 
@@ -88,7 +88,8 @@ export default function PlanetMerge() {
     return Math.floor(Math.random() * (DROP_PLANET_MAX + 1));
   }, []);
 
-  // Initialize
+  // Initialize browser-persisted and randomized game state after hydration.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const stored = localStorage.getItem("bestPlanetMerge");
     if (stored) {
@@ -103,6 +104,7 @@ export default function PlanetMerge() {
     setCurrentPlanet(c);
     setNextPlanet(n);
   }, [randomDropPlanet]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Draw a planet on canvas with unique textures
   const drawPlanet = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number, def: PlanetDef, alpha = 1) => {

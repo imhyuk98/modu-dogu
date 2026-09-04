@@ -5,8 +5,6 @@ import RelatedTools from "@/components/RelatedTools";
 
 type Difficulty = "easy" | "medium" | "hard";
 type Board = number[][];
-type NotesBoard = Set<number>[][];
-
 interface CellState {
   value: number;
   isFixed: boolean;
@@ -137,8 +135,10 @@ export default function SudokuPage() {
   }, []);
 
   useEffect(() => {
+    // Puzzle generation intentionally initializes the interactive client game.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     initGame(difficulty);
-  }, []);
+  }, [difficulty, initGame]);
 
   // Timer
   useEffect(() => {
@@ -337,10 +337,7 @@ export default function SudokuPage() {
         {(Object.keys(DIFFICULTY_CONFIG) as Difficulty[]).map((d) => (
           <button
             key={d}
-            onClick={() => {
-              setDifficulty(d);
-              initGame(d);
-            }}
+            onClick={() => setDifficulty(d)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               difficulty === d
                 ? "bg-blue-600 text-white"

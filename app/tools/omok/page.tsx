@@ -45,18 +45,6 @@ function checkWin(board: Board, row: number, col: number, stone: Stone): [number
   return null;
 }
 
-function findWinningLine(board: Board): { stone: Stone; line: [number, number][] } | null {
-  for (let r = 0; r < BOARD_SIZE; r++) {
-    for (let c = 0; c < BOARD_SIZE; c++) {
-      if (board[r][c] !== 0) {
-        const line = checkWin(board, r, c, board[r][c]);
-        if (line) return { stone: board[r][c], line };
-      }
-    }
-  }
-  return null;
-}
-
 // AI scoring heuristic
 function evaluatePosition(board: Board, row: number, col: number, aiStone: Stone): number {
   const playerStone: Stone = aiStone === 1 ? 2 : 1;
@@ -254,8 +242,6 @@ export default function OmokPage() {
     setGameStarted(true);
     aiThinking.current = false;
   };
-
-  const moveCount = history.length + (board.some((r) => r.some((c) => c !== 0)) ? 1 : 0);
 
   return (
     <div className="max-w-2xl mx-auto">

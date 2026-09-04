@@ -166,6 +166,7 @@ export default function RandomNumberGenerator() {
               </label>
               <input
                 type="number"
+                aria-label="최소값"
                 value={rangeMin}
                 onChange={(e) => setRangeMin(e.target.value)}
                 className="calc-input calc-input-lg"
@@ -177,6 +178,7 @@ export default function RandomNumberGenerator() {
               </label>
               <input
                 type="number"
+                aria-label="최대값"
                 value={rangeMax}
                 onChange={(e) => setRangeMax(e.target.value)}
                 className="calc-input calc-input-lg"
@@ -211,6 +213,7 @@ export default function RandomNumberGenerator() {
               </label>
               <input
                 type="number"
+                aria-label="여러 숫자 최소값"
                 value={multiMin}
                 onChange={(e) => setMultiMin(e.target.value)}
                 className="calc-input calc-input-lg"
@@ -222,6 +225,7 @@ export default function RandomNumberGenerator() {
               </label>
               <input
                 type="number"
+                aria-label="여러 숫자 최대값"
                 value={multiMax}
                 onChange={(e) => setMultiMax(e.target.value)}
                 className="calc-input calc-input-lg"
@@ -233,6 +237,7 @@ export default function RandomNumberGenerator() {
               </label>
               <input
                 type="number"
+                aria-label="생성할 숫자 개수"
                 value={multiCount}
                 onChange={(e) => setMultiCount(e.target.value)}
                 min={1}

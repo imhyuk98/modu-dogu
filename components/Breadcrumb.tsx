@@ -192,6 +192,8 @@ const titleMap: Record<string, string> = {
 export default function Breadcrumb() {
   const pathname = usePathname();
 
+  if (pathname === "/en" || pathname.startsWith("/en/")) return null;
+
   // Only show on calculator/tool pages
   const parts = pathname.split("/").filter(Boolean);
   if (parts.length < 2) return null;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/about" },
+  alternates: { canonical: "/about", languages: { ko: "/about", en: "/en/about", "x-default": "/about" } },
   title: "사이트 소개",
   description: "모두의도구는 친구와 함께하는 테스트·게임, 오늘의 운세와 120가지 이상의 무료 생활 계산기·온라인 도구를 제공하는 사이트입니다.",
   keywords: ["모두의도구", "사이트 소개", "무료 계산기", "온라인 도구"],

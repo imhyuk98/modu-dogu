@@ -105,7 +105,13 @@ function generateSeed(gender: string, age: string, height: string, weight: strin
 
 /* ── Greedy meal picker ── */
 function pickMeal(foods: Food[], targetCal: number, rng: () => number, minItems: number, maxItems: number): Food[] {
-  const shuffled = [...foods].sort(() => rng() - 0.5);
+  const shuffled = [...foods];
+  // A seeded Fisher-Yates shuffle stays identical in Node and the browser.
+  // A random Array.sort comparator is non-transitive and can hydrate differently.
+  for (let index = shuffled.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
   const picked: Food[] = [];
   let total = 0;
 
@@ -415,6 +421,7 @@ export default function MacroDietCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">활동량</label>
           <select
+            aria-label="활동량"
             value={activityIdx}
             onChange={(e) => setActivityIdx(Number(e.target.value))}
             className="calc-input"
@@ -428,6 +435,7 @@ export default function MacroDietCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">목표</label>
           <select
+            aria-label="체중 목표"
             value={goalIdx}
             onChange={(e) => setGoalIdx(Number(e.target.value))}
             className="calc-input"
@@ -441,6 +449,7 @@ export default function MacroDietCalculator() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">식단 유형</label>
           <select
+            aria-label="식단 유형"
             value={dietIdx}
             onChange={(e) => setDietIdx(Number(e.target.value))}
             className="calc-input"

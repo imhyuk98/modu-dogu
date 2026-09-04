@@ -24,6 +24,8 @@ export default function ReactionTest() {
 
   useEffect(() => {
     const saved = localStorage.getItem("reaction-test-best");
+    // Browser-persisted record is synchronized after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saved) setBestRecord(parseFloat(saved));
   }, []);
 

@@ -146,6 +146,7 @@ export default function JsonFormatterPage() {
           <div className="flex items-center gap-2 ml-auto">
             <label className="text-sm text-gray-600">들여쓰기:</label>
             <select
+              aria-label="들여쓰기 칸 수"
               value={tabSize}
               onChange={(e) => setTabSize(Number(e.target.value))}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
