@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/daily-fortune" },
   title: "AI 오늘의 운세 - 띠별 무료 운세 (총운/애정/재물/건강/직장)",
   description:
     "AI가 나의 띠(12지)로 오늘의 운세를 분석합니다. 총운, 애정운, 재물운, 건강운, 직장운과 행운의 숫자, 색상, 방위를 매일 무료로 제공합니다.",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     "건강운",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 오늘의 운세 - 띠별 무료 운세 (총운/애정/재물/건강/직장)",
     description:
       "AI가 나의 띠(12지)로 오늘의 운세를 분석합니다. 총운, 애정운, 재물운, 건강운, 직장운과 행운 정보를 매일 무료로 제공합니다.",

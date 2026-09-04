@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 import ShareResultCard from "@/components/ShareResultCard";
+import DailyReturnCard from "@/components/viral/DailyReturnCard";
 
 // ─── Zodiac Data ────────────────────────────────────────────
 const 띠목록 = [
@@ -755,6 +756,8 @@ export default function DailyFortune() {
           <span className="text-orange-700 font-semibold text-sm">{today}</span>
         </div>
       </div>
+
+      <DailyReturnCard id="daily-fortune" completed={Boolean(result)} />
 
       {/* Input Mode Toggle */}
       <div className="flex gap-2 mb-4">

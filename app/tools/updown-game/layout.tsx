@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/updown-game" },
   title: "업다운 게임 - 온라인 숫자 맞추기 무료 플레이",
   description:
     "업다운 게임을 스마트폰으로 바로 즐기세요! 1~100 사이 숫자를 맞추는 스릴 넘치는 게임입니다. 앱 설치 없이 무료로 플레이 가능. 숫자를 맞추는 사람이 벌칙!",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "업다운 게임 - 온라인 숫자 맞추기 무료 플레이",
     description:
       "업다운 게임을 스마트폰으로 바로 즐기세요! 1~100 사이 숫자를 맞추는 스릴 넘치는 게임입니다.",

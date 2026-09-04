@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/color-converter" },
   title: "색상 변환기 - HEX, RGB, HSL 색상 코드 변환",
   description:
     "HEX, RGB, HSL 색상 코드를 자유롭게 변환하고 미리보기할 수 있는 무료 온라인 색상 변환 도구입니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "컬러 피커",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "색상 변환기 - HEX, RGB, HSL 색상 코드 변환",
     description:
       "HEX, RGB, HSL 색상 코드를 자유롭게 변환하고 미리보기할 수 있는 무료 온라인 색상 변환 도구입니다.",

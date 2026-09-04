@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/acquisition-tax" },
   title: "부동산 취득세 계산기 - 주택 취득세/농어촌특별세/지방교육세 자동 계산",
   description:
     "2025년 기준 주택 취득세를 자동으로 계산합니다. 주택 수, 조정대상지역 여부, 면적에 따른 취득세, 농어촌특별세, 지방교육세를 확인하세요.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "2025 취득세",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "부동산 취득세 계산기 - 주택 취득세/농어촌특별세/지방교육세 자동 계산",
     description:
       "2025년 기준 주택 수, 조정대상지역 여부에 따른 취득세를 자동으로 계산합니다.",

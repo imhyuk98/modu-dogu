@@ -31,6 +31,8 @@ export async function generateMetadata({
   const description = `2026년 기준 연봉 ${amountLabel}원의 월 실수령액은 약 ${monthlyNet}원입니다. 4대보험 ${formatWon(result.nationalPension + result.healthInsurance + result.longTermCare + result.employmentInsurance)}원, 소득세 ${formatWon(result.incomeTax)}원 공제 후 계산 결과입니다.`;
 
   return {
+    alternates: { canonical: "/calculators/salary" },
+    robots: { index: false, follow: true },
     title,
     description,
     keywords: [
@@ -41,6 +43,7 @@ export async function generateMetadata({
       "2026 연봉 실수령액",
     ],
     openGraph: {
+      images: ["/og-image.png"],
       title,
       description,
       url: `https://modu-dogu.pages.dev/calculators/salary/${amount}`,

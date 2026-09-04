@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/balance-game" },
   title: "밸런스 게임",
   description:
     "연애, 일상, 직장, 음식 등 다양한 주제의 밸런스 게임! 두 가지 선택지 중 하나를 골라보세요.",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "밸런스 게임 - 모두의도구",
     description:
       "연애, 일상, 직장, 음식 등 다양한 주제의 밸런스 게임! 두 가지 선택지 중 하나를 골라보세요.",

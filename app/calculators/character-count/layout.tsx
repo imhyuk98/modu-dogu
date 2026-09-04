@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/character-count" },
   title: "글자수 세기 - 문자수, 단어수, 바이트 수 계산",
   description:
     "입력한 텍스트의 글자수, 공백 포함/제외 문자수, 단어수, 바이트 수를 실시간으로 계산하는 무료 온라인 글자수 세기 도구입니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "character counter",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "글자수 세기 - 문자수, 단어수, 바이트 수 계산",
     description:
       "입력한 텍스트의 글자수, 공백 포함/제외 문자수, 단어수, 바이트 수를 실시간으로 계산하는 무료 온라인 글자수 세기 도구입니다.",

@@ -1,473 +1,95 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-const financeCalcs = [
-  { title: "환율 계산기", href: "/calculators/exchange-rate" },
-  { title: "연봉 실수령액", href: "/calculators/salary" },
-  { title: "대출이자 계산기", href: "/calculators/loan" },
-  { title: "예금이자 계산기", href: "/calculators/deposit" },
-  { title: "적금 이자 계산기", href: "/calculators/savings" },
-  { title: "퇴직금 계산기", href: "/calculators/retirement" },
-  { title: "시급 월급 변환기", href: "/calculators/hourly-wage" },
-  { title: "실업급여 계산기", href: "/calculators/unemployment" },
-  { title: "주식 수익률 계산기", href: "/calculators/stock-return" },
-  { title: "물타기 계산기", href: "/calculators/average-price" },
-  { title: "인플레이션 계산기", href: "/calculators/inflation" },
-  { title: "자동차세 계산기", href: "/calculators/car-tax" },
-  { title: "전기요금 계산기", href: "/calculators/electricity" },
-  { title: "부가세 계산기", href: "/calculators/vat" },
-  { title: "로또 세금 계산기", href: "/calculators/lotto-tax" },
-  { title: "연말정산 계산기", href: "/calculators/year-end-tax" },
+const primaryLinks = [
+  { label: "같이 놀기", href: "/category/drinking", matches: ["/category/drinking", "/category/games"] },
+  { label: "테스트·운세", href: "/category/fun", matches: ["/category/fun"] },
+  { label: "생활 계산", href: "/category/life", matches: ["/category/life", "/category/finance", "/category/realestate"] },
+  { label: "온라인 도구", href: "/category/tools", matches: ["/category/tools"] },
 ];
 
-const realEstateCalcs = [
-  { title: "중개수수료 계산기", href: "/calculators/brokerage-fee" },
-  { title: "취득세 계산기", href: "/calculators/acquisition-tax" },
-  { title: "양도소득세 계산기", href: "/calculators/capital-gains-tax" },
-  { title: "증여세 계산기", href: "/calculators/gift-tax" },
-  { title: "상속세 계산기", href: "/calculators/inheritance-tax" },
-  { title: "전월세 전환", href: "/calculators/rent-conversion" },
-  { title: "청약 점수 계산기", href: "/calculators/housing-subscription" },
+const quickLinks = [
+  { label: "텔레파시 게임", href: "/tools/telepathy-game", emoji: "🧠" },
+  { label: "친구 케미", href: "/tools/friend-chemistry", emoji: "🧩" },
+  { label: "오늘의 운세", href: "/calculators/daily-fortune", emoji: "🌟" },
 ];
-
-const lifeCalcs = [
-  { title: "퍼센트 계산기", href: "/calculators/percent" },
-  { title: "글자수 세기", href: "/calculators/character-count" },
-  { title: "나이 계산기", href: "/calculators/age" },
-  { title: "날짜 계산기", href: "/calculators/dday" },
-  { title: "평수 계산기", href: "/calculators/pyeong" },
-  { title: "단위 변환기", href: "/calculators/unit-converter" },
-  { title: "비율 계산기", href: "/calculators/ratio" },
-  { title: "BMI 계산기", href: "/calculators/bmi" },
-  { title: "기초대사량(BMR)", href: "/calculators/bmr" },
-  { title: "음주 측정기", href: "/calculators/alcohol" },
-  { title: "연차 계산기", href: "/calculators/annual-leave" },
-  { title: "학점 계산기", href: "/calculators/gpa" },
-  { title: "표준체중 계산기", href: "/calculators/standard-weight" },
-  { title: "공학용 계산기", href: "/calculators/scientific" },
-  { title: "도시가스 요금", href: "/calculators/gas-bill" },
-  { title: "유류비 계산기", href: "/calculators/fuel-cost" },
-  { title: "TDEE 계산기", href: "/calculators/tdee" },
-  { title: "체지방률 계산기", href: "/calculators/body-fat" },
-  { title: "물 섭취량 계산기", href: "/calculators/water-intake" },
-  { title: "AI 식단 추천", href: "/calculators/macro-diet" },
-  { title: "AI 운동 추천", href: "/calculators/exercise" },
-  { title: "군대 전역일", href: "/calculators/military" },
-  { title: "택배 배송비", href: "/calculators/shipping" },
-  { title: "출산 예정일 계산기", href: "/calculators/due-date" },
-  { title: "반려동물 나이 계산기", href: "/calculators/pet-age" },
-];
-
-const funCalcs = [
-  { title: "MBTI 궁합", href: "/calculators/mbti-compatibility" },
-  { title: "이름 궁합", href: "/calculators/name-compatibility" },
-  { title: "별자리 계산기", href: "/calculators/constellation" },
-  { title: "띠 계산기", href: "/calculators/zodiac" },
-  { title: "혈액형 계산기", href: "/calculators/blood-type" },
-  { title: "사주팔자", href: "/calculators/saju" },
-  { title: "전생 테스트", href: "/calculators/past-life" },
-  { title: "오늘의 운세", href: "/calculators/daily-fortune" },
-  { title: "커플 D-day", href: "/calculators/couple-dday" },
-  { title: "심리테스트", href: "/tools/psychology-test" },
-  { title: "MBTI 검사기", href: "/tools/mbti-test" },
-  { title: "아재개그 생성기", href: "/tools/dad-joke" },
-  { title: "AI 꿈 해몽", href: "/tools/dream-interpretation" },
-  { title: "AI 타로", href: "/tools/tarot" },
-];
-
-const drinkingGameItems = [
-  { title: "라이어 게임", href: "/tools/liar-game" },
-  { title: "진실 or 도전", href: "/tools/truth-or-dare" },
-  { title: "폭탄 돌리기", href: "/tools/bomb-game" },
-  { title: "업다운 게임", href: "/tools/updown-game" },
-  { title: "랜덤 지목", href: "/tools/random-pick" },
-  { title: "베스킨라빈스 31", href: "/tools/baskin-robbins-31" },
-  { title: "초성 퀴즈", href: "/tools/chosung-quiz" },
-  { title: "이미지 게임", href: "/tools/image-game" },
-  { title: "손병호 게임", href: "/tools/never-have-i-ever" },
-  { title: "눈치 게임", href: "/tools/nunchi-game" },
-  { title: "텔레파시 게임", href: "/tools/telepathy-game" },
-  { title: "사다리 타기", href: "/tools/ladder-game" },
-  { title: "밸런스 게임", href: "/tools/balance-game" },
-];
-
-const gameItems = [
-  { title: "반응속도 테스트", href: "/tools/reaction-test" },
-  { title: "기억력 테스트", href: "/tools/memory-game" },
-  { title: "색맹 테스트", href: "/tools/color-blind-test" },
-  { title: "2048", href: "/tools/game-2048" },
-  { title: "스도쿠", href: "/tools/sudoku" },
-  { title: "블록 탈출", href: "/tools/block-escape" },
-  { title: "지뢰찾기", href: "/tools/minesweeper" },
-  { title: "스네이크", href: "/tools/snake-game" },
-  { title: "오목", href: "/tools/omok" },
-  { title: "사과 게임", href: "/tools/apple-game" },
-  { title: "행성 합치기", href: "/tools/planet-merge" },
-];
-
-const converterItems = [
-  { title: "이미지 변환기", href: "/tools/image-converter" },
-  { title: "이미지 압축", href: "/tools/image-compress" },
-  { title: "이미지 크기 조절", href: "/tools/image-resize" },
-  { title: "이미지 모자이크", href: "/tools/image-mosaic" },
-  { title: "이미지 워터마크", href: "/tools/image-watermark" },
-  { title: "이미지 자르기", href: "/tools/image-crop" },
-  { title: "이미지 회전", href: "/tools/image-rotate" },
-  { title: "이미지 PDF 변환", href: "/tools/image-to-pdf" },
-  { title: "이미지 색상 추출", href: "/tools/image-color-picker" },
-  { title: "CSV JSON 변환기", href: "/tools/csv-json" },
-  { title: "Markdown HTML", href: "/tools/markdown-html" },
-  { title: "Base64 인코더", href: "/tools/base64" },
-  { title: "색상 변환기", href: "/tools/color-converter" },
-];
-
-const toolItems = [
-  { title: "타이머 & 스톱워치", href: "/tools/timer" },
-  { title: "JSON 포매터", href: "/tools/json-formatter" },
-  { title: "QR 코드 생성기", href: "/tools/qr-code" },
-  { title: "닉네임 생성기", href: "/tools/nickname-generator" },
-  { title: "랜덤 룰렛", href: "/tools/random-roulette" },
-  { title: "랜덤 숫자 생성기", href: "/tools/random-number" },
-  { title: "타자 속도 측정", href: "/tools/typing-test" },
-  { title: "주유소 최저가", href: "/tools/fuel-map" },
-  { title: "AI 작명기", href: "/tools/name-generator" },
-  { title: "AI 선물 추천", href: "/tools/gift-recommendation" },
-  { title: "AI 인스타 해시태그", href: "/tools/hashtag-generator" },
-  { title: "AI 책 추천", href: "/tools/book-recommendation" },
-  { title: "AI 오늘 뭐 먹지", href: "/tools/food-recommendation" },
-  { title: "AI 영화 추천", href: "/tools/movie-recommendation" },
-  { title: "AI 여행지 추천", href: "/tools/travel-recommendation" },
-  { title: "AI 패션 코디", href: "/tools/fashion-recommendation" },
-  { title: "비밀번호 생성기", href: "/tools/password-generator" },
-];
-
-function DropdownMenu({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  return (
-    <div ref={ref} className="site-header-dropdown relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
-      >
-        {label}
-        <svg
-          className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 mt-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl shadow-lg py-2 min-w-[200px] z-50">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MobileSection({
-  label,
-  items,
-  expanded,
-  onToggle,
-  onClose,
-}: {
-  label: string;
-  items: { title: string; href: string }[];
-  expanded: boolean;
-  onToggle: () => void;
-  onClose: () => void;
-}) {
-  return (
-    <>
-      <button
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        onClick={onToggle}
-      >
-        <span>{label}</span>
-        <svg
-          className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`}
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {expanded && (
-        <div className="bg-gray-50 px-4 py-2 grid grid-cols-2 gap-x-2 gap-y-0.5">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block px-2 py-2.5 text-sm text-gray-600 hover:text-blue-600 rounded"
-              onClick={onClose}
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-      )}
-    </>
-  );
-}
 
 export default function Header() {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-
-  const closeMobile = () => setMobileOpen(false);
 
   return (
-    <header className="site-header bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50">
-      <div className="site-header-inner max-w-[1200px] mx-auto px-5 md:px-8 py-3 flex items-center justify-between">
-        <Link href="/" className="site-wordmark text-xl font-bold">
+    <header className="site-header sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--card-bg)]">
+      <div className="site-header-inner mx-auto flex max-w-[1200px] items-center justify-between px-5 py-3 md:px-8">
+        <Link href="/" className="site-wordmark text-xl font-bold" aria-label="모두의도구 홈">
           모두의도구
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="site-nav hidden md:flex items-center gap-5 text-sm text-[var(--muted)]">
-          <Link href="/" className="hover:text-blue-600 transition-colors">
-            홈
+        <nav className="site-nav hidden items-center gap-6 text-sm text-[var(--muted)] md:flex" aria-label="주요 메뉴">
+          {primaryLinks.map((link) => {
+            const active = link.matches.some((prefix) => pathname.startsWith(prefix));
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`transition-colors hover:text-[#a93d28] ${active ? "font-bold text-[#a93d28]" : ""}`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+          <Link
+            href="/#home-tool-directory"
+            className="rounded-full border border-[#d9c8bd] px-3.5 py-1.5 font-bold text-[#513b31] transition-colors hover:border-[#a93d28] hover:text-[#a93d28]"
+          >
+            전체 도구
           </Link>
-
-          <DropdownMenu label="금융 계산기">
-            {financeCalcs.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="부동산">
-            {realEstateCalcs.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="생활 계산기">
-            {lifeCalcs.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="재미/운세">
-            {funCalcs.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="술게임">
-            {drinkingGameItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="게임">
-            {gameItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="변환기">
-            {converterItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="도구">
-            {toolItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              >
-                {item.title}
-              </Link>
-            ))}
-          </DropdownMenu>
-
-          <DropdownMenu label="안내">
-            <Link href="/about" className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-              사이트 소개
-            </Link>
-            <Link href="/faq" className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-              자주 묻는 질문
-            </Link>
-            <Link href="/privacy" className="block px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-              개인정보처리방침
-            </Link>
-          </DropdownMenu>
         </nav>
 
-        <div className="flex items-center gap-1 md:hidden">
-          {/* Mobile hamburger */}
         <button
-          className="site-menu-button md:hidden p-2 text-gray-600"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="메뉴 열기"
+          type="button"
+          className="site-menu-button rounded-lg p-2 text-gray-600 md:hidden"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
+          aria-label={mobileOpen ? "메뉴 닫기" : "메뉴 열기"}
         >
           {mobileOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           )}
-          </button>
-        </div>
+        </button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="site-mobile-menu md:hidden border-t border-[var(--card-border)] bg-[var(--card-bg)] max-h-[80vh] overflow-y-auto">
-          <Link
-            href="/"
-            className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-            onClick={closeMobile}
-          >
-            홈
+        <nav id="mobile-navigation" className="site-mobile-menu border-t border-[var(--card-border)] bg-[var(--card-bg)] px-4 py-4 md:hidden" aria-label="모바일 메뉴">
+          <div className="grid grid-cols-2 gap-2">
+            {primaryLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="rounded-xl bg-[#f8f3ef] px-4 py-3 text-sm font-bold text-[#513b31]">
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <p className="mb-2 mt-5 text-[11px] font-black tracking-[0.12em] text-[#a93d28]">지금 인기</p>
+          <div className="space-y-1">
+            {quickLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-gray-700 hover:bg-[#fff7f3]">
+                <span>{link.emoji} {link.label}</span><span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+          <Link href="/#home-tool-directory" onClick={() => setMobileOpen(false)} className="mt-3 block rounded-xl border border-[#d9c8bd] px-4 py-3 text-center text-sm font-bold text-[#513b31]">
+            전체 도구 찾기
           </Link>
-
-          <MobileSection
-            label="금융 계산기"
-            items={financeCalcs}
-            expanded={mobileExpanded === "finance"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "finance" ? null : "finance")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="부동산"
-            items={realEstateCalcs}
-            expanded={mobileExpanded === "realestate"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "realestate" ? null : "realestate")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="생활 계산기"
-            items={lifeCalcs}
-            expanded={mobileExpanded === "life"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "life" ? null : "life")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="재미/운세"
-            items={funCalcs}
-            expanded={mobileExpanded === "fun"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "fun" ? null : "fun")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="술게임"
-            items={drinkingGameItems}
-            expanded={mobileExpanded === "drinking"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "drinking" ? null : "drinking")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="게임"
-            items={gameItems}
-            expanded={mobileExpanded === "games"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "games" ? null : "games")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="변환기"
-            items={converterItems}
-            expanded={mobileExpanded === "converters"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "converters" ? null : "converters")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="도구"
-            items={toolItems}
-            expanded={mobileExpanded === "tools"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "tools" ? null : "tools")}
-            onClose={closeMobile}
-          />
-
-          <MobileSection
-            label="안내"
-            items={[
-              { title: "사이트 소개", href: "/about" },
-              { title: "자주 묻는 질문", href: "/faq" },
-              { title: "개인정보처리방침", href: "/privacy" },
-            ]}
-            expanded={mobileExpanded === "info"}
-            onToggle={() => setMobileExpanded(mobileExpanded === "info" ? null : "info")}
-            onClose={closeMobile}
-          />
-        </div>
+        </nav>
       )}
     </header>
   );

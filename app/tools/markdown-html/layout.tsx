@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/markdown-html" },
   title: "Markdown HTML 변환기 - 마크다운을 HTML로 변환",
   description:
     "마크다운(Markdown) 텍스트를 HTML 코드로 변환하고 미리보기할 수 있는 무료 온라인 도구입니다.",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     "마크다운 에디터",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "Markdown HTML 변환기 - 마크다운을 HTML로 변환",
     description:
       "마크다운(Markdown) 텍스트를 HTML 코드로 변환하고 미리보기할 수 있는 무료 온라인 도구입니다.",

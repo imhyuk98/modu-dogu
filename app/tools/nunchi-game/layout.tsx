@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     canonical: "https://modu-dogu.pages.dev/tools/nunchi-game",
   },
   openGraph: {
+    images: ["/og-image.png"],
     title: "눈치 게임 온라인 - 친구들과 무료 숫자 게임 | 모두의도구",
     description:
       "숫자가 겹치면 벌칙! 참가자·벌칙 기록을 지원하는 무료 온라인 눈치 게임입니다.",

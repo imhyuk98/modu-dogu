@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/sudoku" },
   title: "스도쿠 - 온라인 스도쿠 퍼즐 무료 플레이",
   description:
     "스도쿠 퍼즐을 온라인으로 무료 플레이! 쉬움, 보통, 어려움 3단계 난이도를 지원하며 메모, 힌트, 실수 카운트 기능이 있습니다.",
   keywords: ["스도쿠", "sudoku", "스도쿠 온라인", "스도쿠 퍼즐", "숫자 퍼즐", "무료 게임"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "스도쿠 - 온라인 스도쿠 퍼즐 무료 플레이",
     description: "스도쿠 퍼즐을 온라인으로 무료 플레이! 3단계 난이도, 메모, 힌트 기능 지원.",
     url: "https://modu-dogu.pages.dev/tools/sudoku",

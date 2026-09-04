@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/nickname-generator" },
   title: "AI 닉네임 생성기 - 랜덤 닉네임 만들기 (귀여운/멋진/웃긴/게임용)",
   description:
     "AI가 귀여운, 멋진, 웃긴, 게임용 스타일별 닉네임을 자동으로 생성합니다. 한국어 닉네임과 영어 게임 닉네임을 클릭 한 번으로 만들어 보세요.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "멋진 닉네임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 닉네임 생성기 - 랜덤 닉네임 만들기 (귀여운/멋진/웃긴/게임용)",
     description:
       "AI가 스타일별 닉네임을 자동으로 생성합니다. 귀여운, 멋진, 웃긴, 게임용 닉네임을 클릭 한 번으로!",

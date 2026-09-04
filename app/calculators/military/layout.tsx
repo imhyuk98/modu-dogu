@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/military" },
   title: "군대 전역일 계산기 - 입대일 기준 전역일·복무일수 계산",
   description:
     "입대일과 군종을 선택하면 전역일, 남은 복무일수, 복무 진행률을 자동으로 계산합니다. 육군, 해군, 공군, 해병대, 의무경찰, 사회복무요원 복무기간을 지원합니다.",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     "D-day",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "군대 전역일 계산기 - 입대일 기준 전역일·복무일수 계산 | 모두의도구",
     description:
       "입대일과 군종을 선택하면 전역일, 남은 복무일수, 복무 진행률을 자동으로 계산합니다.",

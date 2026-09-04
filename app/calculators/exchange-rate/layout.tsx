@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/exchange-rate" },
   title: "환율 계산기 - 실시간 환율 변환 (달러, 엔화, 유로, 위안)",
   description:
     "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "실시간 환율",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "환율 계산기 - 실시간 환율 변환 (달러, 엔화, 유로, 위안)",
     description:
       "실시간 환율 기반으로 원화(KRW)와 주요 외화 간 환율을 계산할 수 있는 무료 온라인 환율 계산기입니다.",

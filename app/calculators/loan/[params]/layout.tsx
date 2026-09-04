@@ -45,6 +45,8 @@ export async function generateMetadata({
   const description = `${amountLabel}원을 연 ${rate}% 금리로 ${years}년 대출 시 월 상환액은 약 ${formatWon(monthlyPayment)}원(원리금균등)입니다. 총 이자 ${formatWon(result.totalInterest)}원, 총 상환액 ${formatWon(result.totalPayment)}원.`;
 
   return {
+    alternates: { canonical: "/calculators/loan" },
+    robots: { index: false, follow: true },
     title,
     description,
     keywords: [
@@ -55,6 +57,7 @@ export async function generateMetadata({
       "대출이자 계산기",
     ],
     openGraph: {
+      images: ["/og-image.png"],
       title,
       description,
       url: `https://modu-dogu.pages.dev/calculators/loan/${p}`,

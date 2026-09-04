@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/gift-recommendation" },
   title: "AI 선물 추천 - 상황별 맞춤 선물 추천",
   description:
     "AI가 받는 사람, 상황, 예산, 취향을 분석하여 최적의 선물을 추천합니다. 생일, 크리스마스, 기념일, 졸업, 승진 등 모든 상황에 맞는 선물을 찾아보세요.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "맞춤 선물",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 선물 추천 - 상황별 맞춤 선물 추천",
     description:
       "AI가 받는 사람, 상황, 예산, 취향을 분석하여 최적의 선물을 추천합니다. 모든 상황에 맞는 선물을 찾아보세요.",

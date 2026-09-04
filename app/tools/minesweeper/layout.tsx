@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/minesweeper" },
   title: "지뢰찾기 - 온라인 지뢰찾기 무료 플레이",
   description:
     "클래식 지뢰찾기 게임을 온라인으로 무료 플레이! 초급(9x9), 중급(16x16), 고급(30x16) 3단계 난이도. 첫 클릭 안전 보장, 깃발 기능 지원.",
   keywords: ["지뢰찾기", "지뢰찾기 온라인", "지뢰찾기 게임", "마인스위퍼", "minesweeper", "무료 게임"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "지뢰찾기 - 온라인 지뢰찾기 무료 플레이",
     description: "클래식 지뢰찾기 게임을 온라인으로 무료 플레이! 3단계 난이도 지원.",
     url: "https://modu-dogu.pages.dev/tools/minesweeper",

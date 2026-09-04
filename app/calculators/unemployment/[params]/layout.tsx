@@ -37,6 +37,8 @@ export async function generateMetadata({
   const description = `${age}세, 월급 ${monthlyPay}만원, ${workedYears}년 근무 시 실업급여: 일 ${formatWon(result.dailyAmount)}원, 월 ${formatWon(result.monthlyAmount)}원, 수급기간 ${result.totalDays}일, 총 수급액 ${formatWon(result.totalAmount)}원. 2026년 기준 실업급여 자동 계산 결과입니다.`;
 
   return {
+    alternates: { canonical: "/calculators/unemployment" },
+    robots: { index: false, follow: true },
     title,
     description,
     keywords: [
@@ -52,6 +54,7 @@ export async function generateMetadata({
       `${age}세 ${workedYears}년 실업급여`,
     ],
     openGraph: {
+      images: ["/og-image.png"],
       title,
       description,
       url: `https://modu-dogu.pages.dev/calculators/unemployment/${slug}`,

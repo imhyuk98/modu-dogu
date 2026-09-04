@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     canonical: "https://modu-dogu.pages.dev/tools/name-generator",
   },
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 작명기 - 아기 이름 짓기, 반려동물 이름 추천",
     description:
       "AI 작명기로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요.",

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/image-compress" },
   title: "이미지 압축 - JPG, PNG, WebP 이미지 용량 줄이기",
   description:
     "JPG, PNG, WebP 이미지를 브라우저에서 무료로 압축합니다. 품질 조절 슬라이더로 원하는 용량으로 줄이고, 서버 업로드 없이 안전하게 처리됩니다.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "image compress",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "이미지 압축 - JPG, PNG, WebP 이미지 용량 줄이기",
     description:
       "JPG, PNG, WebP 이미지를 브라우저에서 무료로 압축합니다. 품질 조절로 원하는 용량으로 줄여보세요.",

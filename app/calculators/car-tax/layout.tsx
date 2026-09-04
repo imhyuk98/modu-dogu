@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/car-tax" },
   title: "자동차세 계산기 - 배기량별 자동차세 계산",
   description:
     "차량 배기량과 차령에 따른 자동차세(지방세 포함)를 계산할 수 있는 무료 온라인 자동차세 계산기입니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "지방세 계산",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "자동차세 계산기 - 배기량별 자동차세 계산",
     description:
       "차량 배기량과 차령에 따른 자동차세(지방세 포함)를 계산할 수 있는 무료 온라인 자동차세 계산기입니다.",

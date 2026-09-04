@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/inflation" },
   title: "인플레이션 계산기 - 물가상승률에 따른 화폐가치 변화 계산",
   description:
     "연간 물가상승률(인플레이션)에 따른 미래 물가와 현재 돈의 실질 구매력 변화를 계산합니다. 연도별 가치 변화 테이블로 한눈에 확인하세요.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "인플레이션율",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "인플레이션 계산기 - 물가상승률에 따른 화폐가치 변화 계산",
     description:
       "인플레이션에 따른 미래 물가와 현재 돈의 실질 구매력을 자동으로 계산합니다.",

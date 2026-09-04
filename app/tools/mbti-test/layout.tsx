@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/mbti-test" },
   title: "MBTI 성격유형 검사 - 20문항으로 알아보는 나의 MBTI",
   description:
     "20개의 질문에 답하고 나의 MBTI 성격유형을 알아보세요. E/I, S/N, T/F, J/P 각 축별 비율과 성격 분석, 궁합 유형까지 한눈에 확인할 수 있습니다.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "MBTI 무료",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "MBTI 성격유형 검사 - 20문항으로 알아보는 나의 MBTI",
     description:
       "20개의 질문에 답하고 나의 MBTI 성격유형을 알아보세요. 각 축별 비율과 성격 분석까지 제공합니다.",

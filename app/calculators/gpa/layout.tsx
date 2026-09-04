@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/gpa" },
   title: "학점 계산기 - 대학교 평균 학점(GPA) 계산",
   description:
     "대학교 평균 학점(GPA)을 4.5 또는 4.3 만점 기준으로 계산할 수 있는 무료 온라인 학점 계산기입니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "평점 계산기",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "학점 계산기 - 대학교 평균 학점(GPA) 계산",
     description:
       "대학교 평균 학점(GPA)을 4.5 또는 4.3 만점 기준으로 계산할 수 있는 무료 온라인 학점 계산기입니다.",

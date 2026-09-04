@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/scientific" },
   title: "공학용 계산기 - 삼각함수, 로그, 지수 무료 계산",
   description:
     "sin, cos, tan 삼각함수, log, ln 로그, 거듭제곱, 제곱근, 팩토리얼 등 공학용 계산을 무료로 할 수 있는 온라인 공학 계산기입니다. 각도/라디안 전환, 계산 이력 지원.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "제곱근 계산기",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "공학용 계산기 - 삼각함수, 로그, 지수 무료 계산",
     description:
       "sin, cos, tan 삼각함수, log, ln 로그, 거듭제곱, 제곱근, 팩토리얼 등 공학용 계산을 무료로 할 수 있는 온라인 공학 계산기입니다.",

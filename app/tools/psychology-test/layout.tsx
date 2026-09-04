@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/psychology-test" },
   title: "AI 심리 분석 - 성격 유형, 연애 스타일, 스트레스 지수 테스트",
   description:
     "AI가 나의 성격 유형, 연애 스타일, 스트레스 지수를 분석합니다. 간단한 질문에 답하고 AI 심리 분석 결과를 확인해보세요.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "AI 성격 분석",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 심리 분석 - 성격 유형, 연애 스타일, 스트레스 지수 테스트",
     description:
       "AI가 나의 성격 유형, 연애 스타일, 스트레스 지수를 분석합니다.",

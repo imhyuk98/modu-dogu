@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/zodiac" },
   title: "띠 계산기 (12간지) - 출생년도로 나의 띠, 천간, 오행 알아보기",
   description:
     "출생년도를 입력하면 12지지(띠), 천간, 오행, 성격 특성, 궁합을 알려드립니다. 쥐띠부터 돼지띠까지 모든 띠 정보를 확인하세요.",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     "띠별 궁합",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "띠 계산기 (12간지) - 출생년도로 나의 띠, 천간, 오행 알아보기",
     description:
       "출생년도를 입력하면 12지지(띠), 천간, 오행, 성격 특성, 궁합을 알려드립니다.",

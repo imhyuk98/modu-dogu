@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     canonical: "https://modu-dogu.pages.dev/calculators/pyeong",
   },
   openGraph: {
+    images: ["/og-image.png"],
     title: "평수 계산기 - 평을 제곱미터(㎡)로, ㎡를 평으로 변환",
     description:
       "평(坪)을 제곱미터(㎡)로, 제곱미터를 평으로 간편하게 변환할 수 있는 무료 온라인 평수 계산기입니다.",

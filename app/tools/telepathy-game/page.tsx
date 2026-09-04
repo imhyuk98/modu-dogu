@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 import DailyChallenge from "@/components/viral/DailyChallenge";
+import TelepathyLinkChallenge from "@/components/viral/TelepathyLinkChallenge";
 
 const TELEPATHY_CHALLENGES = [
   { label: "친구와 3라운드 텔레파시 보내기", target: 3 },
@@ -238,6 +239,8 @@ export default function TelepathyGamePage() {
           같은 주제, 같은 생각! 마음이 통하는지 확인하세요
         </p>
       </div>
+
+      <TelepathyLinkChallenge />
 
       <DailyChallenge id="telepathy-game" challenges={TELEPATHY_CHALLENGES} currentValue={attempts} unit="회" />
 

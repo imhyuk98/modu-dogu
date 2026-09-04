@@ -9,9 +9,9 @@ import type { Item, Section } from "@/lib/sections";
 import { getRecentTools } from "@/lib/recent";
 
 const recommendedHrefs = [
-  "/tools/energy-type-test",
+  "/tools/telepathy-game",
   "/tools/friend-chemistry",
-  "/calculators/running-pace",
+  "/calculators/daily-fortune",
 ];
 
 const recommendedItems = recommendedHrefs
@@ -32,26 +32,26 @@ const launchItems = launchHrefs
 
 const purposeGroups = [
   {
-    key: "money",
-    label: "돈 계산",
-    description: "월급, 대출, 세금처럼 숫자가 중요한 순간",
-    href: "/category/finance",
-    itemHrefs: ["/calculators/salary", "/calculators/loan", "/calculators/cost-per-use"],
+    key: "together",
+    label: "친구와 같이 놀기",
+    description: "링크를 보내고 답과 취향을 바로 비교하는 게임",
+    href: "/category/drinking",
+    badge: "초대 링크 · 결과 비교",
+    itemHrefs: ["/tools/telepathy-game", "/tools/friend-chemistry", "/tools/ideal-type-worldcup"],
+  },
+  {
+    key: "discover",
+    label: "오늘의 나 발견하기",
+    description: "매일 달라지는 운세와 공유하고 싶은 성향 결과",
+    href: "/category/fun",
+    itemHrefs: ["/calculators/daily-fortune", "/tools/energy-type-test", "/calculators/saju"],
   },
   {
     key: "life",
-    label: "생활 계산",
-    description: "나이, 평수, 학점처럼 자주 확인하는 계산",
+    label: "생활 계산하기",
+    description: "나이, 평수, 월급처럼 지금 필요한 숫자를 빠르게",
     href: "/category/life",
-    itemHrefs: ["/calculators/age", "/calculators/pyeong", "/calculators/running-pace"],
-  },
-  {
-    key: "social",
-    label: "운세·테스트·함께 놀기",
-    description: "나를 발견하고 친구와 결과를 비교하는 콘텐츠",
-    href: "/category/fun",
-    badge: "친구 링크 · 결과 카드",
-    itemHrefs: ["/tools/energy-type-test", "/tools/friend-chemistry", "/calculators/saju"],
+    itemHrefs: ["/calculators/age", "/calculators/pyeong", "/calculators/salary"],
   },
   {
     key: "files",
@@ -182,11 +182,11 @@ export default function Home() {
       <section className="home-hero">
         <div className="home-container home-hero-grid">
           <div className="home-hero-copy">
-            <p className="home-eyebrow">{allItems.length}개 무료 계산기와 온라인 도구</p>
-            <h1>생활 계산기부터<br />온라인 도구까지.</h1>
+            <p className="home-eyebrow">친구 링크 · 결과 카드 · 오늘의 콘텐츠</p>
+            <h1>친구와 같이 하고,<br />결과를 나눠보세요.</h1>
             <p className="home-intro">
-              연봉·대출·부동산 계산, 이미지·문서 변환, AI 추천과 미니게임까지
-              가입이나 설치 없이 바로 사용하세요.
+              텔레파시 게임부터 친구 케미, 성향 테스트와 오늘의 운세까지.
+              가입 없이 바로 시작하고 결과를 친구에게 보내보세요.
             </p>
             <ToolSearch items={allItems} query={query} onQueryChange={setQuery} />
             <p className="home-search-meta" aria-live="polite">
@@ -196,8 +196,8 @@ export default function Home() {
 
           <aside className="home-featured" aria-labelledby="home-featured-title">
             <div className="home-featured-heading">
-              <p>먼저 써보기</p>
-              <h2 id="home-featured-title">대표 도구</h2>
+              <p>바로 시작</p>
+              <h2 id="home-featured-title">지금 같이 하기</h2>
             </div>
             <div>
               {recommendedItems.map((item, index) => (
@@ -213,9 +213,9 @@ export default function Home() {
           <div className="home-purpose-heading">
             <div>
               <p className="home-eyebrow">바로 시작</p>
-              <h2 id="home-purpose-title">무엇을 하러 왔나요?</h2>
+              <h2 id="home-purpose-title">오늘은 무엇을 해볼까요?</h2>
             </div>
-            <p>목적부터 고르면 필요한 도구까지 두 번 안에 도착합니다.</p>
+            <p>같이 놀기, 나를 발견하기, 필요한 계산까지 목적별로 골라보세요.</p>
           </div>
 
           <div className="home-purpose-grid">
@@ -274,7 +274,7 @@ export default function Home() {
           <div className="home-directory-intro">
             <p className="home-eyebrow">도구 서랍</p>
             <h2 id="home-directory-title">{allItems.length}개 도구를 분야별로.</h2>
-            <p>금융·세금, 생활 계산, 이미지·문서, 게임·운세 중 필요한 분야를 골라보세요.</p>
+            <p>게임과 테스트 외에도 금융·생활 계산, 이미지·문서 도구를 모두 이용할 수 있어요.</p>
           </div>
 
           <div className="home-directory-grid">

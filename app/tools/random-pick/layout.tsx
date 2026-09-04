@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/random-pick" },
   title: "랜덤 지목 - 온라인 랜덤 뽑기 무료 플레이",
   description:
     "랜덤 지목 게임으로 술자리를 더 재미있게! 참가자 이름을 입력하면 룰렛처럼 돌아가며 한 명이 선택됩니다. 랜덤 미션까지 자동으로 부여. 앱 설치 없이 무료 플레이.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "랜덤 지목 - 온라인 랜덤 뽑기 무료 플레이",
     description:
       "랜덤 지목 게임으로 술자리를 더 재미있게! 참가자 중 한 명을 랜덤으로 선택하고 미션을 부여하세요.",

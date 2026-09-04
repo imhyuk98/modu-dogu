@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     canonical: "https://modu-dogu.pages.dev/tools/never-have-i-ever",
   },
   openGraph: {
+    images: ["/og-image.png"],
     title: "손병호 게임 질문 82개 - 온라인 술자리 게임 | 모두의도구",
     description:
       "6개 카테고리, 82개 질문 카드로 즐기는 무료 손병호 게임입니다.",

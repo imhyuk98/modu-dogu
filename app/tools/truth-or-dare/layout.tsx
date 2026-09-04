@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/truth-or-dare" },
   title: "진실 or 도전 - 온라인 진실게임 무료 플레이",
   description:
     "진실 or 도전 게임을 스마트폰으로 바로 즐기세요! 50개 이상의 진실 질문과 도전 미션이 준비되어 있습니다. 앱 설치 없이 무료로 플레이 가능.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "진실 or 도전 - 온라인 진실게임 무료 플레이",
     description:
       "진실 or 도전 게임을 스마트폰으로 바로 즐기세요! 50개 이상의 진실 질문과 도전 미션이 준비되어 있습니다.",

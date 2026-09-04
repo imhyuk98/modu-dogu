@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/bmr" },
   title: "기초대사량(BMR) 계산기",
   description:
     "나이, 키, 몸무게로 기초대사량을 계산합니다. Mifflin-St Jeor, Harris-Benedict 두 가지 공식을 제공합니다.",
   keywords: ["기초대사량 계산기", "BMR 계산기", "기초대사량", "칼로리 계산", "Mifflin-St Jeor", "Harris-Benedict"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "기초대사량(BMR) 계산기 - 모두의도구",
     description: "나이, 키, 몸무게로 기초대사량을 계산합니다. Mifflin-St Jeor, Harris-Benedict 두 가지 공식을 제공합니다.",
     url: "https://modu-dogu.pages.dev/calculators/bmr",

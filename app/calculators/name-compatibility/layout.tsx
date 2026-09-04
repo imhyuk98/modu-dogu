@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/name-compatibility" },
   title: "이름 궁합 계산기 - 한글 획수로 보는 이름 궁합 테스트",
   description:
     "한글 획수 기반으로 두 사람의 이름 궁합을 계산합니다. 이름을 입력하면 획수를 분석하여 궁합 퍼센트와 피라미드 계산 과정을 보여줍니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "커플 이름 궁합",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "이름 궁합 계산기 - 한글 획수로 보는 이름 궁합 테스트",
     description:
       "한글 획수 기반으로 두 사람의 이름 궁합을 계산합니다.",

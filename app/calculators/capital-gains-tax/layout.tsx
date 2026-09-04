@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/capital-gains-tax" },
   title: "양도소득세 계산기 - 부동산 양도세/장기보유특별공제 자동 계산",
   description:
     "2025년 기준 부동산 양도소득세를 자동으로 계산합니다. 장기보유특별공제, 기본공제, 종합소득세율을 적용하여 양도소득세와 지방소득세를 확인하세요.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "2025 양도소득세",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "양도소득세 계산기 - 부동산 양도세/장기보유특별공제 자동 계산",
     description:
       "2025년 기준 부동산 양도소득세를 장기보유특별공제 등을 적용하여 자동으로 계산합니다.",

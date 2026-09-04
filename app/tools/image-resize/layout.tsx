@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/image-resize" },
   title: "이미지 크기 조절 - 온라인 이미지 리사이즈",
   description:
     "이미지 크기를 원하는 사이즈로 조절할 수 있는 무료 온라인 도구입니다. 가로세로 비율 유지, 프리셋 사이즈 지원. 서버 업로드 없이 브라우저에서 안전하게 처리됩니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "image resize",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "이미지 크기 조절 - 온라인 이미지 리사이즈",
     description:
       "이미지 크기를 원하는 사이즈로 조절할 수 있는 무료 온라인 도구입니다. 비율 유지, 프리셋 사이즈를 지원합니다.",

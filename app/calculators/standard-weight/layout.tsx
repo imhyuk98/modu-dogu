@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/standard-weight" },
   title: "표준체중 계산기",
   description:
     "키와 성별로 표준체중을 계산합니다. Broca, BMI, Devine 세 가지 공식으로 비교해보세요.",
   keywords: ["표준체중 계산기", "표준체중", "Broca", "Devine", "적정체중", "이상체중"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "표준체중 계산기 - 모두의도구",
     description: "키와 성별로 표준체중을 계산합니다. Broca, BMI, Devine 세 가지 공식으로 비교해보세요.",
     url: "https://modu-dogu.pages.dev/calculators/standard-weight",

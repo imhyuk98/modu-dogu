@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/bomb-game" },
   title: "폭탄 돌리기 게임 - 온라인 폭탄돌리기 무료 플레이",
   description:
     "폭탄 돌리기 게임을 스마트폰으로 즐기세요! 랜덤 타이머로 긴장감 넘치는 폭탄돌리기를 앱 설치 없이 무료로 플레이할 수 있습니다. 2명 이상 참여 가능.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "폭탄 돌리기 게임 - 온라인 폭탄돌리기 무료 플레이",
     description:
       "폭탄 돌리기 게임을 스마트폰으로 즐기세요! 랜덤 타이머로 긴장감 넘치는 폭탄돌리기를 무료로 플레이하세요.",

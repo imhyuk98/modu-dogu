@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/due-date" },
   title: "출산 예정일 계산기 - 임신 주수 계산",
   description:
     "마지막 생리일로 출산 예정일과 현재 임신 주수를 계산하세요. 주요 검사 일정과 태아 발달 정보를 확인할 수 있습니다.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "태아 크기",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "출산 예정일 계산기 - 임신 주수 계산 | 모두의도구",
     description:
       "마지막 생리일로 출산 예정일과 현재 임신 주수를 계산하세요. 주요 검사 일정과 태아 발달 정보를 확인할 수 있습니다.",

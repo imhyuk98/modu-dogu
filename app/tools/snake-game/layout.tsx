@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/snake-game" },
   title: "스네이크 게임 - 온라인 뱀 게임 무료 플레이",
   description:
     "클래식 스네이크 게임을 온라인으로 무료 플레이! 사과를 먹고 뱀을 성장시키세요. 키보드 방향키와 모바일 터치 컨트롤을 지원합니다.",
   keywords: ["스네이크 게임", "뱀 게임", "snake game", "스네이크", "아케이드 게임", "무료 게임"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "스네이크 게임 - 온라인 뱀 게임 무료 플레이",
     description: "클래식 스네이크 게임! 사과를 먹고 뱀을 성장시키세요. 모바일 터치 지원.",
     url: "https://modu-dogu.pages.dev/tools/snake-game",

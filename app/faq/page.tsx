@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/faq" },
   title: "자주 묻는 질문 (FAQ) - 모두의도구",
   description:
     "모두의도구 이용 방법, 계산 정확도, 개인정보 처리, AI 기능 등 자주 묻는 질문과 답변을 확인하세요.",
   keywords: ["모두의도구 FAQ", "자주 묻는 질문", "모두의도구 사용법", "온라인 계산기 FAQ"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "자주 묻는 질문 (FAQ) - 모두의도구",
     description: "모두의도구 이용 방법, 계산 정확도, 개인정보 처리, AI 기능 등 자주 묻는 질문과 답변을 확인하세요.",
     url: "https://modu-dogu.pages.dev/faq",

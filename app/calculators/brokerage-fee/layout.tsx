@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/brokerage-fee" },
   title: "부동산 중개수수료 계산기 - 매매/전세/월세 중개보수 자동 계산",
   description:
     "2025년 기준 부동산 중개수수료(중개보수)를 자동으로 계산합니다. 매매, 전세, 월세 거래 유형별 요율과 한도를 적용하여 정확한 중개수수료를 확인하세요.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "2025 중개수수료",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "부동산 중개수수료 계산기 - 매매/전세/월세 중개보수 자동 계산",
     description:
       "2025년 기준 매매, 전세, 월세 거래 유형별 부동산 중개수수료를 자동으로 계산합니다.",

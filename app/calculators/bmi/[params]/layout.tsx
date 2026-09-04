@@ -29,6 +29,8 @@ export async function generateMetadata({
   const description = `키 ${height}cm, 몸무게 ${weight}kg의 BMI는 ${result.bmi}로 '${result.category}' 범위입니다. ${result.description} BMI 계산 결과와 표준 체중, 건강 관리 팁을 확인하세요.`;
 
   return {
+    alternates: { canonical: "/calculators/bmi" },
+    robots: { index: false, follow: true },
     title,
     description,
     keywords: [
@@ -41,6 +43,7 @@ export async function generateMetadata({
       "체질량지수 계산",
     ],
     openGraph: {
+      images: ["/og-image.png"],
       title,
       description,
       url: `https://modu-dogu.pages.dev/calculators/bmi/${slug}`,

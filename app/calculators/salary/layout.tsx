@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/salary" },
   title: "연봉 실수령액 계산기 - 2025년 4대보험 소득세 자동 계산",
   description:
     "2025년 기준 연봉에서 4대보험(국민연금, 건강보험, 장기요양보험, 고용보험)과 소득세를 공제한 월 실수령액을 자동으로 계산합니다.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "2025 연봉 계산기",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "연봉 실수령액 계산기 - 2025년 4대보험 소득세 자동 계산",
     description:
       "연봉에서 4대보험과 소득세를 공제한 월 실수령액을 자동으로 계산합니다.",

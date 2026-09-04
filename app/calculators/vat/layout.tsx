@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/vat" },
   title: "부가세 계산기 - 부가가치세 자동 계산 (VAT)",
   description:
     "공급가액에서 부가가치세(VAT 10%)를 계산하거나, 합계금액에서 공급가액과 부가세를 역산합니다. 간이과세자 부가세율 안내 포함.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "간이과세자 부가세",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "부가세 계산기 - 부가가치세 자동 계산 (VAT)",
     description:
       "공급가액에서 부가세를 계산하거나, 합계금액에서 공급가액과 부가세를 역산합니다.",

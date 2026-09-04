@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     "도시가스 단가",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "도시가스 요금 계산기 | 모두의도구",
     description:
       "도시가스 사용량을 입력하면 난방용·취사용 가스요금을 실시간으로 계산합니다. 기본요금, 사용요금, 부가세 포함 총 요금을 확인하세요.",

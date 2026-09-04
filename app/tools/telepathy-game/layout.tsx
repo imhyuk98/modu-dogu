@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     canonical: "https://modu-dogu.pages.dev/tools/telepathy-game",
   },
   openGraph: {
+    images: ["/og-image.png"],
     title: "텔레파시 게임 온라인 - 제시어 62개 무료 플레이 | 모두의도구",
     description:
       "친구·커플과 62개 제시어 또는 직접 만든 주제로 같은 답을 맞춰보세요.",

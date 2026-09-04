@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/year-end-tax" },
   title: "연말정산 계산기 - 예상 환급액·추가납부액 계산 (2026)",
   description:
     "2026년 기준 연말정산 예상 환급액 또는 추가납부액을 간편하게 계산합니다. 소득공제, 세액공제 항목별 입력으로 정확한 연말정산 결과를 미리 확인하세요.",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "2026 연말정산",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "연말정산 계산기 - 예상 환급액·추가납부액 계산 (2026) | 모두의도구",
     description:
       "2026년 기준 연말정산 예상 환급액 또는 추가납부액을 간편하게 계산합니다.",

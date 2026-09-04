@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/liar-game" },
   title: "라이어 게임 - 온라인 라이어게임 무료 플레이",
   description:
     "스마트폰으로 바로 즐기는 온라인 라이어 게임! 3~10명이 함께 할 수 있는 라이어 게임을 앱 설치 없이 무료로 플레이하세요. 음식, 동물, 직업, 장소, 영화 카테고리 지원.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "파티 게임",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "라이어 게임 - 온라인 라이어게임 무료 플레이",
     description:
       "스마트폰으로 바로 즐기는 온라인 라이어 게임! 3~10명이 함께 할 수 있는 라이어 게임을 앱 설치 없이 무료로 플레이하세요.",

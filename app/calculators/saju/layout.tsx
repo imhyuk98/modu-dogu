@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/saju" },
   title: "AI 사주 분석 - 생년월일 사주팔자 오행 분석 무료",
   description:
     "AI가 생년월일과 태어난 시간으로 사주팔자(년주, 월주, 일주, 시주)를 분석하고 오행 분석, 일간 성격 분석을 무료로 제공합니다.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "AI 사주 분석",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "AI 사주 분석 - 생년월일 사주팔자 오행 분석 무료",
     description:
       "AI가 생년월일과 태어난 시간으로 사주팔자를 분석하고 오행 분석, 일간 성격 분석을 무료로 제공합니다.",

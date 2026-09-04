@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools/ladder-game" },
   title: "사다리 타기 - 온라인 사다리 게임 (랜덤 결과 뽑기)",
   description:
     "온라인 사다리 타기 게임입니다. 참가자와 결과를 입력하고 사다리를 타보세요. 애니메이션으로 경로를 확인할 수 있습니다. 최대 8명까지 참여 가능합니다.",
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     "랜덤 결정",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "사다리 타기 - 온라인 사다리 게임 (랜덤 결과 뽑기)",
     description:
       "온라인 사다리 타기 게임입니다. 참가자와 결과를 입력하고 사다리를 타보세요.",

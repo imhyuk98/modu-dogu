@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "사이트 소개",
-  description: "모두의도구는 연봉 계산기, 대출이자, 환율, 부동산 세금, MBTI 궁합 등 60가지 이상의 무료 온라인 계산기와 도구를 제공하는 사이트입니다.",
+  description: "모두의도구는 친구와 함께하는 테스트·게임, 오늘의 운세와 120가지 이상의 무료 생활 계산기·온라인 도구를 제공하는 사이트입니다.",
   keywords: ["모두의도구", "사이트 소개", "무료 계산기", "온라인 도구"],
   openGraph: {
+    images: ["/og-image.png"],
     title: "사이트 소개 | 모두의도구",
-    description: "모두의도구는 연봉 계산기, 대출이자, 환율, 부동산 세금, MBTI 궁합 등 60가지 이상의 무료 온라인 계산기와 도구를 제공하는 사이트입니다.",
+    description: "친구와 함께하는 테스트·게임부터 생활 계산기까지 120가지 이상의 무료 콘텐츠를 제공합니다.",
     url: "https://modu-dogu.pages.dev/about",
   },
 };
@@ -21,9 +23,9 @@ export default function AboutPage() {
             모두의도구란?
           </h2>
           <p>
-            모두의도구는 연봉 실수령액, 대출이자, BMI, 퇴직금, 연차 등 일상
-            생활에서 자주 필요한 계산을 빠르고 정확하게 도와주는 무료 온라인
-            계산기 서비스입니다.
+            모두의도구는 친구와 함께 결과를 비교하는 테스트와 게임, 매일 보는
+            운세 콘텐츠를 중심으로 생활 계산기와 온라인 도구까지 한곳에서
+            무료로 이용할 수 있는 서비스입니다.
           </p>
         </section>
 
@@ -31,6 +33,7 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold text-gray-900">특징</h2>
           <ul className="list-disc pl-5 space-y-2">
             <li>회원가입 없이 무료로 이용 가능</li>
+            <li>친구 초대 링크와 결과 카드 공유</li>
             <li>최신 세율 및 요율 반영</li>
             <li>모바일에서도 편리하게 사용 가능</li>
             <li>개인정보 수집 없이 안전하게 이용</li>

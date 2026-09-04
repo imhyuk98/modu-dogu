@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/calculators/gift-tax" },
   title: "증여세 계산기 - 증여재산 공제/세율/신고세액공제 자동 계산",
   description:
     "2025년 기준 증여세를 자동으로 계산합니다. 배우자, 직계존속, 직계비속 등 관계별 공제액과 증여세율을 적용하여 최종 납부세액을 확인하세요.",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "2025 증여세",
   ],
   openGraph: {
+    images: ["/og-image.png"],
     title: "증여세 계산기 - 증여재산 공제/세율/신고세액공제 자동 계산",
     description:
       "2025년 기준 관계별 공제액과 증여세율을 적용하여 증여세를 자동으로 계산합니다.",
