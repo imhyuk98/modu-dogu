@@ -1,7 +1,10 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect -- restores an optional browser-only play summary */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import ShareActions from "@/components/ShareActions";
+import { trackEvent } from "@/lib/analytics";
 
 /* ───── statement data ───── */
 type Category = "전체" | "일반" | "연애" | "학교/직장" | "술자리" | "19금" | "TMI";
@@ -107,7 +110,7 @@ const STATEMENTS: Statement[] = [
   { text: "혼자 영화관 간 적 있다", category: "TMI" },
 ];
 
-const CATEGORIES: Category[] = ["전체", "일반", "연애", "학교/직장", "술자리", "19금", "TMI"];
+const SAFE_CATEGORIES: Category[] = ["전체", "일반", "연애", "학교/직장", "술자리", "TMI"];
 
 const CATEGORY_COLORS: Record<Exclude<Category, "전체">, string> = {
   일반: "from-blue-400 to-cyan-400",
@@ -163,7 +166,7 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
 const INITIAL_DECK = seededShuffle(STATEMENTS, 20260903);
 
 export default function NeverHaveIEverPage() {
-  const [category, setCategory] = useState<Category>("전체");
+  const [category, setCategory] = useState<Category>("일반");
   const [deck, setDeck] = useState<Statement[]>(INITIAL_DECK);
   const [index, setIndex] = useState(0);
   const [yesCount, setYesCount] = useState(0);
@@ -180,9 +183,16 @@ export default function NeverHaveIEverPage() {
     { name: "플레이어 2", drinks: 0 },
   ]);
   const [nameInput, setNameInput] = useState("");
+  const [adultConfirmed, setAdultConfirmed] = useState(false);
+  const [savedAnswers, setSavedAnswers] = useState(0);
+
+  useEffect(() => {
+    const saved = Number(localStorage.getItem("never-have-i-ever:answers") ?? 0);
+    if (Number.isFinite(saved)) setSavedAnswers(saved);
+  }, []);
 
   const filtered = useMemo(
-    () => (category === "전체" ? deck : deck.filter((s) => s.category === category)),
+    () => (category === "전체" ? deck.filter((statement) => statement.category !== "19금") : deck.filter((s) => s.category === category)),
     [deck, category]
   );
 
@@ -209,7 +219,8 @@ export default function NeverHaveIEverPage() {
     }
     setIndex((i) => i + 1);
     setReacted(false);
-  }, [currentCard]);
+    if (index + 1 >= total) trackEvent("tool_complete", { tool: "never-have-i-ever", category, answers: yesCount + noCount });
+  }, [category, currentCard, index, noCount, total, yesCount]);
 
   const reshuffle = useCallback(() => {
     setDeck(shuffle(STATEMENTS));
@@ -223,11 +234,17 @@ export default function NeverHaveIEverPage() {
   const react = useCallback(
     (type: "yes" | "no") => {
       if (reacted) return;
+      if (yesCount + noCount === 0) trackEvent("tool_start", { tool: "never-have-i-ever", category });
       setReacted(true);
       if (type === "yes") setYesCount((c) => c + 1);
       else setNoCount((c) => c + 1);
+      setSavedAnswers((current) => {
+        const nextValue = current + 1;
+        localStorage.setItem("never-have-i-ever:answers", String(nextValue));
+        return nextValue;
+      });
     },
-    [reacted]
+    [category, noCount, reacted, yesCount]
   );
 
   /* player helpers */
@@ -243,7 +260,11 @@ export default function NeverHaveIEverPage() {
   }, []);
 
   const addDrink = useCallback((idx: number) => {
-    setPlayers((p) => p.map((pl, i) => (i === idx ? { ...pl, drinks: pl.drinks + 1 } : pl)));
+    setPlayers((current) => {
+      const nextPlayers = current.map((player, playerIndex) => playerIndex === idx ? { ...player, drinks: player.drinks + 1 } : player);
+      localStorage.setItem("never-have-i-ever:players", JSON.stringify(nextPlayers));
+      return nextPlayers;
+    });
   }, []);
 
   const resetPlayers = useCallback(() => {
@@ -263,7 +284,7 @@ export default function NeverHaveIEverPage() {
 
       {/* ───── category tabs ───── */}
       <div className="flex flex-wrap gap-2 justify-center">
-        {CATEGORIES.map((c) => (
+        {SAFE_CATEGORIES.map((c) => (
           <button
             key={c}
             onClick={() => changeCategory(c)}
@@ -277,6 +298,16 @@ export default function NeverHaveIEverPage() {
           </button>
         ))}
       </div>
+
+      <details className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+        <summary className="cursor-pointer font-bold">성인용 질문은 별도로 열기</summary>
+        <p className="mt-2 leading-6">19세 미만에게 적합하지 않을 수 있는 연애·유흥 관련 질문이 포함됩니다. 기본 ‘전체’ 목록에는 포함되지 않습니다.</p>
+        {!adultConfirmed ? (
+          <button type="button" onClick={() => { setAdultConfirmed(true); changeCategory("19금"); }} className="mt-3 min-h-11 rounded-xl bg-red-700 px-4 font-bold text-white">만 19세 이상이며 성인용 열기</button>
+        ) : (
+          <button type="button" onClick={() => changeCategory("19금")} className="mt-3 min-h-11 rounded-xl bg-red-700 px-4 font-bold text-white">성인용 질문 보기</button>
+        )}
+      </details>
 
       {/* ───── main card ───── */}
       {currentCard ? (
@@ -362,6 +393,15 @@ export default function NeverHaveIEverPage() {
         <span>
           진행 <strong className="text-gray-800">{Math.min(index + 1, total)}</strong> / {total}
         </span>
+      </div>
+
+      {yesCount + noCount > 0 && (
+        <ShareActions tool="never-have-i-ever" title="손병호 게임 결과" text={`나는 해본 적 있다 ${yesCount}개, 없다 ${noCount}개! 같이 해볼래?`} />
+      )}
+
+      <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 text-xs text-gray-600">
+        <span>이 브라우저에서 답한 누적 문장 {savedAnswers}개</span>
+        <button type="button" onClick={() => { localStorage.removeItem("never-have-i-ever:answers"); localStorage.removeItem("never-have-i-ever:players"); setSavedAnswers(0); resetPlayers(); }} className="font-bold text-gray-700 underline">기록 초기화</button>
       </div>
 
       {/* ───── player mode toggle ───── */}
@@ -450,7 +490,7 @@ export default function NeverHaveIEverPage() {
                             <span className="absolute -top-2 -right-2 text-lg">👑</span>
                           )}
                           <p className="font-semibold text-sm truncate">{p.name}</p>
-                          <p className="text-xl font-bold text-red-500 mt-1">🍺 {p.drinks}</p>
+                          <p className="text-xl font-bold text-red-500 mt-1">⚠️ {p.drinks}</p>
                         </button>
                       );
                     })}
@@ -515,12 +555,12 @@ export default function NeverHaveIEverPage() {
             한 명이 &quot;나는 ___한 적 있다&quot; 문장을 읽습니다.
           </li>
           <li>해당하는 사람은 손을 들거나 벌칙을 수행합니다.</li>
-          <li>
-            술자리에서는 해당하면 한 잔! 플레이어 모드에서 벌칙 횟수를 기록할 수 있습니다.
-          </li>
+          <li>해당하면 미리 정한 안전한 벌칙을 수행합니다. 음주는 게임 규칙이 아니며 강요하지 마세요.</li>
           <li>&quot;다음 문장&quot; 버튼을 눌러 계속 진행하세요.</li>
         </ol>
       </section>
+
+      <p className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-xs leading-5 text-blue-900">이름·벌칙 기록은 이 브라우저의 로컬 저장소에만 남습니다. 민감한 경험을 답하도록 압박하지 말고 누구나 질문을 건너뛸 수 있게 진행하세요.</p>
 
       {/* ───── SEO content ───── */}
       <section className="mt-8 prose prose-sm max-w-none text-gray-500">

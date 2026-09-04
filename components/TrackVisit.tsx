@@ -16,6 +16,11 @@ export default function TrackVisit() {
     });
     if (pathname !== "/" && (pathname.startsWith("/calculators/") || pathname.startsWith("/tools/"))) {
       addRecentTool(pathname);
+      const key = `modu:return-visit:${pathname}`;
+      if (localStorage.getItem(key)) {
+        trackEvent("return_visit", { tool_path: pathname });
+      }
+      localStorage.setItem(key, String(Date.now()));
     }
   }, [pathname]);
 

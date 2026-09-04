@@ -1,7 +1,10 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect -- updates browser-only best records after a win */
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import ShareActions from "@/components/ShareActions";
+import { trackEvent } from "@/lib/analytics";
 
 /* ──────────── Types ──────────── */
 interface Block {
@@ -267,7 +270,10 @@ export default function BlockEscapePage() {
   );
   const [moves, setMoves] = useState(0);
   const [showWin, setShowWin] = useState(false);
+  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  const [bestMoves, setBestMoves] = useState<number | null>(null);
   const won = checkWin(blocks);
+  const startedRef = useRef(false);
 
   // Drag state
   const dragRef = useRef<{
@@ -288,14 +294,27 @@ export default function BlockEscapePage() {
     setBlocks(LEVELS[idx].map((b) => ({ ...b })));
     setMoves(0);
     setShowWin(false);
+    setSelectedBlock(null);
+    setBestMoves(Number(localStorage.getItem(`block-escape:best:${idx}`)) || null);
+    startedRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    setBestMoves(Number(localStorage.getItem("block-escape:best:0")) || null);
   }, []);
 
   // Delay the celebration slightly after the winning move.
   useEffect(() => {
-    if (!won) return;
+    if (!won || dragRef.current) return;
+    const key = `block-escape:best:${levelIdx}`;
+    const previous = Number(localStorage.getItem(key)) || null;
+    const nextBest = previous === null ? moves : Math.min(previous, moves);
+    localStorage.setItem(key, String(nextBest));
+    setBestMoves(nextBest);
+    trackEvent("tool_complete", { tool: "block-escape", level: levelIdx + 1, moves });
     const timer = setTimeout(() => setShowWin(true), 100);
     return () => clearTimeout(timer);
-  }, [won]);
+  }, [levelIdx, moves, won]);
 
   const handleNextLevel = useCallback(() => {
     const next = levelIdx + 1;
@@ -313,6 +332,11 @@ export default function BlockEscapePage() {
   const handlePointerDown = useCallback(
     (e: React.PointerEvent, block: Block) => {
       if (won) return;
+      setSelectedBlock(block.id);
+      if (!startedRef.current) {
+        startedRef.current = true;
+        trackEvent("tool_start", { tool: "block-escape", level: levelIdx + 1, input: "pointer" });
+      }
       e.preventDefault();
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
       dragRef.current = {
@@ -326,8 +350,23 @@ export default function BlockEscapePage() {
         lastAppliedDelta: 0,
       };
     },
-    [won, getCellSize]
+    [getCellSize, levelIdx, won]
   );
+
+  const moveWithKeyboard = useCallback((blockId: number, key: string) => {
+    if (won) return;
+    const block = blocks.find((candidate) => candidate.id === blockId);
+    if (!block) return;
+    const delta = key === "ArrowLeft" || key === "ArrowUp" ? -1 : key === "ArrowRight" || key === "ArrowDown" ? 1 : 0;
+    const isAllowedKey = block.orientation === "h" ? key === "ArrowLeft" || key === "ArrowRight" : key === "ArrowUp" || key === "ArrowDown";
+    if (!delta || !isAllowedKey || !canMove(block, delta, blocks)) return;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackEvent("tool_start", { tool: "block-escape", level: levelIdx + 1, input: "keyboard" });
+    }
+    setBlocks(moveBlock(blocks, blockId, delta));
+    setMoves((current) => current + 1);
+  }, [blocks, levelIdx, won]);
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
@@ -427,7 +466,7 @@ export default function BlockEscapePage() {
 
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm text-gray-600">
-          이동 횟수: <span className="font-bold text-blue-600">{moves}</span>
+          이동 <span className="font-bold text-blue-600">{moves}</span>회 · 최고 <span className="font-bold text-emerald-700">{bestMoves ?? "-"}</span>회
         </div>
         <button
           onClick={() => loadLevel(levelIdx)}
@@ -438,7 +477,8 @@ export default function BlockEscapePage() {
       </div>
 
       {/* Board */}
-      <div className="relative mx-auto" style={{ maxWidth: 420 }}>
+      <p className="mb-3 text-center text-xs text-gray-500">난이도 {levelIdx < 4 ? "쉬움" : levelIdx < 8 ? "보통" : "어려움"} · 블록을 터치해 밀거나, 선택 후 방향키를 누르세요.</p>
+      <div className="relative mx-auto" style={{ maxWidth: 420, width: "calc(100% - 24px)" }}>
         <div
           ref={boardRef}
           className="relative w-full bg-gray-800 rounded-lg overflow-visible"
@@ -498,7 +538,17 @@ export default function BlockEscapePage() {
               <div
                 key={block.id}
                 onPointerDown={(e) => handlePointerDown(e, block)}
-                className="absolute rounded-md cursor-grab active:cursor-grabbing select-none flex items-center justify-center transition-none"
+                onFocus={() => setSelectedBlock(block.id)}
+                onKeyDown={(event) => {
+                  if (event.key.startsWith("Arrow")) {
+                    event.preventDefault();
+                    moveWithKeyboard(block.id, event.key);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`${block.isTarget ? "빨간 목표" : `${idx + 1}번`} ${block.orientation === "h" ? "가로" : "세로"} 블록`}
+                className={`absolute rounded-md cursor-grab active:cursor-grabbing select-none flex items-center justify-center transition-none focus:outline-none focus:ring-4 focus:ring-white/80 ${selectedBlock === block.id ? "ring-2 ring-white" : ""}`}
                 style={{
                   left: `${left}%`,
                   top: `${top}%`,
@@ -527,7 +577,7 @@ export default function BlockEscapePage() {
       {/* Win overlay */}
       {showWin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-8 mx-4 text-center shadow-2xl max-w-sm animate-bounce-once">
+          <div className="max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 mx-4 text-center shadow-2xl max-w-sm animate-bounce-once">
             <div className="text-5xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
               레벨 {levelIdx + 1} 클리어!
@@ -542,7 +592,8 @@ export default function BlockEscapePage() {
                 ? "잘하셨어요! 👏"
                 : "클리어했어요! 💪"}
             </p>
-            <div className="flex gap-3 justify-center">
+            <ShareActions compact tool="block-escape" title={`블록 탈출 레벨 ${levelIdx + 1} 클리어`} text={`블록 탈출 레벨 ${levelIdx + 1}을 ${moves}번 만에 깼어요!`} />
+            <div className="mt-3 flex gap-3 justify-center">
               <button
                 onClick={() => loadLevel(levelIdx)}
                 className="px-5 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium transition-colors"
@@ -570,6 +621,11 @@ export default function BlockEscapePage() {
           </div>
         </div>
       )}
+
+      <div className="mt-5 flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 text-xs text-gray-600">
+        <span>최고 기록은 이 브라우저에 레벨별로 저장됩니다.</span>
+        <button type="button" onClick={() => { for (let index = 0; index < LEVELS.length; index += 1) localStorage.removeItem(`block-escape:best:${index}`); setBestMoves(null); }} className="font-bold underline">기록 초기화</button>
+      </div>
 
       {/* SEO Content */}
       <section className="mt-12 space-y-6 text-sm text-gray-600 leading-relaxed">

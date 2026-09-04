@@ -1,8 +1,11 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect -- restores browser-only game records */
 
 import { useState, useEffect, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 import DailyChallenge from "@/components/viral/DailyChallenge";
+import ShareActions from "@/components/ShareActions";
+import { trackEvent } from "@/lib/analytics";
 
 const NUNCHI_CHALLENGES = [
   { label: "눈치 게임 3라운드 이어가기", target: 3 },
@@ -12,6 +15,13 @@ const NUNCHI_CHALLENGES = [
 
 type GamePhase = "setup" | "countdown" | "tap" | "result" | "gameover";
 type GameMode = "timing" | "random";
+type GameSetting = "모임" | "교실" | "MT";
+
+const SETTING_RULES: Record<GameSetting, string> = {
+  모임: "휴대폰을 가운데 두고 각자 이름 버튼을 누릅니다. 겹치거나 마지막이면 가벼운 벌칙!",
+  교실: "소리 대신 이름 버튼만 누르고, 벌칙은 자리 정리·칭찬 한마디처럼 조용한 것으로 정하세요.",
+  MT: "팀 이름으로 등록해 팀 대항으로 진행할 수 있습니다. 음주는 규칙이 아니며 강요하지 마세요.",
+};
 
 interface Player {
   name: string;
@@ -25,6 +35,7 @@ interface TapRecord {
 
 export default function NunchiGamePage() {
   const [mode, setMode] = useState<GameMode>("timing");
+  const [setting, setSetting] = useState<GameSetting>("모임");
   const [players, setPlayers] = useState<Player[]>([]);
   const [input, setInput] = useState("");
   const [phase, setPhase] = useState<GamePhase>("setup");
@@ -41,9 +52,16 @@ export default function NunchiGamePage() {
   const [randomCountdown, setRandomCountdown] = useState(5);
   const [randomFailed, setRandomFailed] = useState(false);
   const [randomSuccess, setRandomSuccess] = useState(false);
+  const [savedGames, setSavedGames] = useState(0);
+  const [bestRounds, setBestRounds] = useState(0);
   const tapsRef = useRef<TapRecord[]>([]);
 
   const COLLISION_THRESHOLD = 300; // ms
+
+  useEffect(() => {
+    setSavedGames(Number(localStorage.getItem("nunchi:games") ?? 0));
+    setBestRounds(Number(localStorage.getItem("nunchi:best-rounds") ?? 0));
+  }, []);
 
   const addPlayer = () => {
     const n = input.trim();
@@ -59,6 +77,7 @@ export default function NunchiGamePage() {
 
   const startGame = () => {
     if (players.length < 2) return;
+    trackEvent("tool_start", { tool: "nunchi-game", mode, setting, players: players.length });
     setRound(1);
     setTargetNumber(1);
     setPlayers(players.map((p) => ({ ...p, penalties: 0 })));
@@ -215,6 +234,13 @@ export default function NunchiGamePage() {
   };
 
   const endGame = () => {
+    const gameCount = savedGames + 1;
+    const newBest = Math.max(bestRounds, round);
+    setSavedGames(gameCount);
+    setBestRounds(newBest);
+    localStorage.setItem("nunchi:games", String(gameCount));
+    localStorage.setItem("nunchi:best-rounds", String(newBest));
+    trackEvent("tool_complete", { tool: "nunchi-game", mode, setting, rounds: round, players: players.length });
     setPhase("gameover");
   };
 
@@ -277,6 +303,16 @@ export default function NunchiGamePage() {
         </p>
 
         <DailyChallenge id="nunchi-game" challenges={NUNCHI_CHALLENGES} currentValue={round} unit="R" />
+
+        <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-4">
+          <h2 className="text-sm font-semibold text-gray-700">어디서 하나요?</h2>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {(Object.keys(SETTING_RULES) as GameSetting[]).map((value) => (
+              <button key={value} type="button" onClick={() => setSetting(value)} className={`min-h-11 rounded-xl border text-sm font-bold ${setting === value ? "border-blue-500 bg-blue-50 text-blue-800" : "border-gray-200 text-gray-600"}`}>{value}</button>
+            ))}
+          </div>
+          <p className="mt-3 rounded-xl bg-gray-50 p-3 text-xs leading-5 text-gray-700"><strong>{setting} 규칙:</strong> {SETTING_RULES[setting]}</p>
+        </div>
 
         {/* Mode selection */}
         <div className="mb-6">
@@ -362,6 +398,12 @@ export default function NunchiGamePage() {
         >
           게임 시작! ({players.length}명)
         </button>
+
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 text-xs text-gray-600">
+          <span>이 브라우저 기록 · {savedGames}게임 · 최고 {bestRounds}라운드</span>
+          <button type="button" onClick={() => { localStorage.removeItem("nunchi:games"); localStorage.removeItem("nunchi:best-rounds"); setSavedGames(0); setBestRounds(0); }} className="font-bold underline">기록 초기화</button>
+        </div>
+        <p className="mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs leading-5 text-blue-900">참가자 이름과 게임 기록은 이 브라우저에만 저장됩니다. 실명 대신 별명을 써도 됩니다.</p>
 
         {/* SEO Section */}
         <section className="mt-12 space-y-6 text-sm text-gray-600">
@@ -680,9 +722,12 @@ export default function NunchiGamePage() {
           })}
         </div>
 
-        <div className="flex gap-3">
+        <ShareActions tool="nunchi-game" title="눈치 게임 결과" text={`${setting} 눈치 게임 ${round}라운드! 우승은 ${sortedLeaderboard[0]?.name ?? "누구"}, 벌칙 ${sortedLeaderboard[0]?.penalties ?? 0}회`} />
+
+        <div className="mt-4 flex gap-3">
           <button
             onClick={() => {
+              trackEvent("tool_start", { tool: "nunchi-game", mode, setting, flow: "retry" });
               setRound(1);
               setTargetNumber(1);
               setPlayers(players.map((p) => ({ ...p, penalties: 0 })));

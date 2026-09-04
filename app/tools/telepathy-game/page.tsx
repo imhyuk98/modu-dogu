@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
 import DailyChallenge from "@/components/viral/DailyChallenge";
 import TelepathyLinkChallenge from "@/components/viral/TelepathyLinkChallenge";
+import { trackEvent } from "@/lib/analytics";
 
 const TELEPATHY_CHALLENGES = [
   { label: "친구와 3라운드 텔레파시 보내기", target: 3 },
@@ -186,6 +187,7 @@ export default function TelepathyGamePage() {
 
   const startGame = useCallback(() => {
     if (!player1Name.trim() || !player2Name.trim()) return;
+    trackEvent("tool_start", { tool: "telepathy-game", flow: "same-device" });
     setRound(0);
     setSuccesses(0);
     setAttempts(0);
@@ -212,8 +214,9 @@ export default function TelepathyGamePage() {
       } else {
         setMatchResult("none");
       }
+      trackEvent("tool_complete", { tool: "telepathy-game", flow: "same-device", round });
     }, 800);
-  }, [answer1, answer2]);
+  }, [answer1, answer2, round]);
 
   const resetGame = () => {
     setPhase("setup");
