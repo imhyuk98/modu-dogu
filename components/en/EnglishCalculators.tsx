@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { calculateLoan, calculateWeightedGpa, convertArea, type AreaUnit, type RepaymentType } from "@/lib/calculations";
 
 const inputClass = "calc-input calc-input-lg";
 const primaryButton = "calc-btn-primary px-5 py-3";
@@ -242,4 +243,77 @@ export function CharacterCounterEn() {
       <button type="button" className={primaryButton} onClick={() => setValue("")}>Clear text</button>
     </div>
   );
+}
+
+export function LoanCalculatorEn() {
+  const [principal, setPrincipal] = useState("250000");
+  const [rate, setRate] = useState("6.5");
+  const [years, setYears] = useState("30");
+  const [type, setType] = useState<RepaymentType>("equalPrincipalInterest");
+  const result = useMemo(() => {
+    const amount = Number(principal);
+    const annualRate = Number(rate);
+    const term = Number(years);
+    if (!(amount > 0) || !(annualRate >= 0) || !(term > 0) || !Number.isInteger(term)) return null;
+    return calculateLoan(amount, annualRate, term, type);
+  }, [principal, rate, type, years]);
+  const money = (value: number) => value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+  return <div className="space-y-5">
+    <div className="grid gap-4 sm:grid-cols-3">
+      <label className="text-sm font-bold text-gray-700">Loan amount<input type="number" min="1" value={principal} onChange={(event) => setPrincipal(event.target.value)} className={`mt-1 ${inputClass}`} /></label>
+      <label className="text-sm font-bold text-gray-700">Annual rate (%)<input type="number" min="0" step="0.01" value={rate} onChange={(event) => setRate(event.target.value)} className={`mt-1 ${inputClass}`} /></label>
+      <label className="text-sm font-bold text-gray-700">Term (years)<input type="number" min="1" max="50" step="1" value={years} onChange={(event) => setYears(event.target.value)} className={`mt-1 ${inputClass}`} /></label>
+    </div>
+    <fieldset><legend className="mb-2 text-sm font-bold text-gray-700">Repayment method</legend><div className="grid gap-2 sm:grid-cols-2">{(["equalPrincipalInterest", "equalPrincipal"] as RepaymentType[]).map((value) => <button key={value} type="button" onClick={() => setType(value)} className={`min-h-11 rounded-xl border px-3 text-sm font-bold ${type === value ? "border-[#a93d28] bg-[#fff0e9] text-[#8f2f20]" : "border-gray-200 text-gray-600"}`}>{value === "equalPrincipalInterest" ? "Level monthly payment" : "Equal principal"}</button>)}</div></fieldset>
+    {result ? <div className="grid gap-3 sm:grid-cols-3"><ResultBox label={type === "equalPrincipalInterest" ? "Monthly payment" : "First payment"} value={money(result.monthlyPayments[0]?.payment ?? 0)} /><ResultBox label="Total interest" value={money(result.totalInterest)} /><ResultBox label="Total repayment" value={money(result.totalPayment)} /></div> : <p className="text-sm text-red-600">Enter a positive amount and whole-year term. The rate may be zero.</p>}
+    <p className="text-xs leading-5 text-gray-500">Reference estimate only. It excludes fees, insurance, changing rates, taxes, and lender-specific day-count rules.</p>
+  </div>;
+}
+
+const GPA_GRADES = [4.5, 4.3, 4, 3.7, 3.3, 3, 2.7, 2.3, 2, 1.7, 1.3, 1, 0] as const;
+
+export function GpaCalculatorEn() {
+  const [scale, setScale] = useState(4);
+  const [rows, setRows] = useState([
+    { name: "Course 1", credits: "3", points: "4" },
+    { name: "Course 2", credits: "3", points: "3.7" },
+    { name: "Course 3", credits: "3", points: "3.3" },
+  ]);
+  const result = useMemo(() => calculateWeightedGpa(rows.map((row) => ({ credits: Number(row.credits), points: row.points === "P" ? 0 : Number(row.points), excluded: row.points === "P" }))), [rows]);
+  const options = GPA_GRADES.filter((value) => value <= scale);
+
+  return <div className="space-y-5">
+    <div><p className="mb-2 text-sm font-bold text-gray-700">GPA scale</p><div className="flex gap-2">{[4, 4.3, 4.5].map((value) => <button key={value} type="button" onClick={() => { setScale(value); setRows((current) => current.map((row) => Number(row.points) > value ? { ...row, points: String(value) } : row)); }} className={`min-h-10 rounded-full px-4 text-sm font-bold ${scale === value ? "bg-[#a93d28] text-white" : "bg-[#f5ede7] text-[#654d42]"}`}>{value.toFixed(1)}</button>)}</div></div>
+    <div className="space-y-2">{rows.map((row, index) => <div key={index} className="grid grid-cols-[minmax(0,1fr)_5rem_6rem] gap-2"><input aria-label={`Course ${index + 1} name`} value={row.name} onChange={(event) => setRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item))} className={inputClass} /><input aria-label={`Course ${index + 1} credits`} type="number" min="0" step="0.5" value={row.credits} onChange={(event) => setRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, credits: event.target.value } : item))} className={inputClass} /><select aria-label={`Course ${index + 1} grade`} value={row.points} onChange={(event) => setRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, points: event.target.value } : item))} className={inputClass}><option value="P">P/F</option>{options.map((value) => <option key={value} value={value}>{value.toFixed(1)}</option>)}</select></div>)}</div>
+    <div className="flex flex-wrap gap-2"><button type="button" className={primaryButton} onClick={() => setRows((current) => [...current, { name: `Course ${current.length + 1}`, credits: "3", points: String(scale) }])}>Add course</button>{rows.length > 1 && <button type="button" className="calc-btn-secondary px-5 py-3" onClick={() => setRows((current) => current.slice(0, -1))}>Remove last</button>}</div>
+    <div className="grid gap-3 sm:grid-cols-2"><ResultBox label="Weighted GPA" value={result.credits > 0 ? `${result.gpa.toFixed(2)} / ${scale.toFixed(1)}` : "—"} /><ResultBox label="Graded credits" value={result.credits.toLocaleString("en-US")} note="Pass/fail rows are excluded." /></div>
+  </div>;
+}
+
+export function AreaConverterEn() {
+  const [unit, setUnit] = useState<AreaUnit>("sqm");
+  const [value, setValue] = useState("84");
+  const result = useMemo(() => {
+    const amount = Number(value);
+    return Number.isFinite(amount) && amount >= 0 ? convertArea(amount, unit) : null;
+  }, [unit, value]);
+  const units: { value: AreaUnit; label: string }[] = [{ value: "sqm", label: "Square meters (m²)" }, { value: "pyeong", label: "Pyeong" }, { value: "sqft", label: "Square feet (ft²)" }];
+  return <div className="space-y-5"><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold text-gray-700">Input unit<select value={unit} onChange={(event) => setUnit(event.target.value as AreaUnit)} className={`mt-1 ${inputClass}`}>{units.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label><label className="text-sm font-bold text-gray-700">Area<input type="number" min="0" step="any" value={value} onChange={(event) => setValue(event.target.value)} className={`mt-1 ${inputClass}`} /></label></div>{result && <div className="grid gap-3 sm:grid-cols-3"><ResultBox label="Square meters" value={`${result.sqm.toLocaleString("en-US", { maximumFractionDigits: 4 })} m²`} /><ResultBox label="Pyeong" value={`${result.pyeong.toLocaleString("en-US", { maximumFractionDigits: 4 })} pyeong`} /><ResultBox label="Square feet" value={`${result.sqft.toLocaleString("en-US", { maximumFractionDigits: 3 })} ft²`} /></div>}<p className="text-xs leading-5 text-gray-500">Uses 1 pyeong = 400/121 m² and 1 ft² = 0.09290304 m². Confirm official property documents in square meters.</p></div>;
+}
+
+export function RunningPaceEn() {
+  const [distance, setDistance] = useState("5");
+  const [hours, setHours] = useState("0");
+  const [minutes, setMinutes] = useState("25");
+  const [seconds, setSeconds] = useState("0");
+  const result = useMemo(() => {
+    const km = Number(distance);
+    const totalSeconds = Number(hours) * 3600 + Number(minutes) * 60 + Number(seconds);
+    if (!(km > 0) || !(totalSeconds > 0)) return null;
+    const paceSeconds = totalSeconds / km;
+    return { paceSeconds, speed: km / (totalSeconds / 3600), milePace: paceSeconds * 1.609344 };
+  }, [distance, hours, minutes, seconds]);
+  const pace = (total: number) => `${Math.floor(total / 60)}:${String(Math.round(total % 60)).padStart(2, "0")}`;
+  return <div className="space-y-5"><div className="grid gap-4 sm:grid-cols-4"><label className="text-sm font-bold text-gray-700">Distance (km)<input type="number" min="0.01" step="0.01" value={distance} onChange={(event) => setDistance(event.target.value)} className={`mt-1 ${inputClass}`} /></label><label className="text-sm font-bold text-gray-700">Hours<input type="number" min="0" value={hours} onChange={(event) => setHours(event.target.value)} className={`mt-1 ${inputClass}`} /></label><label className="text-sm font-bold text-gray-700">Minutes<input type="number" min="0" max="59" value={minutes} onChange={(event) => setMinutes(event.target.value)} className={`mt-1 ${inputClass}`} /></label><label className="text-sm font-bold text-gray-700">Seconds<input type="number" min="0" max="59" value={seconds} onChange={(event) => setSeconds(event.target.value)} className={`mt-1 ${inputClass}`} /></label></div>{result ? <div className="grid gap-3 sm:grid-cols-3"><ResultBox label="Pace per km" value={`${pace(result.paceSeconds)} /km`} /><ResultBox label="Pace per mile" value={`${pace(result.milePace)} /mi`} /><ResultBox label="Average speed" value={`${result.speed.toFixed(2)} km/h`} /></div> : <p className="text-sm text-red-600">Enter a distance and finish time above zero.</p>}<p className="text-xs leading-5 text-gray-500">This is an average pace. Hills, stops, GPS error, weather, and course length can change an actual race split.</p></div>;
 }

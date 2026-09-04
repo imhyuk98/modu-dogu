@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import RelatedTools from "@/components/RelatedTools";
 
-type GameMode = "ai" | "two-player" | null;
+type GameMode = "computer" | "two-player" | null;
 type Player = 1 | 2;
 
 interface GameState {
@@ -35,7 +35,7 @@ export default function BaskinRobbins31() {
 
   const { currentNumber, currentPlayer, selectedNumbers, gameOver, loser, mode } = gameState;
 
-  // cleanup AI timeout on unmount
+  // cleanup computer timeout on unmount
   useEffect(() => {
     return () => {
       if (aiTimeoutRef.current) clearTimeout(aiTimeoutRef.current);
@@ -50,7 +50,7 @@ export default function BaskinRobbins31() {
   const sayNumbers = useCallback(
     (count: 1 | 2 | 3) => {
       if (gameOver || mode === null) return;
-      if (mode === "ai" && currentPlayer === 2) return; // AI's turn
+      if (mode === "computer" && currentPlayer === 2) return; // computer turn
 
       const maxCount = Math.min(count, LOSING_NUMBER - currentNumber + 1);
       if (maxCount <= 0) return;
@@ -79,9 +79,9 @@ export default function BaskinRobbins31() {
     [gameOver, mode, currentNumber, currentPlayer]
   );
 
-  // AI turn logic
+  // computer turn logic
   useEffect(() => {
-    if (mode !== "ai" || currentPlayer !== 2 || gameOver) return;
+    if (mode !== "computer" || currentPlayer !== 2 || gameOver) return;
 
     aiTimeoutRef.current = setTimeout(() => {
       // Smart strategy: try to land on multiples of 4 (4, 8, 12, 16, 20, 24, 28)
@@ -149,7 +149,7 @@ export default function BaskinRobbins31() {
   };
 
   const maxSelectable = Math.min(3, LOSING_NUMBER - currentNumber + 1);
-  const isMyTurn = mode === "two-player" || (mode === "ai" && currentPlayer === 1);
+  const isMyTurn = mode === "two-player" || (mode === "computer" && currentPlayer === 1);
 
   // Mode selection screen
   if (mode === null) {
@@ -164,12 +164,12 @@ export default function BaskinRobbins31() {
 
         <div className="max-w-md mx-auto space-y-4">
           <button
-            onClick={() => startGame("ai")}
+            onClick={() => startGame("computer")}
             className="w-full p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all group"
           >
             <div className="text-3xl mb-2">&#x1F916;</div>
             <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600">
-              AI 대전
+              컴퓨터 대전
             </h2>
             <p className="text-sm text-gray-500 mt-1">
               AI와 1:1로 대결합니다
@@ -209,7 +209,7 @@ export default function BaskinRobbins31() {
         </button>
       </div>
       <p className="text-gray-500 mb-6">
-        {mode === "ai" ? "AI 대전" : "2인 대전"} &mdash; 31을 말하면 패배!
+        {mode === "computer" ? "컴퓨터 대전" : "2인 대전"} &mdash; 31을 말하면 패배!
       </p>
 
       {/* Current player indicator */}
@@ -223,11 +223,11 @@ export default function BaskinRobbins31() {
             }`}
           >
             {currentPlayer === 1
-              ? mode === "ai"
+              ? mode === "computer"
                 ? "내 차례"
                 : "플레이어 1 차례"
-              : mode === "ai"
-              ? "AI 차례..."
+              : mode === "computer"
+              ? "컴퓨터 차례..."
               : "플레이어 2 차례"}
           </div>
         </div>
@@ -258,11 +258,11 @@ export default function BaskinRobbins31() {
         <div className="flex justify-center gap-6 mt-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-blue-500" />
-            <span>{mode === "ai" ? "나" : "플레이어 1"}</span>
+            <span>{mode === "computer" ? "나" : "플레이어 1"}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-red-500" />
-            <span>{mode === "ai" ? "AI" : "플레이어 2"}</span>
+            <span>{mode === "computer" ? "컴퓨터" : "플레이어 2"}</span>
           </div>
         </div>
       </div>
@@ -300,7 +300,7 @@ export default function BaskinRobbins31() {
         <div className="text-center mb-6">
           <div className="calc-card border-2 border-gray-200 p-8 max-w-sm mx-auto">
             <div className="text-5xl mb-4">
-              {mode === "ai"
+              {mode === "computer"
                 ? loser === 2
                   ? String.fromCodePoint(0x1F389)
                   : String.fromCodePoint(0x1F62D)
@@ -309,7 +309,7 @@ export default function BaskinRobbins31() {
                 : String.fromCodePoint(0x1F535)}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {mode === "ai"
+              {mode === "computer"
                 ? loser === 2
                   ? "승리!"
                   : "패배..."
@@ -318,9 +318,9 @@ export default function BaskinRobbins31() {
                 : "플레이어 1 승리!"}
             </h2>
             <p className="text-gray-500 mb-6">
-              {mode === "ai"
+              {mode === "computer"
                 ? loser === 2
-                  ? "AI가 31을 말했습니다!"
+                  ? "컴퓨터가 31을 말했습니다!"
                   : "31을 말해버렸습니다..."
                 : `플레이어 ${loser}이(가) 31을 말했습니다!`}
             </p>
@@ -410,8 +410,8 @@ function SeoSection() {
           온라인으로 베스킨라빈스 31 하는 법
         </h2>
         <p className="text-gray-600 leading-relaxed">
-          이 온라인 버전에서는 AI 대전과 2인 대전 두 가지 모드를 지원합니다.
-          AI 대전 모드에서는 컴퓨터와 1:1로 대결하며, AI는 전략적으로
+          이 온라인 버전에서는 컴퓨터 대전과 2인 대전 두 가지 모드를 지원합니다.
+          컴퓨터 대전 모드에서는 컴퓨터와 1:1로 대결하며, AI는 전략적으로
           플레이하지만 가끔 실수를 하기 때문에 충분히 이길 수 있습니다. 2인
           대전 모드에서는 한 기기에서 친구와 번갈아가며 플레이할 수 있어 술자리
           게임으로 활용하기에 좋습니다.
@@ -439,7 +439,7 @@ function SeoSection() {
             </h3>
             <p className="text-gray-600 text-sm mt-1">
               원래 게임은 여러 명이 돌아가며 플레이할 수 있지만, 이 온라인
-              버전에서는 2인 대전(AI 포함)을 지원합니다. 오프라인에서는 3명
+              버전에서는 2인 대전(컴퓨터 포함)을 지원합니다. 오프라인에서는 3명
               이상도 가능하며, 이 경우 필승 전략이 달라질 수 있습니다.
             </p>
           </div>

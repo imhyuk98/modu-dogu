@@ -264,10 +264,10 @@ export default function FashionRecommendationPage() {
       {/* Title */}
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-          👗 AI 패션 코디 추천
+          👗 패션 코디 추천
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          상황, 체형, 스타일에 맞는 코디를 AI가 추천합니다
+          상황, 체형, 스타일에 맞는 코디를 도구가 추천합니다
         </p>
       </div>
 
@@ -299,7 +299,7 @@ export default function FashionRecommendationPage() {
         <OptionGroup label="예산" options={BUDGETS} value={budget} onChange={(v) => setBudget(v as Budget)} />
 
         <button onClick={handleRecommend} className="calc-btn-primary w-full text-base py-3.5">
-          ✨ AI 코디 추천받기
+          ✨ 코디 추천받기
         </button>
       </div>
 
@@ -367,7 +367,7 @@ export default function FashionRecommendationPage() {
                   {/* Styling tip */}
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
                     <p className="text-sm text-amber-800">
-                      <span className="font-semibold">💡 AI 스타일링 팁:</span> {outfit.stylingTip}
+                      <span className="font-semibold">💡 조건별 스타일링 팁:</span> {outfit.stylingTip}
                     </p>
                   </div>
 
@@ -462,9 +462,9 @@ export default function FashionRecommendationPage() {
 
       {/* SEO */}
       <div className="calc-seo-card">
-        <h2 className="calc-seo-title">AI 패션 코디 추천이란?</h2>
+        <h2 className="calc-seo-title">패션 코디 추천이란?</h2>
         <p className="text-sm text-gray-600 leading-relaxed">
-          AI 패션 코디 추천은 성별, 체형, 상황, 날씨, 스타일 선호도를 종합적으로 분석하여
+          패션 코디 추천은 성별, 체형, 상황, 날씨, 스타일 선호도를 종합적으로 분석하여
           가장 적합한 코디를 추천해주는 서비스입니다. 출근 코디, 데이트 코디, 소개팅 코디,
           면접 코디, 여행 코디 등 다양한 상황에 맞는 120가지 이상의 코디 데이터베이스를
           기반으로 맞춤 추천을 제공합니다. &quot;오늘 뭐 입지?&quot; 고민될 때 활용해 보세요.

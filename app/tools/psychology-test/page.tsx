@@ -579,7 +579,7 @@ export default function PsychologyTestPage() {
   return (
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-        <span>&#x1F52E;</span> AI 심리 분석
+        <span>&#x1F52E;</span> 심리 성향 테스트
       </h1>
       <p className="text-gray-500 mb-8">
         재미있는 심리테스트로 나의 성격, 연애 스타일, 스트레스 수준을 알아보세요.

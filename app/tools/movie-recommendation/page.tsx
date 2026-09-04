@@ -308,10 +308,10 @@ export default function MovieRecommendationPage() {
           🎬
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-          AI 영화 추천
+          영화 추천 도우미
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          기분과 취향을 선택하면 AI가 맞춤 영화를 추천해드립니다
+          기분과 취향을 선택하면 도구가 맞춤 영화를 추천해드립니다
         </p>
       </div>
 
@@ -454,10 +454,10 @@ export default function MovieRecommendationPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                AI가 분석 중...
+                도구가 분석 중...
               </span>
             ) : (
-              "🎬 AI 영화 추천받기"
+              "🎬 영화 추천 도우미받기"
             )}
           </button>
           {!canRecommend && (
@@ -470,7 +470,7 @@ export default function MovieRecommendationPage() {
         <div className="space-y-4">
           {/* Results Header */}
           <div className="calc-result-header !rounded-2xl mb-6">
-            <p className="text-sm opacity-80 mb-1">AI 맞춤 추천 결과</p>
+            <p className="text-sm opacity-80 mb-1">조건별 맞춤 추천 결과</p>
             <p className="text-2xl font-bold">TOP 5 영화</p>
             <div className="flex flex-wrap justify-center gap-2 mt-3 text-xs">
               {mood && <span className="bg-white/20 px-2 py-1 rounded-full">{MOOD_EMOJI[mood]} {mood}</span>}
@@ -531,9 +531,9 @@ export default function MovieRecommendationPage() {
                 {movie.description}
               </p>
 
-              {/* AI Recommendation Reason */}
+              {/* Recommendation reason */}
               <div className="bg-purple-50 border border-purple-100 rounded-xl p-3">
-                <p className="text-xs font-bold text-purple-700 mb-1">🤖 AI 추천 이유</p>
+                <p className="text-xs font-bold text-purple-700 mb-1">🤖 추천 이유</p>
                 <p className="text-sm text-purple-600">{movie.recommendReason}</p>
               </div>
             </div>
@@ -560,12 +560,12 @@ export default function MovieRecommendationPage() {
       {/* SEO Content */}
       <section className="mt-12 space-y-6">
         <div className="calc-seo-card">
-          <h2 className="calc-seo-title">AI 영화 추천 사용법</h2>
+          <h2 className="calc-seo-title">영화 추천 도우미 사용법</h2>
           <div className="text-sm text-gray-600 space-y-2 leading-relaxed">
             <p>1. <strong>기분/상황</strong>을 선택하세요 - 지금 기분에 맞는 영화를 추천합니다.</p>
             <p>2. <strong>장르</strong>를 선택하세요 - 여러 장르를 동시에 선택할 수 있습니다.</p>
             <p>3. <strong>국가, 시대, 길이, 플랫폼</strong>을 선택하면 더 정확한 추천을 받을 수 있습니다.</p>
-            <p>4. <strong>AI 영화 추천받기</strong> 버튼을 누르면 맞춤 영화 TOP 5를 추천해드립니다.</p>
+            <p>4. <strong>영화 추천 도우미받기</strong> 버튼을 누르면 맞춤 영화 TOP 5를 추천해드립니다.</p>
             <p>5. 마음에 들지 않으면 <strong>다시 추천받기</strong>를 눌러 새로운 영화를 추천받으세요.</p>
           </div>
         </div>

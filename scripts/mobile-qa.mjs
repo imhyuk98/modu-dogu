@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const baseUrl = process.env.MOBILE_QA_BASE_URL ?? "http://127.0.0.1:4177";
+const baseUrl = process.env.MOBILE_QA_BASE_URL ?? "http://127.0.0.1:3000";
 const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9224";
 const outputDir = process.env.MOBILE_QA_SCREEN_DIR ?? process.env.TEMP ?? ".";
 
@@ -186,7 +186,7 @@ await send("Network.enable");
 await send("Network.setCacheDisabled", { cacheDisabled: true });
 
 const results = {};
-for (const width of [360, 390]) {
+for (const width of [360, 390, 412]) {
   results[width] = await runAtWidth(width);
 }
 

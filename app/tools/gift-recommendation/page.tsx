@@ -1649,10 +1649,10 @@ export default function GiftRecommendationPage() {
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
           <span className="text-3xl sm:text-4xl mr-2">🎁</span>
-          AI 선물 추천
+          선물 아이디어 추천
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          받는 사람, 상황, 예산을 입력하면 AI가 최적의 선물을 추천합니다
+          받는 사람, 상황, 예산을 입력하면 도구가 최적의 선물을 추천합니다
         </p>
       </div>
 
@@ -1797,7 +1797,7 @@ export default function GiftRecommendationPage() {
           className="calc-btn-primary w-full text-base py-3.5"
         >
           <span className="text-lg">🎯</span>
-          AI 선물 추천받기
+          선물 아이디어 추천받기
         </button>
       </div>
 
@@ -1806,7 +1806,7 @@ export default function GiftRecommendationPage() {
         <div className="mb-8 animate-fade-in">
           <div className="calc-card overflow-hidden">
             <div className="calc-result-header">
-              <p className="text-sm opacity-80 mb-1">AI 추천 결과</p>
+              <p className="text-sm opacity-80 mb-1">추천 결과</p>
               <h2 className="text-xl font-bold relative z-10">
                 맞춤 선물 TOP 5
               </h2>
@@ -1859,10 +1859,10 @@ export default function GiftRecommendationPage() {
                         {r.gift.description}
                       </p>
 
-                      {/* AI Reason */}
+                      {/* Recommendation reason */}
                       <div className="bg-white rounded-xl p-3 border border-gray-100 mb-3">
                         <p className="text-xs font-semibold text-purple-600 mb-1">
-                          <span className="mr-1">🤖</span>AI 추천 이유
+                          <span className="mr-1">🤖</span>추천 이유
                         </p>
                         <p className="text-sm text-gray-700">{r.reason}</p>
                       </div>
@@ -1942,10 +1942,10 @@ export default function GiftRecommendationPage() {
 
       {/* SEO Content */}
       <div className="calc-seo-card mb-8">
-        <h2 className="calc-seo-title">AI 선물 추천 사용 가이드</h2>
+        <h2 className="calc-seo-title">선물 아이디어 추천 사용 가이드</h2>
         <div className="text-sm text-gray-600 leading-relaxed space-y-3">
           <p>
-            AI 선물 추천은 받는 사람의 특성, 상황, 예산, 취향을 종합적으로
+            선물 아이디어 추천은 받는 사람의 특성, 상황, 예산, 취향을 종합적으로
             분석하여 가장 적합한 선물을 추천해 드리는 서비스입니다.
           </p>
           <p>

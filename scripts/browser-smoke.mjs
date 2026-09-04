@@ -1,5 +1,5 @@
-const baseUrl = process.env.SMOKE_BASE_URL ?? "http://127.0.0.1:4177";
-const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9223";
+const baseUrl = process.env.SMOKE_BASE_URL ?? "http://127.0.0.1:3000";
+const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9224";
 const targets = await fetch(`${debuggerUrl}/json`).then((response) => response.json());
 const target = targets.find((candidate) => candidate.type === "page" && candidate.url.startsWith(baseUrl));
 if (!target) throw new Error(`No Chrome page found for ${baseUrl}`);
@@ -71,12 +71,12 @@ const created = await evaluate(`({
   scrollWidth: document.documentElement.scrollWidth,
   createButtonDisabled: [...document.querySelectorAll("button")].find((button) => button.textContent.includes("초대 링크 만들기"))?.disabled
 })`);
-await evaluate(`[...document.querySelectorAll("button")].find((button) => button.textContent.includes("메신저로 보내기"))?.click()`);
+await evaluate(`[...document.querySelectorAll("button")].find((button) => button.textContent.includes("카카오톡·앱 공유"))?.click()`);
 await wait(150);
 const inviteUrl = await evaluate(`window.__smokeShared?.url`);
 if (!inviteUrl) throw new Error("Invite URL was not created or shared");
 
-await navigate(inviteUrl.replace("/tools/telepathy-game?", "/tools/telepathy-game.html?"));
+await navigate(inviteUrl);
 await evaluate(`(() => {
   const inputs = [...document.querySelectorAll("section input")];
   const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
@@ -96,7 +96,7 @@ const challenge = await evaluate(`({
 })`);
 if (!challenge.resultUrl) throw new Error(`Result URL was not created: ${JSON.stringify({ home, created, challenge })}`);
 
-await navigate(challenge.resultUrl.replace(/(\/tools\/telepathy-game\/result\/(?:perfect|great|spark))(\?)/, "$1.html$2"));
+await navigate(challenge.resultUrl);
 const result = await evaluate(`({
   title: document.title,
   heading: document.querySelector("h1")?.textContent?.trim(),

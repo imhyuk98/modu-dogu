@@ -7,7 +7,7 @@ const BOARD_SIZE = 15;
 
 type Stone = 0 | 1 | 2; // 0=empty, 1=black, 2=white
 type Board = Stone[][];
-type Mode = "2p" | "ai";
+type Mode = "2p" | "computer";
 
 const STAR_POINTS = [
   [3, 3], [3, 7], [3, 11],
@@ -45,7 +45,7 @@ function checkWin(board: Board, row: number, col: number, stone: Stone): [number
   return null;
 }
 
-// AI scoring heuristic
+// computer scoring heuristic
 function evaluatePosition(board: Board, row: number, col: number, aiStone: Stone): number {
   const playerStone: Stone = aiStone === 1 ? 2 : 1;
   let score = 0;
@@ -186,8 +186,8 @@ export default function OmokPage() {
       const nextTurn: Stone = currentTurn === 1 ? 2 : 1;
       setCurrentTurn(nextTurn);
 
-      // AI move
-      if (mode === "ai" && nextTurn === 2) {
+      // computer move
+      if (mode === "computer" && nextTurn === 2) {
         aiThinking.current = true;
         setTimeout(() => {
           const aiMove = getAIMove(newBoard);
@@ -216,8 +216,8 @@ export default function OmokPage() {
   const handleUndo = () => {
     if (history.length === 0 || winResult) return;
 
-    if (mode === "ai" && history.length >= 2) {
-      // Undo both AI and player move
+    if (mode === "computer" && history.length >= 2) {
+      // Undo both computer and player moves
       const prevState = history[history.length - 2];
       setBoard(prevState.board);
       setLastMove(prevState.lastMove);
@@ -264,10 +264,10 @@ export default function OmokPage() {
               2인 대전
             </button>
             <button
-              onClick={() => startNewGame("ai")}
+              onClick={() => startNewGame("computer")}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-500 transition-colors"
             >
-              AI 대전
+              컴퓨터 대전
             </button>
           </div>
         </div>
@@ -292,7 +292,7 @@ export default function OmokPage() {
                     }}
                   />
                   {currentTurn === 1 ? "흑" : "백"}의 차례
-                  {mode === "ai" && currentTurn === 2 && " (AI 생각중...)"}
+                  {mode === "computer" && currentTurn === 2 && " (컴퓨터 생각 중...)"}
                 </span>
               )}
             </div>
@@ -458,10 +458,10 @@ export default function OmokPage() {
               <div className="inline-flex flex-col items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-8 py-4">
                 <span className="text-xl font-bold text-green-700">
                   {winResult.stone === 1 ? "흑돌" : "백돌"}{" "}
-                  {mode === "ai"
+                  {mode === "computer"
                     ? winResult.stone === 1
                       ? "(플레이어) 승리!"
-                      : "(AI) 승리!"
+                      : "컴퓨터 승리!"
                     : "승리!"}
                 </span>
                 <div className="flex gap-2">
@@ -531,8 +531,8 @@ export default function OmokPage() {
           <h2 className="text-lg font-semibold text-gray-900 mb-2">이 도구의 기능</h2>
           <ul className="list-disc list-inside space-y-1">
             <li><strong>2인 대전:</strong> 한 기기에서 두 명이 번갈아 플레이할 수 있습니다.</li>
-            <li><strong>AI 대전:</strong> 컴퓨터 상대와 대결합니다. AI는 백돌로 플레이합니다.</li>
-            <li><strong>무르기:</strong> 마지막 수를 취소할 수 있습니다 (AI 모드에서는 AI 수까지 함께 취소).</li>
+            <li><strong>컴퓨터 대전:</strong> 고정 점수 규칙으로 수를 고르는 컴퓨터와 대결합니다. 컴퓨터는 백돌로 플레이합니다.</li>
+            <li><strong>무르기:</strong> 마지막 수를 취소할 수 있습니다 (컴퓨터 대전에서는 컴퓨터 수까지 함께 취소).</li>
             <li><strong>승리 표시:</strong> 5개를 완성하면 해당 돌이 하이라이트로 표시됩니다.</li>
             <li><strong>마지막 수 표시:</strong> 가장 최근에 놓은 돌에 빨간 점이 표시됩니다.</li>
           </ul>

@@ -534,7 +534,7 @@ export default function TarotPage() {
           Major Arcana 22
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
-          AI 타로 카드
+          타로 카드 뽑기
         </h1>
         <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
           메이저 아르카나 22장으로 당신의 운명을 읽어보세요.

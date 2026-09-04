@@ -61,7 +61,7 @@ export default function PersonalStyleTestPage() {
         <TrendQuiz slug="personal-style-test" kicker="STYLE PROFILE" questions={questions} results={results} />
         <section className="calc-seo-card mt-8">
           <h2 className="calc-seo-title">결과 활용법</h2>
-          <p className="text-sm leading-7 text-gray-600">퍼스널 컬러나 체형을 판정하는 검사가 아니라 지금 끌리는 시각 취향을 정리하는 도구입니다. 결과 키워드를 기존 AI 패션 코디의 스타일·색상 선택에 활용해보세요.</p>
+          <p className="text-sm leading-7 text-gray-600">퍼스널 컬러나 체형을 판정하는 검사가 아니라 지금 끌리는 시각 취향을 정리하는 도구입니다. 결과 키워드를 기존 패션 코디 추천의 스타일·색상 선택에 활용해보세요.</p>
         </section>
         <RelatedTools current="personal-style-test" />
       </div>

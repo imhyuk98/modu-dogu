@@ -257,10 +257,10 @@ export default function DreamInterpretationPage() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
-          AI 꿈 해몽
+          꿈 키워드 풀이
         </h1>
         <p className="text-gray-500 mt-2 mb-8">
-          꿈 키워드를 입력하면 AI가 꿈을 해석해드립니다
+          꿈 키워드를 입력하면 도구가 꿈을 해석해드립니다
         </p>
       </div>
 
@@ -505,10 +505,10 @@ export default function DreamInterpretationPage() {
 
       {/* SEO Content Section */}
       <div className="calc-seo-card mb-6">
-        <h2 className="calc-seo-title">AI 꿈 해몽이란?</h2>
+        <h2 className="calc-seo-title">꿈 키워드 풀이이란?</h2>
         <div className="text-sm text-gray-600 leading-relaxed space-y-3">
           <p>
-            AI 꿈 해몽은 한국 전통 해몽학과 현대 심리학적 해석을 결합하여 꿈의 의미를
+            꿈 키워드 풀이은 한국 전통 해몽학과 현대 심리학적 해석을 결합하여 꿈의 의미를
             분석해드리는 서비스입니다. 80가지 이상의 꿈 키워드 데이터베이스를 기반으로
             동물, 자연, 행동, 사물, 사람, 상황 등 다양한 카테고리의 꿈을 해석합니다.
           </p>

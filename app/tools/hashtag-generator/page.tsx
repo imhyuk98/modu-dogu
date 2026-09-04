@@ -61,7 +61,7 @@ const moodConfig: Record<Mood, { label: string; emoji: string }> = {
 const popularityLabels: Record<Popularity, { label: string; color: string; desc: string }> = {
   high: { label: "인기", color: "bg-red-100 text-red-700 border-red-200", desc: "높은 노출, 경쟁이 치열합니다" },
   medium: { label: "중간", color: "bg-amber-100 text-amber-700 border-amber-200", desc: "적절한 노출과 도달률의 균형" },
-  niche: { label: "니치", color: "bg-emerald-100 text-emerald-700 border-emerald-200", desc: "타겟 오디언스에게 정확히 도달" },
+  niche: { label: "니치", color: "bg-emerald-100 text-emerald-700 border-emerald-200", desc: "세부 주제와 관련된 태그" },
 };
 
 /* ═══ Hashtag Database (500+) ═══ */
@@ -658,7 +658,7 @@ export default function HashtagGenerator() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-        AI 인스타 해시태그 생성기
+        인스타 해시태그 추천
       </h1>
       <p className="text-gray-500 mb-8">
         카테고리와 분위기를 선택하면 인스타그램에 최적화된 해시태그를 자동으로 추천합니다.
@@ -894,8 +894,8 @@ export default function HashtagGenerator() {
           <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
             <h3 className="font-semibold text-emerald-800 text-sm mb-2">니치 해시태그 (30%)</h3>
             <p className="text-emerald-700 text-xs leading-relaxed">
-              게시물 수 10만 이하의 소형 태그. 타겟 오디언스에게 정확히 도달하며 &quot;인기 게시물&quot;에 노출될
-              가능성이 높습니다. 성장에 핵심적인 역할을 합니다.
+              데이터에 기록된 게시물 수 10만 이하의 소형 태그입니다. 세부 주제를 표현할 때 참고할 수 있지만
+              노출이나 도달률을 보장하지 않습니다.
             </p>
           </div>
           <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
@@ -927,9 +927,8 @@ export default function HashtagGenerator() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">왜 해시태그가 중요한가요?</h2>
           <p className="text-gray-600 leading-relaxed">
             인스타그램 해시태그는 내 게시물을 팔로워가 아닌 사람들에게도 노출시키는 핵심 도구입니다.
-            적절한 해시태그 조합을 사용하면 &quot;탐색&quot; 탭에 노출될 확률이 높아지고,
-            타겟 오디언스에게 정확히 도달할 수 있습니다. 특히 인기/중간/니치 해시태그를
-            적절히 섞어 사용하는 것이 도달률을 극대화하는 핵심 전략입니다.
+            해시태그는 게시물의 주제를 설명하는 보조 수단입니다. 추천 목록은 고정 데이터에서 고른 예시이며,
+            플랫폼 알고리즘의 노출이나 도달률을 예측하거나 보장하지 않습니다.
           </p>
         </div>
 

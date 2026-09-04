@@ -377,10 +377,10 @@ export default function BookRecommendationPage() {
           <span>📚</span> {totalBooks}권의 도서 DB
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-          AI 책 추천
+          책 추천 도우미
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          기분, 장르, 독서 수준에 맞는 책을 AI가 추천해드립니다
+          기분, 장르, 독서 수준에 맞는 책을 도구가 추천해드립니다
         </p>
       </div>
 
@@ -519,7 +519,7 @@ export default function BookRecommendationPage() {
           {/* Result Header */}
           <div className="calc-result-header rounded-2xl">
             <div className="relative z-10">
-              <p className="text-indigo-200 text-sm mb-1">AI 맞춤 추천 결과</p>
+              <p className="text-indigo-200 text-sm mb-1">조건별 맞춤 추천 결과</p>
               <p className="text-2xl font-bold">
                 Top 5 도서 추천
               </p>
@@ -577,10 +577,10 @@ export default function BookRecommendationPage() {
                     </span>
                   </div>
 
-                  {/* AI Reason */}
+                  {/* Recommendation reason */}
                   <div className="bg-indigo-50 rounded-xl px-3.5 py-2.5 mb-2">
                     <p className="text-xs font-semibold text-indigo-700 mb-0.5">
-                      🤖 AI 추천 이유
+                      🤖 추천 이유
                     </p>
                     <p className="text-sm text-indigo-900">{book.reason}</p>
                   </div>
@@ -614,9 +614,9 @@ export default function BookRecommendationPage() {
 
       {/* SEO Content */}
       <div className="mt-12 calc-seo-card">
-        <h2 className="calc-seo-title">AI 책 추천이란?</h2>
+        <h2 className="calc-seo-title">책 추천 도우미이란?</h2>
         <p className="text-sm text-gray-600 leading-relaxed mb-4">
-          AI 책 추천은 사용자의 기분, 선호 장르, 독서 수준, 원하는 분량, 연령대를 종합적으로 분석하여
+          책 추천 도우미은 사용자의 기분, 선호 장르, 독서 수준, 원하는 분량, 연령대를 종합적으로 분석하여
           가장 적합한 도서를 추천하는 서비스입니다. {totalBooks}권 이상의 한국 베스트셀러와 세계 명작을
           데이터베이스에 보유하고 있으며, 각 도서의 특성을 정밀하게 매칭하여 최적의 읽을거리를 찾아드립니다.
         </p>

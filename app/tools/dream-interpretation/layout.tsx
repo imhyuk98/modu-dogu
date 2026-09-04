@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/tools/dream-interpretation" },
-  title: "AI 꿈 해몽 - 꿈풀이 꿈해석 무료",
+  title: "꿈 키워드 풀이 - 꿈풀이 꿈해석 무료",
   description:
-    "AI가 꿈을 해석해드립니다. 꿈 키워드를 입력하면 해몽 결과, 행운 점수, 행운의 숫자, 재물운/연애운/건강운을 알려드립니다. 80가지 이상의 꿈 키워드 데이터베이스로 정확한 꿈풀이를 제공합니다.",
+    "꿈 키워드를 입력하면 고정된 풀이 데이터와 오락용 점수·숫자를 보여주는 꿈 키워드 찾기입니다. 미래 예측이나 전문 해석이 아닙니다.",
   keywords: [
-    "AI 꿈 해몽",
+    "꿈 키워드 풀이",
     "꿈 풀이",
     "꿈 해석",
     "꿈 의미",
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     images: ["/og-image.png"],
-    title: "AI 꿈 해몽 - 꿈풀이 꿈해석 무료",
+    title: "꿈 키워드 풀이 - 꿈풀이 꿈해석 무료",
     description:
-      "AI가 꿈을 해석해드립니다. 80가지 이상의 꿈 키워드 데이터베이스로 정확한 꿈풀이를 제공합니다.",
+      "80가지 이상의 고정된 꿈 키워드 풀이를 찾습니다. 오락용이며 미래를 예측하지 않습니다.",
     url: "https://modu-dogu.pages.dev/tools/dream-interpretation",
   },
 };
@@ -39,9 +39,9 @@ export default function DreamInterpretationLayout({
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            name: "AI 꿈 해몽",
+            name: "꿈 키워드 풀이",
             description:
-              "AI가 꿈을 해석해드립니다. 80가지 이상의 꿈 키워드 데이터베이스로 정확한 꿈풀이를 제공합니다.",
+              "80가지 이상의 고정된 꿈 키워드 풀이를 찾습니다. 오락용이며 미래를 예측하지 않습니다.",
             url: "https://modu-dogu.pages.dev/tools/dream-interpretation",
             applicationCategory: "EntertainmentApplication",
             operatingSystem: "All",

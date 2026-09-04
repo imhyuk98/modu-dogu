@@ -577,10 +577,10 @@ export default function NameGenerator() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-        AI 작명기
+        이름 후보 추천
       </h1>
       <p className="text-gray-500 mb-8">
-        아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 AI가 추천해 드립니다.
+        아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 도구가 추천해 드립니다.
       </p>
 
       {/* Tab Navigation */}
@@ -938,9 +938,9 @@ export default function NameGenerator() {
       {/* SEO Content */}
       <section className="mt-12 space-y-6">
         <div className="calc-seo-card">
-          <h2 className="calc-seo-title">AI 작명기란?</h2>
+          <h2 className="calc-seo-title">이름 후보 추천란?</h2>
           <p className="text-gray-600 text-sm leading-relaxed">
-            AI 작명기는 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 자동으로 추천해주는 무료 온라인 도구입니다.
+            이름 후보 추천는 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 자동으로 추천해주는 무료 온라인 도구입니다.
             한자 뜻풀이가 포함된 아기 이름 데이터베이스를 기반으로 성별, 원하는 의미, 글자수에 맞는 최적의 이름을 제안합니다.
             반려동물 이름은 귀여운, 멋진, 웃긴 스타일별로 분류되어 있어 반려동물의 성격에 맞는 이름을 쉽게 찾을 수 있습니다.
           </p>

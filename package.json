@@ -11,6 +11,11 @@
     "qa:calculations": "node --no-warnings scripts/calculation-regression.mjs",
     "qa:static": "node --no-warnings scripts/static-export-audit.mjs",
     "qa:browser": "node scripts/browser-route-audit.mjs",
+    "qa:mobile": "node scripts/mobile-qa.mjs",
+    "qa:storefront": "node scripts/storefront-smoke.mjs",
+    "qa:social": "node scripts/social-loop-smoke.mjs",
+    "qa:flows": "node scripts/browser-smoke.mjs",
+    "sitemap": "node --no-warnings scripts/generate-sitemap.mjs",
     "qa:english": "node scripts/english-interaction-smoke.mjs",
     "qa:critical": "node scripts/critical-calculator-smoke.mjs",
     "qa:performance": "node scripts/performance-smoke.mjs"

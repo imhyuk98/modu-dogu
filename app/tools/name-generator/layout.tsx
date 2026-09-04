@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI 작명기 - 아기 이름 짓기, 반려동물 이름 추천",
+  title: "이름 후보 추천 - 아기 이름 짓기, 반려동물 이름 추천",
   description:
-    "AI 작명기로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요. 한자 뜻풀이와 의미 설명이 포함된 이름 추천 서비스입니다.",
+    "이름 후보 추천로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요. 한자 뜻풀이와 의미 설명이 포함된 이름 추천 서비스입니다.",
   keywords: [
-    "AI 작명",
+    "이름 추천",
     "이름 짓기",
     "아기 이름",
     "작명기",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     images: ["/og-image.png"],
-    title: "AI 작명기 - 아기 이름 짓기, 반려동물 이름 추천",
+    title: "이름 후보 추천 - 아기 이름 짓기, 반려동물 이름 추천",
     description:
-      "AI 작명기로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요.",
+      "이름 후보 추천로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요.",
     url: "https://modu-dogu.pages.dev/tools/name-generator",
   },
 };
@@ -46,9 +46,9 @@ export default function NameGeneratorLayout({
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            name: "AI 작명기",
+            name: "이름 후보 추천",
             description:
-              "AI 작명기로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요. 한자 뜻풀이와 의미 설명이 포함된 이름 추천 서비스입니다.",
+              "이름 후보 추천로 아기 이름, 반려동물 이름, 사업체 이름, 게임 캐릭터 이름을 무료로 지어보세요. 한자 뜻풀이와 의미 설명이 포함된 이름 추천 서비스입니다.",
             url: "https://modu-dogu.pages.dev/tools/name-generator",
             applicationCategory: "UtilityApplication",
             operatingSystem: "All",

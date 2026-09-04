@@ -138,7 +138,7 @@ export default function NicknameGenerator() {
   return (
     <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
-        AI 닉네임 생성기
+        닉네임 조합기
       </h1>
       <p className="text-gray-500 mb-8">
         스타일을 선택하면 랜덤 닉네임 10개를 생성합니다. 마음에 드는 닉네임을 복사해서 사용하세요!

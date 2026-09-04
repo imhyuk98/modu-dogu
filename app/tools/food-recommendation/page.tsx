@@ -505,7 +505,7 @@ export default function FoodRecommendationPage() {
       <div className="text-center mb-8">
         <div className="text-5xl mb-3">🍽️</div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          AI 오늘 뭐 먹지?
+          오늘 뭐 먹지?
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
           기분, 날씨, 상황을 알려주면 딱 맞는 메뉴를 추천해 드려요!

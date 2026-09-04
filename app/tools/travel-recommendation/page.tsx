@@ -228,10 +228,10 @@ export default function TravelRecommendationPage() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
           <span className="text-sm">✈️</span>
-          AI 맞춤 추천
+          조건별 맞춤 추천
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-          AI 여행지 추천
+          여행지 추천 도우미
         </h1>
         <p className="text-gray-500 text-sm sm:text-base">
           여행 스타일을 선택하면 100곳 이상의 여행지 중 나에게 딱 맞는 곳을 추천해 드려요
@@ -404,7 +404,7 @@ export default function TravelRecommendationPage() {
           className="calc-btn-primary w-full text-base py-3.5"
         >
           <span className="text-lg">✈️</span>
-          AI 여행지 추천받기
+          여행지 추천 도우미받기
         </button>
       </div>
 
@@ -413,7 +413,7 @@ export default function TravelRecommendationPage() {
         <div id="travel-results" className="mb-8 animate-fade-in">
           <div className="calc-card overflow-hidden">
             <div className="calc-result-header">
-              <p className="text-sm opacity-80 mb-1">AI 추천 결과</p>
+              <p className="text-sm opacity-80 mb-1">추천 결과</p>
               <h2 className="text-xl font-bold relative z-10">
                 맞춤 여행지 TOP {results.length}
               </h2>
@@ -485,10 +485,10 @@ export default function TravelRecommendationPage() {
                         ))}
                       </div>
 
-                      {/* AI Reason */}
+                      {/* Recommendation reason */}
                       <div className="bg-white rounded-xl p-3 border border-gray-100 mb-3">
                         <p className="text-xs font-semibold text-purple-600 mb-1">
-                          <span className="mr-1">🤖</span>AI 추천 이유
+                          <span className="mr-1">🤖</span>추천 이유
                         </p>
                         <p className="text-sm text-gray-700">{r.reason}</p>
                       </div>
@@ -581,10 +581,10 @@ export default function TravelRecommendationPage() {
 
       {/* SEO Content */}
       <div className="calc-seo-card mb-8">
-        <h2 className="calc-seo-title">AI 여행지 추천 사용 가이드</h2>
+        <h2 className="calc-seo-title">여행지 추천 도우미 사용 가이드</h2>
         <div className="text-sm text-gray-600 leading-relaxed space-y-3">
           <p>
-            AI 여행지 추천은 여행 스타일, 동행, 계절, 기간, 예산 등을 종합적으로
+            여행지 추천 도우미은 여행 스타일, 동행, 계절, 기간, 예산 등을 종합적으로
             분석하여 가장 적합한 국내외 여행지를 추천해 드리는 서비스입니다.
           </p>
           <p>
