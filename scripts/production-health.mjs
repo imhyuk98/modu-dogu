@@ -6,7 +6,7 @@ const checks = [
   ["/calculators/annual-leave", "연차 계산기"],
   ["/tools/telepathy-game", "텔레파시"],
   ["/en/calculators/loan", "Loan Payment Calculator"],
-  ["/privacy", "분석용 페이지 주소에서는 쿼리 문자열과 해시를 제거"],
+  ["/privacy", "쿼리 문자열과 해시는 분석 주소에서 제거"],
   ["/sitemap.xml", "<urlset"],
 ];
 
@@ -27,6 +27,12 @@ for (const [path, marker] of checks) {
         const actual = response.headers.get(name);
         if (actual !== expected) failures.push({ path, header: name, expected, actual });
       }
+      const csp = response.headers.get("content-security-policy") ?? "";
+      if (!csp.includes("script-src-attr 'none'")) {
+        failures.push({ path, header: "content-security-policy", expected: "enforced CSP with script-src-attr 'none'", actual: csp || null });
+      }
+      const reportOnlyCsp = response.headers.get("content-security-policy-report-only");
+      if (reportOnlyCsp) failures.push({ path, header: "content-security-policy-report-only", expected: null, actual: reportOnlyCsp });
     }
   } catch (error) {
     failures.push({ path, error: error instanceof Error ? error.message : String(error) });
