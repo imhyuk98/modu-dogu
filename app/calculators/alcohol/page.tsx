@@ -57,6 +57,10 @@ export default function AlcoholCalculator() {
     }
   };
 
+  const resultText = result
+    ? `예상 혈중알코올농도: ${result.bac.toFixed(3)}% (${result.status}). 이 추정치로 운전 가능 여부를 판단할 수 없습니다. 음주했다면 운전하지 마세요.`
+    : "";
+
   const updateDrink = (type: string, delta: number) => {
     setDrinks((prev) => ({ ...prev, [type]: Math.max(0, (prev[type] || 0) + delta) }));
   };
@@ -126,12 +130,12 @@ export default function AlcoholCalculator() {
 
       {result && (
         <div className="calc-card overflow-hidden">
-          <div className={`p-6 text-center ${result.canDrive ? "bg-green-600" : "bg-red-600"} text-white`}>
+          <div className="bg-red-700 p-6 text-center text-white">
             <p className="text-sm opacity-80 mb-1">예상 혈중알코올농도</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-4xl font-bold">{result.bac.toFixed(3)}%</p>
               <button
-                onClick={() => handleCopy(`혈중알코올농도: ${result.bac.toFixed(3)}% (${result.status})`)}
+                onClick={() => handleCopy(resultText)}
                 className="text-sm opacity-80 hover:opacity-100 transition-opacity"
                 title="복사"
               >
@@ -140,17 +144,10 @@ export default function AlcoholCalculator() {
             </div>
             <p className="text-lg font-semibold mt-2">{result.status}</p>
           </div>
-          <div className="p-6 space-y-3">
-            <div className="flex justify-between py-1">
-              <span className="text-sm text-gray-600">운전 가능 여부</span>
-              <span className={`text-sm font-semibold ${result.canDrive ? "text-green-600" : "text-red-600"}`}>
-                {result.canDrive ? "가능" : "불가"}
-              </span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-sm text-gray-600">완전 분해 예상 시간</span>
-              <span className="text-sm font-medium text-gray-900">약 {result.soberHours}시간 후</span>
-            </div>
+          <div className="p-6">
+            <p className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-bold leading-6 text-red-950" role="alert">
+              이 계산 결과로 운전 가능 여부나 안전한 운전 시간을 판단할 수 없습니다. 술을 마셨다면 운전하지 말고 대리운전·택시·대중교통을 이용하세요.
+            </p>
           </div>
         </div>
       )}
@@ -160,9 +157,9 @@ export default function AlcoholCalculator() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-[var(--muted)]">예상 혈중알코올농도</p>
-              <p className={`text-lg font-extrabold ${result.canDrive ? "text-green-600" : "text-red-600"}`}>{result.bac.toFixed(3)}%</p>
+              <p className="text-lg font-extrabold text-red-700">{result.bac.toFixed(3)}%</p>
             </div>
-            <button onClick={() => handleCopy(`혈중알코올농도: ${result.bac.toFixed(3)}% (${result.status})`)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
+            <button onClick={() => handleCopy(resultText)} className="calc-btn-primary text-xs px-3 py-2">{copied ? "복사됨!" : "복사"}</button>
           </div>
         </div>
       )}
@@ -238,9 +235,9 @@ export default function AlcoholCalculator() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">자주 묻는 질문 (FAQ)</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="text-base font-medium text-gray-800">소주 1병을 마시면 몇 시간 후에 운전할 수 있나요?</h3>
+                <h3 className="text-base font-medium text-gray-800">술을 마신 뒤 언제 운전할 수 있나요?</h3>
                 <p className="text-gray-600 leading-relaxed mt-1">
-                  소주 1병(360ml, 약 7잔)을 마신 70kg 남성의 경우, 예상 BAC는 약 0.08~0.10%입니다. 시간당 약 0.015%씩 분해되므로 완전히 분해되기까지 약 6~7시간이 걸립니다. 다만 개인차가 크므로, 안전을 위해 최소 8시간 이상 기다리는 것을 권장합니다.
+                  체중, 성별, 식사, 약물, 간 기능과 실제 음주량에 따라 알코올 흡수·분해 속도가 크게 달라 특정 시간을 안전 기준으로 제시할 수 없습니다. 이 계산기나 몸 상태만 믿고 운전하지 말고 대리운전·택시·대중교통을 이용하세요.
                 </p>
               </div>
               <div>
@@ -258,7 +255,7 @@ export default function AlcoholCalculator() {
               <div>
                 <h3 className="text-base font-medium text-gray-800">다음 날 아침에도 음주 단속에 걸릴 수 있나요?</h3>
                 <p className="text-gray-600 leading-relaxed mt-1">
-                  네, 가능합니다. 이른바 &quot;숙취 운전&quot;으로, 전날 과음 후 다음 날 아침에도 혈중알코올농도가 0.03%를 넘을 수 있습니다. 소주 2병 이상 마셨다면 다음 날 오전까지도 기준치를 초과할 수 있으므로, 충분한 시간이 지난 후 운전하세요.
+                  네, 가능합니다. 전날 음주 후 다음 날 아침에도 알코올이 남을 수 있습니다. 계산값이나 주관적인 몸 상태로 운전 가능 여부를 판단하지 말고, 의심될 때는 운전하지 마세요.
                 </p>
               </div>
             </div>

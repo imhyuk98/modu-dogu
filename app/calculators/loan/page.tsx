@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { calculateLoan, type RepaymentType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
-import { isDataStale } from "@/lib/data-freshness";
+import { isReferenceDataStale } from "@/lib/data-freshness";
 
 interface LoanRateEntry {
   rate: number;
@@ -33,7 +33,7 @@ export default function LoanCalculator() {
       .then((data: InterestRateData) => {
         setRateData(data);
         // 주택담보대출 금리를 기본값으로 설정
-        if (data.loan?.mortgage?.rate && !isDataStale(data.updatedAt, 7)) {
+        if (data.loan?.mortgage?.rate && !isReferenceDataStale(data.updatedAt, data.dataMonth)) {
           setRate(String(data.loan.mortgage.rate));
         }
       })
@@ -56,7 +56,7 @@ export default function LoanCalculator() {
 
   const handleReset = () => {
     setAmount("100,000,000");
-    setRate(rateData?.loan?.mortgage?.rate && !isDataStale(rateData.updatedAt, 7) ? String(rateData.loan.mortgage.rate) : "3.5");
+    setRate(rateData?.loan?.mortgage?.rate && !isReferenceDataStale(rateData.updatedAt, rateData.dataMonth) ? String(rateData.loan.mortgage.rate) : "3.5");
     setYears("30");
     setType("equalPrincipalInterest");
     setShowAll(false);
@@ -76,7 +76,7 @@ export default function LoanCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setAmount(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
   };
-  const ratesStale = rateData ? isDataStale(rateData.updatedAt, 7) : false;
+  const ratesStale = rateData ? isReferenceDataStale(rateData.updatedAt, rateData.dataMonth) : false;
 
   return (
     <div className="py-6">
@@ -94,7 +94,7 @@ export default function LoanCalculator() {
           </div>
           {ratesStale && (
             <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
-              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시나 계약서의 금리를 직접 입력하세요.
+              수집일 또는 통계 기준월이 오래되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시나 계약서의 금리를 직접 입력하세요.
             </p>
           )}
           <p className="mt-3 text-xs leading-5 text-gray-500">현재 금융회사 제안 금리가 아닙니다. 계약서나 금융회사 공시에서 확인한 연이율을 아래 입력란에 직접 넣으세요.</p>

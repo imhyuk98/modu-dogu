@@ -3,6 +3,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageBatchError, imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface UploadedFile {
   id: string;
@@ -32,6 +33,7 @@ export default function ImageConverter() {
   const [webpQuality, setWebpQuality] = useState(0.8);
   const [isConverting, setIsConverting] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileError, setFileError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatSize = (bytes: number) => {
@@ -40,20 +42,30 @@ export default function ImageConverter() {
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
-  const addFiles = useCallback((files: FileList | File[]) => {
-    const imageFiles = Array.from(files).filter((f) =>
-      f.type.startsWith("image/")
-    );
-    const newUploaded: UploadedFile[] = imageFiles.map((file) => ({
-      id: crypto.randomUUID(),
-      file,
-      name: file.name,
-      size: file.size,
-      previewUrl: URL.createObjectURL(file),
-    }));
-    setUploadedFiles((prev) => [...prev, ...newUploaded]);
-    setConvertedFiles([]);
-  }, []);
+  const addFiles = useCallback(async (files: FileList | File[]) => {
+    const imageFiles = Array.from(files);
+    const selectionError = imageBatchError(imageFiles, uploadedFiles.map((item) => item.file));
+    if (selectionError) {
+      setFileError(selectionError);
+      return;
+    }
+
+    const newUploaded: UploadedFile[] = [];
+    try {
+      for (const file of imageFiles) {
+        const probe = await probeSafeImage(file);
+        newUploaded.push({
+          id: crypto.randomUUID(), file, name: file.name, size: file.size, previewUrl: probe.url,
+        });
+      }
+      setUploadedFiles((prev) => [...prev, ...newUploaded]);
+      setConvertedFiles([]);
+      setFileError("");
+    } catch (error) {
+      newUploaded.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
+  }, [uploadedFiles]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -181,12 +193,14 @@ export default function ImageConverter() {
     const quality = outputFormat === "jpg" ? jpgQuality : webpQuality;
 
     try {
-      const results = await Promise.all(
-        uploadedFiles.map((f) => convertFile(f, outputFormat, quality))
-      );
+      const results: ConvertedFile[] = [];
+      for (const file of uploadedFiles) {
+        results.push(await convertFile(file, outputFormat, quality));
+      }
       setConvertedFiles(results);
-    } catch {
-      alert("이미지 변환 중 오류가 발생했습니다.");
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지 변환 중 오류가 발생했습니다.");
     } finally {
       setIsConverting(false);
     }
@@ -208,6 +222,7 @@ export default function ImageConverter() {
     convertedFiles.forEach((f) => URL.revokeObjectURL(f.blobUrl));
     setUploadedFiles([]);
     setConvertedFiles([]);
+    setFileError("");
   };
 
   return (
@@ -248,7 +263,7 @@ export default function ImageConverter() {
           이미지를 여기에 드래그하거나 클릭하여 선택하세요
         </p>
         <p className="text-gray-400 text-sm mt-1">
-          PNG, JPG, WebP, GIF 등 지원 (여러 파일 선택 가능)
+          {imageSafetySummary()} · 최대 12장/전체 60MB
         </p>
         <input
           ref={fileInputRef}
@@ -259,6 +274,7 @@ export default function ImageConverter() {
           className="hidden"
         />
       </div>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Uploaded Files Preview */}
       {uploadedFiles.length > 0 && (

@@ -35,6 +35,14 @@ function katecToWgs84(x, y) {
   return { lat: Number((latitudeRadians * 180 / Math.PI).toFixed(4)), lng: Number((longitudeRadians * 180 / Math.PI).toFixed(4)) };
 }
 
+function validatedText(value, field, maxLength, { allowEmpty = false } = {}) {
+  const text = String(value ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
+  if ((!allowEmpty && !text) || text.length > maxLength || /[\u0000-\u001f\u007f]/.test(text)) {
+    throw new Error(`Opinet returned an invalid ${field}; stale data was left unchanged.`);
+  }
+  return text;
+}
+
 const dateParts = Object.fromEntries(new Intl.DateTimeFormat("en", {
   timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
 }).formatToParts(new Date()).map(({ type, value }) => [type, value]));
@@ -77,12 +85,15 @@ for (const [code, area] of Object.entries(areas)) {
       throw new Error(`Opinet returned an invalid station row for area ${code}; stale data was left unchanged.`);
     }
     const coordinates = katecToWgs84(x, y);
+    if (coordinates.lat < 30 || coordinates.lat > 40 || coordinates.lng < 120 || coordinates.lng > 135) {
+      throw new Error(`Opinet returned invalid station coordinates for area ${code}; stale data was left unchanged.`);
+    }
     return {
-      id: String(row.UNI_ID),
-      name: String(row.OS_NM),
-      brand: String(row.POLL_DIV_CD ?? "ETC"),
+      id: validatedText(row.UNI_ID, "station id", 40),
+      name: validatedText(row.OS_NM, "station name", 100),
+      brand: validatedText(row.POLL_DIV_CD ?? "ETC", "station brand", 12),
       price: Math.round(price),
-      addr: String(row.NEW_ADR || row.VAN_ADR || ""),
+      addr: validatedText(row.NEW_ADR || row.VAN_ADR || "", "station address", 200, { allowEmpty: true }),
       ...coordinates,
     };
   });

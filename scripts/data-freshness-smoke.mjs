@@ -3,7 +3,11 @@ import { readFile } from "node:fs/promises";
 const baseUrl = process.env.DATA_QA_BASE_URL ?? "http://127.0.0.1:3000";
 const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9224";
 const staleInterestRates = JSON.parse(await readFile("public/interest-rates.json", "utf8"));
-staleInterestRates.updatedAt = "2000-01-01";
+const dateParts = Object.fromEntries(new Intl.DateTimeFormat("en", {
+  timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
+}).formatToParts(new Date()).map(({ type, value }) => [type, value]));
+staleInterestRates.updatedAt = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+staleInterestRates.dataMonth = "200001";
 const staleInterestRatesBody = Buffer.from(JSON.stringify(staleInterestRates)).toString("base64");
 const targets = await fetch(`${debuggerUrl}/json`).then((response) => response.json());
 const target = targets.find((candidate) => candidate.type === "page");
@@ -64,7 +68,7 @@ async function inspect(route) {
       rate: document.querySelector('[data-testid="interest-rate-input"]')?.value || '',
       warning: document.querySelector('[role="alert"]')?.textContent?.trim() || '',
     }))()`);
-    if (result.warning.includes("자동 갱신이 7일 넘게 지연")) return result;
+    if (result.warning.includes("수집일 또는 통계 기준월이 오래되어")) return result;
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
   return evaluate(`(() => ({ rate: document.querySelector('[data-testid="interest-rate-input"]')?.value || '', warning: document.querySelector('[role="alert"]')?.textContent?.trim() || '' }))()`);
@@ -79,7 +83,7 @@ const results = {};
 for (const [route, expectedRate] of checks) {
   const result = await inspect(route);
   results[route] = result;
-  if (result.rate !== expectedRate || !result.warning.includes("자동 갱신이 7일 넘게 지연")) {
+  if (result.rate !== expectedRate || !result.warning.includes("수집일 또는 통계 기준월이 오래되어")) {
     throw new Error(`Stale reference protection failed for ${route}: ${JSON.stringify(result)}`);
   }
 }

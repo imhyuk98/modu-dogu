@@ -673,8 +673,6 @@ export interface AlcoholResult {
   bac: number;           // 혈중알코올농도 (%)
   status: string;
   color: string;
-  soberHours: number;    // 분해 예상 시간
-  canDrive: boolean;
 }
 
 export function calculateBAC(
@@ -696,24 +694,21 @@ export function calculateBAC(
   let bac = (totalAlcohol / (weightKg * genderConstant * 10)) - (hoursSinceDrinking * 0.015);
   bac = Math.max(0, Math.round(bac * 1000) / 1000);
 
-  const soberHours = bac > 0 ? Math.ceil(bac / 0.015) : 0;
-  const canDrive = bac < 0.03;
-
   let status: string;
   let color: string;
   if (bac === 0) {
-    status = "정상"; color = "text-green-500";
+    status = "계산상 0.000%"; color = "text-amber-100";
   } else if (bac < 0.03) {
-    status = "정상 (운전 가능)"; color = "text-green-500";
+    status = "낮은 수치로 추정됨"; color = "text-amber-100";
   } else if (bac < 0.08) {
-    status = "면허정지 수준"; color = "text-yellow-500";
+    status = "법정 기준 이상 추정"; color = "text-white";
   } else if (bac < 0.2) {
-    status = "면허취소 수준"; color = "text-orange-500";
+    status = "높은 위험 수치 추정"; color = "text-white";
   } else {
-    status = "위험 수준"; color = "text-red-500";
+    status = "매우 높은 위험 수치 추정"; color = "text-white";
   }
 
-  return { bac, status, color, soberHours, canDrive };
+  return { bac, status, color };
 }
 
 // ==================== 나이 계산기 ====================

@@ -16,6 +16,7 @@ interface AdBannerProps {
 }
 
 const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_ID;
+const certifiedConsentEnabled = process.env.NEXT_PUBLIC_ADSENSE_CERTIFIED_CONSENT === "true";
 
 export default function AdBanner({
   slot,
@@ -27,7 +28,7 @@ export default function AdBanner({
   const consent = useOptionalConsent();
 
   useEffect(() => {
-    if (!AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot) || pushed.current) return;
+    if (!certifiedConsentEnabled || !AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot) || pushed.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
       pushed.current = true;
@@ -36,7 +37,7 @@ export default function AdBanner({
     }
   }, [consent, slot]);
 
-  if (!AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot)) return null;
+  if (!certifiedConsentEnabled || !AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot)) return null;
 
   return (
     <ins

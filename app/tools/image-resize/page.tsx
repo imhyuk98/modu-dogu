@@ -3,6 +3,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageDimensionError, imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface ImageFile {
   file: File;
@@ -40,6 +41,7 @@ export default function ImageResize() {
   const [isResizing, setIsResizing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [activePreset, setActivePreset] = useState<number | null>(null);
+  const [fileError, setFileError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   // Track which dimension the user edited last
   const lastEdited = useRef<"width" | "height" | null>(null);
@@ -50,9 +52,7 @@ export default function ImageResize() {
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
-
+  const loadImage = useCallback(async (file: File) => {
     setImageFile((prev) => {
       if (prev) URL.revokeObjectURL(prev.previewUrl);
       return null;
@@ -63,21 +63,22 @@ export default function ImageResize() {
     });
     setActivePreset(null);
 
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
+    try {
+      const probe = await probeSafeImage(file);
       setImageFile({
         file,
         name: file.name,
         size: file.size,
-        previewUrl: url,
-        width: img.naturalWidth,
-        height: img.naturalHeight,
+        previewUrl: probe.url,
+        width: probe.width,
+        height: probe.height,
       });
-      setTargetWidth(String(img.naturalWidth));
-      setTargetHeight(String(img.naturalHeight));
-    };
-    img.src = url;
+      setTargetWidth(String(probe.width));
+      setTargetHeight(String(probe.height));
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   const handleDrop = useCallback(
@@ -168,6 +169,11 @@ export default function ImageResize() {
     const w = parseInt(targetWidth, 10);
     const h = parseInt(targetHeight, 10);
     if (w <= 0 || h <= 0) return;
+    const dimensionError = imageDimensionError(w, h);
+    if (dimensionError) {
+      setFileError(dimensionError);
+      return;
+    }
 
     setIsResizing(true);
     setResized((prev) => {
@@ -250,6 +256,8 @@ export default function ImageResize() {
       <p className="text-gray-500 mb-8">
         이미지의 가로/세로 크기를 원하는 사이즈로 조절하세요.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Drop Zone */}
       <div

@@ -73,6 +73,69 @@ function replaceFunc(
   return result;
 }
 
+function evaluateArithmetic(expression: string): number {
+  if (expression.length > 512) throw new Error("Expression is too long");
+  let index = 0;
+
+  const skipSpaces = () => {
+    while (/\s/.test(expression[index] ?? "")) index++;
+  };
+  const consume = (token: string) => {
+    skipSpaces();
+    if (!expression.startsWith(token, index)) return false;
+    index += token.length;
+    return true;
+  };
+  const parsePrimary = (): number => {
+    skipSpaces();
+    if (consume("(")) {
+      const value = parseExpression();
+      if (!consume(")")) throw new Error("Missing closing parenthesis");
+      return value;
+    }
+    const match = expression.slice(index).match(/^(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?/);
+    if (!match) throw new Error("Invalid number");
+    index += match[0].length;
+    return Number(match[0]);
+  };
+  const parsePower = (): number => {
+    const base = parsePrimary();
+    return consume("**") ? base ** parseUnary() : base;
+  };
+  const parseUnary = (): number => {
+    if (consume("+")) return parseUnary();
+    if (consume("-")) return -parseUnary();
+    return parsePower();
+  };
+  const parseTerm = (): number => {
+    let value = parseUnary();
+    while (true) {
+      skipSpaces();
+      if (expression.startsWith("**", index)) break;
+      if (consume("*")) value *= parseUnary();
+      else if (consume("/")) value /= parseUnary();
+      else break;
+    }
+    return value;
+  };
+  const parseExpression = (): number => {
+    let value = parseTerm();
+    while (true) {
+      if (consume("+")) value += parseTerm();
+      else if (consume("-")) value -= parseTerm();
+      else break;
+    }
+    return value;
+  };
+
+  const result = parseExpression();
+  skipSpaces();
+  if (index !== expression.length || !Number.isFinite(result)) {
+    throw new Error("Invalid expression");
+  }
+  return result;
+}
+
 // 안전한 수식 평가 함수
 function safeEval(expr: string, angleMode: AngleMode): number {
   // 수식 전처리
@@ -84,6 +147,7 @@ function safeEval(expr: string, angleMode: AngleMode): number {
 
   // 팩토리얼 처리
   processed = processed.replace(/(\d+)!/g, (_, n) => {
+    if (Number(n) > 170) throw new Error("Factorial is too large");
     let result = 1;
     for (let i = 2; i <= parseInt(n); i++) result *= i;
     return String(result);
@@ -120,16 +184,7 @@ function safeEval(expr: string, angleMode: AngleMode): number {
   // 거듭제곱 처리
   processed = processed.replace(/\^/g, "**");
 
-  // 안전성 검사 — 허용된 문자만
-  if (!/^[\d+\-*/().eE **]+$/.test(processed)) {
-    throw new Error("Invalid expression");
-  }
-
-  const result = new Function(`"use strict"; return (${processed})`)();
-  if (typeof result !== "number" || !isFinite(result)) {
-    throw new Error("Invalid result");
-  }
-  return result;
+  return evaluateArithmetic(processed);
 }
 
 function formatResult(num: number): string {

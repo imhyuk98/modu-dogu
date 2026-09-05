@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 type Position =
   | "top-left" | "top-center" | "top-right"
@@ -39,19 +40,31 @@ export default function ImageWatermark() {
   const [mode, setMode] = useState<WatermarkMode>("single");
   const [diagonal, setDiagonal] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileError, setFileError] = useState("");
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setOriginalImage(img);
-      setImageSrc(url);
-    };
-    img.src = url;
+  const loadImage = useCallback(async (file: File) => {
+    try {
+      const probe = await probeSafeImage(file);
+      const img = new Image();
+      img.onload = () => {
+        setOriginalImage(img);
+        setImageSrc((previous) => {
+          if (previous) URL.revokeObjectURL(previous);
+          return probe.url;
+        });
+        setFileError("");
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(probe.url);
+        setFileError("이미지를 열 수 없습니다.");
+      };
+      img.src = probe.url;
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   // Render canvas with watermark
@@ -196,6 +209,8 @@ export default function ImageWatermark() {
       <p className="text-gray-500 mb-8">
         사진에 텍스트 워터마크를 추가하여 저작권을 보호하세요.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Upload Area */}
       {!imageSrc && (

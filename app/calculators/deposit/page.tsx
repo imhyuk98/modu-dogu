@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
-import { isDataStale } from "@/lib/data-freshness";
+import { isReferenceDataStale } from "@/lib/data-freshness";
 
 type TaxType = "normal" | "taxFree" | "taxFavored";
 
@@ -92,7 +92,7 @@ export default function DepositCalculator() {
       .then((res) => res.json())
       .then((data: InterestRatesData) => {
         setRatesData(data);
-        if (!isDataStale(data.updatedAt, 7)) setRate(data.deposit.avg.rate.toString());
+        if (!isReferenceDataStale(data.updatedAt, data.dataMonth)) setRate(data.deposit.avg.rate.toString());
       })
       .catch(() => {
         // 실패 시 기본값 유지
@@ -101,7 +101,7 @@ export default function DepositCalculator() {
 
   const suggestRateForMonths = useCallback(
     (m: number) => {
-      if (!ratesData || rateManuallySet) return;
+      if (!ratesData || rateManuallySet || isReferenceDataStale(ratesData.updatedAt, ratesData.dataMonth)) return;
       const suggested = getSuggestedRateForMonths(m, ratesData.deposit);
       if (suggested !== null) {
         setRate(suggested.toString());
@@ -137,7 +137,7 @@ export default function DepositCalculator() {
 
   const handleReset = () => {
     setPrincipal("10,000,000");
-    setRate(ratesData && !isDataStale(ratesData.updatedAt, 7) ? ratesData.deposit.avg.rate.toString() : "3.5");
+    setRate(ratesData && !isReferenceDataStale(ratesData.updatedAt, ratesData.dataMonth) ? ratesData.deposit.avg.rate.toString() : "3.5");
     setMonths("12");
     setTaxType("normal");
     setCopied(false);
@@ -161,7 +161,7 @@ export default function DepositCalculator() {
         { label: "2년", rate: ratesData.deposit["1y_2y"].rate },
       ]
     : null;
-  const ratesStale = ratesData ? isDataStale(ratesData.updatedAt, 7) : false;
+  const ratesStale = ratesData ? isReferenceDataStale(ratesData.updatedAt, ratesData.dataMonth) : false;
 
   return (
     <div className="py-6">
@@ -185,7 +185,7 @@ export default function DepositCalculator() {
           </div>
           {ratesStale && (
             <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
-              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
+              수집일 또는 통계 기준월이 오래되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
             </p>
           )}
           <div className="flex flex-wrap gap-2">
