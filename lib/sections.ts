@@ -80,7 +80,7 @@ const funCalcs: Item[] = [
   { title: "별자리 계산기", href: "/calculators/constellation", emoji: "⭐", desc: "내 별자리 바로 찾기" },
   { title: "띠 계산기", href: "/calculators/zodiac", emoji: "🐉", desc: "나 무슨 띠였더라?" },
   { title: "혈액형 계산기", href: "/calculators/blood-type", emoji: "🩸", desc: "우리 애 혈액형 뭐 나옴?" },
-  { title: "간단 오행 성향 테스트", href: "/calculators/saju", emoji: "☯️", desc: "내 사주, 한 번 까보자" },
+  { title: "간단 오행 성향 테스트", href: "/calculators/saju", emoji: "☯️", desc: "생년월일을 오락용 규칙으로 풀어봐요" },
   { title: "전생 콘셉트 테스트", href: "/calculators/past-life", emoji: "🔮", desc: "전생의 나 뭐였을까?" },
   { title: "오늘의 띠 운세", href: "/calculators/daily-fortune", emoji: "🌟", desc: "오늘 운빨 몇 점?" },
   { title: "커플 D-day", href: "/calculators/couple-dday", emoji: "💑", desc: "다음 기념일 놓치지 않기" },

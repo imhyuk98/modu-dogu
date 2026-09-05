@@ -23,6 +23,7 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "hourly-wage": { title: "시급 월급 변환기", href: "/calculators/hourly-wage", category: "금융" },
   "car-tax": { title: "자동차세 계산기", href: "/calculators/car-tax", category: "금융" },
   electricity: { title: "전기요금 계산기", href: "/calculators/electricity", category: "금융" },
+  "gas-bill": { title: "도시가스 요금 계산기", href: "/calculators/gas-bill", category: "금융" },
   percent: { title: "퍼센트 계산기", href: "/calculators/percent", category: "생활" },
   "character-count": { title: "글자수 세기", href: "/calculators/character-count", category: "생활" },
   age: { title: "나이 계산기", href: "/calculators/age", category: "생활" },
@@ -62,7 +63,8 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "memory-game": { title: "기억력 테스트", href: "/tools/memory-game", category: "게임" },
   "couple-dday": { title: "커플 D-day 계산기", href: "/calculators/couple-dday", category: "재미" },
   "psychology-test": { title: "심리테스트", href: "/tools/psychology-test", category: "재미" },
-  saju: { title: "사주팔자 계산기", href: "/calculators/saju", category: "재미" },
+  "balance-game": { title: "밸런스 게임", href: "/tools/balance-game", category: "재미" },
+  saju: { title: "간단 오행 성향 테스트", href: "/calculators/saju", category: "재미" },
   "past-life": { title: "전생 테스트", href: "/calculators/past-life", category: "재미" },
   "daily-fortune": { title: "오늘의 운세", href: "/calculators/daily-fortune", category: "재미" },
   "mbti-test": { title: "MBTI 성격유형 검사", href: "/tools/mbti-test", category: "재미" },
@@ -118,6 +120,11 @@ const allItems: Record<string, { title: string; href: string; category: string }
   "ideal-type-worldcup": { title: "취향 월드컵", href: "/tools/ideal-type-worldcup", category: "게임" },
   "digital-fidget": { title: "디지털 키캡 피젯", href: "/tools/digital-fidget", category: "게임" },
   "meme-card": { title: "밈 카드 만들기", href: "/tools/meme-card", category: "도구" },
+  "dad-joke": { title: "아재개그 생성기", href: "/tools/dad-joke", category: "재미" },
+  "fuel-map": { title: "주유소 가격 지도", href: "/tools/fuel-map", category: "도구" },
+  "fuel-cost": { title: "유류비 계산기", href: "/calculators/fuel-cost", category: "생활" },
+  "image-color-picker": { title: "이미지 색상 추출", href: "/tools/image-color-picker", category: "변환기" },
+  "image-to-pdf": { title: "이미지 PDF 변환", href: "/tools/image-to-pdf", category: "변환기" },
 };
 
 // Manual related mappings — shows same-category items + specific cross-links
@@ -144,6 +151,7 @@ const relatedMap: Record<string, string[]> = {
   "year-end-tax": ["salary", "retirement", "lotto-tax", "savings"],
   "car-tax": ["electricity", "loan", "salary", "percent"],
   electricity: ["car-tax", "rent-conversion", "pyeong", "percent"],
+  "gas-bill": ["electricity", "fuel-cost", "car-tax", "housing-subscription"],
   percent: ["ratio", "unit-converter", "gpa", "savings"],
   "character-count": ["percent", "unit-converter", "dday", "age"],
   age: ["dday", "bmi", "annual-leave", "retirement"],
@@ -185,6 +193,7 @@ const relatedMap: Record<string, string[]> = {
   "memory-game": ["reaction-test", "typing-test", "color-blind-test", "timer"],
   "couple-dday": ["dday", "name-compatibility", "mbti-compatibility", "constellation"],
   "psychology-test": ["mbti-compatibility", "name-compatibility", "couple-dday", "blood-type"],
+  "balance-game": ["telepathy-game", "never-have-i-ever", "random-roulette", "psychology-test"],
   saju: ["daily-fortune", "zodiac", "constellation", "past-life"],
   "past-life": ["saju", "daily-fortune", "constellation", "mbti-compatibility"],
   "daily-fortune": ["saju", "zodiac", "constellation", "past-life"],
@@ -239,6 +248,11 @@ const relatedMap: Record<string, string[]> = {
   "ideal-type-worldcup": ["balance-game", "random-roulette", "friend-chemistry", "meme-card"],
   "digital-fidget": ["reaction-test", "typing-test", "timer", "apple-game"],
   "meme-card": ["hashtag-generator", "personal-style-test", "image-resize", "qr-code"],
+  "dad-joke": ["chosung-quiz", "telepathy-game", "nickname-generator", "random-roulette"],
+  "fuel-map": ["fuel-cost", "car-tax", "travel-recommendation", "exchange-rate"],
+  "fuel-cost": ["fuel-map", "car-tax", "gas-bill", "travel-recommendation"],
+  "image-color-picker": ["color-converter", "image-converter", "image-mosaic", "image-watermark"],
+  "image-to-pdf": ["image-compress", "image-resize", "image-converter", "image-crop"],
 };
 
 export default function RelatedTools({ current }: { current: string }) {

@@ -236,10 +236,10 @@ export default function TelepathyGamePage() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
-          텔레파시 게임
+          텔레파시 게임 — 친구와 같은 답 맞히기
         </h1>
         <p className="text-gray-500 mt-2">
-          같은 주제, 같은 생각! 마음이 통하는지 확인하세요
+          한 기기에서 번갈아 답하거나 초대 링크를 보내 마음이 통하는지 확인하세요
         </p>
       </div>
 
@@ -555,10 +555,10 @@ export default function TelepathyGamePage() {
                   </div>
                   <div className="text-sm mt-1 opacity-90">
                     {matchResult === "exact"
-                      ? "마음이 통했어요! 건배~"
+                      ? "마음이 통했어요! 다음 주제에도 도전해보세요."
                       : matchResult === "partial"
-                      ? "비슷했는데... 한 잔씩?"
-                      : "둘 다 마셔! 🍻"}
+                      ? "거의 통했어요. 다음 주제에서는 성공할 수 있을 거예요."
+                      : "생각이 달랐네요. 다음 주제로 다시 맞혀보세요!"}
                   </div>
                 </div>
               )}
@@ -617,10 +617,8 @@ export default function TelepathyGamePage() {
           </li>
           <li>&quot;공개!&quot; 버튼을 누르면 두 답이 동시에 공개됩니다.</li>
           <li>
-            <span className="text-green-800 font-medium">정확히 일치</span> =
-            텔레파시 성공!{" "}
-            <span className="text-red-700 font-medium">불일치</span> = 둘 다
-            마셔!
+            <span className="text-green-800 font-medium">정확히 일치</span>하면
+            텔레파시 성공입니다. 불일치하면 다음 주제로 다시 도전합니다.
           </li>
         </ol>
         <div className="bg-purple-50 rounded-lg p-3 text-xs text-purple-700">
@@ -629,6 +627,22 @@ export default function TelepathyGamePage() {
         </div>
       </div>
 
+      <section className="mt-6 rounded-2xl border border-purple-100 bg-purple-50 p-6" aria-labelledby="telepathy-topics-title">
+        <h2 id="telepathy-topics-title" className="text-lg font-semibold text-gray-800">텔레파시 게임 제시어 62개 구성</h2>
+        <p className="mt-2 text-sm leading-6 text-gray-600">
+          음식 12개, 연예인·장소·브랜드·생활·추상 주제 각 10개를 제공합니다.
+          치킨 브랜드, 여행지, 색깔처럼 답하기 쉬운 주제부터 사랑·우정처럼 서로의 생각을 알아보는 주제까지 섞여 있습니다.
+        </p>
+        <ul className="mt-4 grid grid-cols-2 gap-2 text-sm text-purple-900 sm:grid-cols-3">
+          <li className="rounded-lg bg-white px-3 py-2">음식 12개</li>
+          <li className="rounded-lg bg-white px-3 py-2">연예인 10개</li>
+          <li className="rounded-lg bg-white px-3 py-2">장소 10개</li>
+          <li className="rounded-lg bg-white px-3 py-2">브랜드 10개</li>
+          <li className="rounded-lg bg-white px-3 py-2">생활 10개</li>
+          <li className="rounded-lg bg-white px-3 py-2">추상 10개</li>
+        </ul>
+      </section>
+
       {/* ───── SEO Section ───── */}
       <section className="mt-10 prose prose-sm max-w-none text-gray-500">
         <h2 className="text-lg font-semibold text-gray-700">
@@ -636,9 +650,9 @@ export default function TelepathyGamePage() {
         </h2>
         <p>
           텔레파시 게임은 두 사람이 같은 주제에 대해 각자 답을 적고, 답이
-          일치하는지 확인하는 술자리 및 파티 게임입니다. &quot;○○ 하면?&quot;이라는
+          일치하는지 확인하는 친구·커플·가족용 파티 게임입니다. &quot;○○ 하면?&quot;이라는
           주제가 주어지면 두 사람이 동시에 떠오르는 단어를 적습니다. 답이
-          같으면 텔레파시 성공! 다르면 벌칙(음주)을 수행합니다.
+          같으면 텔레파시 성공이며, 다르면 다음 주제로 다시 도전합니다.
         </p>
         <p>
           커플, 친구, 가족 모임에서 서로 얼마나 마음이 통하는지 재미있게
@@ -648,7 +662,7 @@ export default function TelepathyGamePage() {
         </p>
         <h3 className="text-base font-semibold text-gray-700">추천 상황</h3>
         <ul className="text-gray-500">
-          <li>술자리에서 분위기를 띄우고 싶을 때</li>
+          <li>모임에서 분위기를 띄우고 싶을 때</li>
           <li>커플끼리 서로 얼마나 잘 아는지 테스트할 때</li>
           <li>친구들과 파티에서 즐길 게임이 필요할 때</li>
           <li>MT나 워크샵에서 아이스브레이킹 용도로</li>

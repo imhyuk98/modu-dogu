@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { isDataStale } from "@/lib/data-freshness";
+import RelatedTools from "@/components/RelatedTools";
 
 /* ── Types ── */
 interface Station {
@@ -623,25 +624,25 @@ export default function FuelMapPage() {
           <h2 className="calc-seo-title">주유소 가격 절약 팁</h2>
           <ul className="text-sm text-gray-600 leading-relaxed space-y-2">
             <li>
-              <strong>알뜰 주유소 활용:</strong> 자영 알뜰 주유소(RTX)는
-              유통 마진이 낮아 대형 브랜드 대비 리터당 50~100원 저렴한 경우가
-              많습니다.
+              <strong>같은 기준일로 비교:</strong> 주유소마다 가격 반영 시점이 다를 수 있으므로
+              화면에 표시된 수집일과 유종을 먼저 맞춰 비교하세요.
             </li>
             <li>
-              <strong>셀프 주유:</strong> 셀프 주유소를 이용하면 리터당
-              30~80원을 절약할 수 있습니다.
+              <strong>이동 비용 포함:</strong> 먼 주유소까지 우회할 때 드는 연료와 시간을 함께 계산하면
+              표시 가격이 가장 낮은 곳이 실제로 가장 저렴하지 않을 수 있습니다.
             </li>
             <li>
-              <strong>주유 카드 혜택:</strong> 주유 전용 신용카드나 멤버십
-              할인을 활용하면 추가로 리터당 50~100원을 아낄 수 있습니다.
+              <strong>할인 조건 확인:</strong> 카드·멤버십 할인은 전월 실적, 월 한도와 대상 주유소가
+              다르므로 결제 전에 적용 조건을 확인하세요.
             </li>
             <li>
-              <strong>주간 가격 변동:</strong> 일반적으로 주 초(월~화)에
-              유가가 낮고, 주말에 높아지는 경향이 있습니다.
+              <strong>방문 전 재확인:</strong> 이 지도는 화면의 기준일에 수집한 비교 자료입니다.
+              재고와 판매가는 바뀔 수 있으므로 출발 전에 해당 주유소에서 확인하세요.
             </li>
           </ul>
         </div>
       </div>
+      <RelatedTools current="fuel-map" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import RelatedTools from "@/components/RelatedTools";
 
 /* ── Joke Data ── */
 interface Joke {
@@ -230,7 +231,7 @@ export default function DadJokePage() {
         {/* Title */}
         <div className="text-center mb-6">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
-            <span className="mr-2">\uD83E\uDD23</span>아재개그 생성기
+            <span className="mr-2">🤣</span>아재개그 생성기
           </h1>
           <p className="text-purple-200 text-sm sm:text-base">
             버튼을 눌러 정답을 확인하세요! 총 {ALL_JOKES.length}개의 아재개그
@@ -262,10 +263,10 @@ export default function DadJokePage() {
           </span>
           <div className="flex gap-3 text-sm">
             <span className="text-white/60">
-              \uD83D\uDE02 {funnyCount}
+              😂 {funnyCount}
             </span>
             <span className="text-white/60">
-              \uD83D\uDE11 {boringCount}
+              😑 {boringCount}
             </span>
           </div>
         </div>
@@ -294,7 +295,7 @@ export default function DadJokePage() {
 
           {/* Question */}
           <div className="text-center mb-8">
-            <div className="text-4xl mb-4">\u2753</div>
+            <div className="text-4xl mb-4">❓</div>
             <p className="text-xl sm:text-2xl font-bold text-white leading-relaxed">
               {currentJoke.q}
             </p>
@@ -307,7 +308,7 @@ export default function DadJokePage() {
                 onClick={handleReveal}
                 className="group relative px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900 font-bold text-lg rounded-2xl shadow-lg shadow-yellow-400/30 hover:shadow-xl hover:shadow-yellow-400/40 hover:scale-105 active:scale-95 transition-all duration-200"
               >
-                <span className="relative z-10">\uD83D\uDC47 정답 보기</span>
+                <span className="relative z-10">👇 정답 보기</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </button>
             </div>
@@ -319,7 +320,7 @@ export default function DadJokePage() {
                   bounceAnswer ? "animate-bounce" : ""
                 }`}
               >
-                <div className="text-3xl mb-3">\uD83D\uDCA1</div>
+                <div className="text-3xl mb-3">💡</div>
                 <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border border-yellow-400/30 rounded-2xl px-6 py-5">
                   <p className="text-2xl sm:text-3xl font-extrabold text-yellow-300">
                     {currentJoke.a}
@@ -338,7 +339,7 @@ export default function DadJokePage() {
                       : "bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30 hover:scale-105 active:scale-95"
                   }`}
                 >
-                  <span className="text-xl">\uD83D\uDE02</span>
+                  <span className="text-xl">😂</span>
                   <span>웃김</span>
                 </button>
                 <button
@@ -350,7 +351,7 @@ export default function DadJokePage() {
                       : "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 hover:scale-105 active:scale-95"
                   }`}
                 >
-                  <span className="text-xl">\uD83D\uDE11</span>
+                  <span className="text-xl">😑</span>
                   <span>노잼</span>
                 </button>
               </div>
@@ -361,7 +362,7 @@ export default function DadJokePage() {
                   onClick={handleNext}
                   className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-lg rounded-2xl border border-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-200"
                 >
-                  다음 개그 \u27A1\uFE0F
+                  다음 개그 ➡️
                 </button>
               </div>
             </div>
@@ -430,6 +431,7 @@ export default function DadJokePage() {
             <li>&quot;다음 개그&quot; 버튼으로 계속 즐기세요</li>
           </ol>
         </section>
+        <RelatedTools current="dad-joke" />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
+import RelatedTools from "@/components/RelatedTools";
 
 interface PickedColor {
   hex: string;
@@ -496,6 +497,7 @@ export default function ImageColorPicker() {
           </ul>
         </div>
       </section>
+      <RelatedTools current="image-color-picker" />
     </div>
   );
 }

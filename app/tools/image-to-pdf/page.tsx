@@ -3,6 +3,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { imageBatchError, imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
+import RelatedTools from "@/components/RelatedTools";
 
 interface ImageItem {
   id: string;
@@ -479,6 +480,7 @@ export default function ImageToPdf() {
           </ul>
         </div>
       </section>
+      <RelatedTools current="image-to-pdf" />
     </div>
   );
 }
