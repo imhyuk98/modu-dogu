@@ -5,8 +5,8 @@ if (!apiKey) throw new Error("OPINET_API_KEY is required; stale data was left un
 
 const areas = {
   "01": "서울", "02": "경기", "03": "강원", "04": "충북", "05": "충남", "06": "전북",
-  "07": "전남", "08": "경북", "09": "경남", "10": "부산", "11": "제주", "14": "대구",
-  "15": "인천", "16": "광주", "17": "대전", "18": "울산", "19": "세종",
+  "20": "전남·광주", "08": "경북", "09": "경남", "10": "부산", "11": "제주", "14": "대구",
+  "15": "인천", "17": "대전", "18": "울산", "19": "세종",
 };
 
 async function fetchOpinet(path, params = {}) {
@@ -39,6 +39,13 @@ const dateParts = Object.fromEntries(new Intl.DateTimeFormat("en", {
   timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
 }).formatToParts(new Date()).map(({ type, value }) => [type, value]));
 const updatedAt = `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+const areaCodeRows = await fetchOpinet("areaCode.do");
+const currentAreaCodes = new Set(areaCodeRows.map((row) => String(row.AREA_CD ?? "")));
+const missingAreaCodes = Object.keys(areas).filter((code) => !currentAreaCodes.has(code));
+if (missingAreaCodes.length > 0) {
+  throw new Error(`Opinet area codes changed (${missingAreaCodes.join(", ")} missing); stale data was left unchanged.`);
+}
+
 const averageRows = await fetchOpinet("avgAllPrice.do");
 const prices = { updatedAt, gasoline: null, diesel: null, lpg: null };
 
