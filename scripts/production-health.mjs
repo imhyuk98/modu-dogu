@@ -1,12 +1,12 @@
 const baseUrl = process.env.PRODUCTION_BASE_URL ?? "https://modu-dogu.pages.dev";
 const checks = [
   ["/", "무료 계산기·테스트·게임·온라인 도구 124개"],
-  ["/calculation-policy", "계산 원칙"],
+  ["/calculation-policy", "계산 기준"],
   ["/calculators/salary", "연봉 실수령액 계산기"],
   ["/calculators/annual-leave", "연차 계산기"],
   ["/tools/telepathy-game", "텔레파시"],
-  ["/en/calculators/loan", "Loan Calculator"],
-  ["/privacy", "선택 동의 전에는 Google Analytics"],
+  ["/en/calculators/loan", "Loan Payment Calculator"],
+  ["/privacy", "분석용 페이지 주소에서는 쿼리 문자열과 해시를 제거"],
   ["/sitemap.xml", "<urlset"],
 ];
 
