@@ -1,0 +1,64 @@
+name: Quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run qa:calculations
+      - run: npm run build
+      - run: npm run qa:static
+
+      - name: Start browser test services
+        run: |
+          npm run dev -- --hostname 127.0.0.1 > /tmp/modu-next.log 2>&1 &
+          for attempt in {1..60}; do
+            curl --fail --silent http://127.0.0.1:3000/ > /dev/null && break
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:3000/ > /dev/null
+          google-chrome --headless=new --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9224 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/modu-chrome about:blank > /tmp/modu-chrome.log 2>&1 &
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:9224/json/version > /dev/null && break
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:9224/json/version > /dev/null
+
+      - run: npm run qa:critical
+      - run: npm run qa:browser
+      - run: npm run qa:english
+      - run: npm run qa:social
+      - run: npm run qa:consent
+      - run: npm run qa:a11y
+      - run: npm run qa:data
+      - run: npm run qa:storefront
+      - run: npm run qa:mobile
+      - run: npm run qa:flows
+
+      - name: Print service logs on failure
+        if: failure()
+        run: |
+          tail -n 200 /tmp/modu-next.log || true
+          tail -n 200 /tmp/modu-chrome.log || true

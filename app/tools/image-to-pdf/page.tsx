@@ -237,7 +237,7 @@ export default function ImageToPdf() {
           <p className="text-gray-700 font-semibold mb-1">
             이미지를 드래그하거나 클릭하여 추가
           </p>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-600 text-sm">
             JPG, PNG, WebP, GIF 등 지원 | 여러 파일 동시 선택 가능
           </p>
         </div>
@@ -296,7 +296,7 @@ export default function ImageToPdf() {
                 onChange={(e) => setMargin(Number(e.target.value))}
                 className="w-full accent-blue-500"
               />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <div className="flex justify-between text-xs text-gray-600 mt-1">
                 <span>0mm</span>
                 <span>30mm</span>
               </div>
@@ -336,7 +336,7 @@ export default function ImageToPdf() {
                 }`}
               >
                 {/* Drag handle */}
-                <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 flex-shrink-0">
+                <div className="cursor-grab active:cursor-grabbing text-gray-600 hover:text-gray-800 flex-shrink-0">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
                   </svg>
@@ -356,13 +356,13 @@ export default function ImageToPdf() {
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {img.file.name}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-gray-600">
                     {img.width} x {img.height}px | {(img.file.size / 1024).toFixed(0)}KB
                   </p>
                 </div>
 
                 {/* Page number */}
-                <span className="text-xs text-gray-400 font-mono flex-shrink-0">
+                <span className="text-xs text-gray-600 font-mono flex-shrink-0">
                   {idx + 1}/{images.length}
                 </span>
 

@@ -56,6 +56,7 @@ await send("Runtime.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 412, height: 915, deviceScaleFactor: 1, mobile: true });
 
 await navigate("/tools/telepathy-game");
+await evaluate(`() => localStorage.setItem("modu:optional-consent:v1", "granted")`);
 const telepathy = await evaluate(`async () => {
   window.__qaEvents = []; window.gtag = (_command, name) => window.__qaEvents.push(name);
   localStorage.removeItem("telepathy:last-created");
@@ -122,5 +123,6 @@ const block = await evaluate(`async () => {
 }`);
 assert(block.win && block.best && block.share && block.start && block.complete && !block.overflow && browserErrors.length === 0, `Block Escape failed: ${JSON.stringify({ block, browserErrors })}`);
 
+await evaluate(`() => localStorage.setItem("modu:optional-consent:v1", "denied")`);
 socket.close();
 console.log(JSON.stringify({ viewport: 412, telepathy, never, nunchi, block, browserErrors: 0 }, null, 2));

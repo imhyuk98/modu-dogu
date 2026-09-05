@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { calculateLoan, type RepaymentType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+import { isDataStale } from "@/lib/data-freshness";
 
 interface LoanRateEntry {
   rate: number;
@@ -32,7 +33,7 @@ export default function LoanCalculator() {
       .then((data: InterestRateData) => {
         setRateData(data);
         // 주택담보대출 금리를 기본값으로 설정
-        if (data.loan?.mortgage?.rate) {
+        if (data.loan?.mortgage?.rate && !isDataStale(data.updatedAt, 7)) {
           setRate(String(data.loan.mortgage.rate));
         }
       })
@@ -55,7 +56,7 @@ export default function LoanCalculator() {
 
   const handleReset = () => {
     setAmount("100,000,000");
-    setRate(rateData?.loan?.mortgage?.rate ? String(rateData.loan.mortgage.rate) : "3.5");
+    setRate(rateData?.loan?.mortgage?.rate && !isDataStale(rateData.updatedAt, 7) ? String(rateData.loan.mortgage.rate) : "3.5");
     setYears("30");
     setType("equalPrincipalInterest");
     setShowAll(false);
@@ -75,6 +76,7 @@ export default function LoanCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setAmount(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
   };
+  const ratesStale = rateData ? isDataStale(rateData.updatedAt, 7) : false;
 
   return (
     <div className="py-6">
@@ -88,8 +90,13 @@ export default function LoanCalculator() {
         <div className="calc-card p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-900">저장된 평균 금리 참고값</h3>
-            <span className="text-xs text-gray-400">{formatDataMonth(rateData.dataMonth)}</span>
+            <span className="text-xs text-gray-600">{formatDataMonth(rateData.dataMonth)} · {rateData.updatedAt} 수집</span>
           </div>
+          {ratesStale && (
+            <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
+              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시나 계약서의 금리를 직접 입력하세요.
+            </p>
+          )}
           <p className="mt-3 text-xs leading-5 text-gray-500">현재 금융회사 제안 금리가 아닙니다. 계약서나 금융회사 공시에서 확인한 연이율을 아래 입력란에 직접 넣으세요.</p>
           <div className="flex flex-wrap gap-2">
             {[
@@ -113,21 +120,21 @@ export default function LoanCalculator() {
           <div className="relative">
             <input type="text" value={amount} onChange={handleAmountChange} placeholder="예: 300,000,000"
               className="calc-input calc-input-lg" />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">원</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">연 이자율</label>
+            <label htmlFor="loan-interest-rate" className="block text-sm font-medium text-gray-700 mb-1">연 이자율</label>
             <div className="relative">
-              <input type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); }} placeholder="3.5"
+              <input id="loan-interest-rate" data-testid="interest-rate-input" type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); }} placeholder="3.5"
                 className="calc-input calc-input-lg" />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">%</span>
             </div>
             {rateData && (
               <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-                <span className="text-xs text-gray-400">빠른 적용:</span>
+                <span className="text-xs text-gray-600">빠른 적용:</span>
                 {[
                   { key: "mortgage", label: "주담대" },
                   { key: "household", label: "가계" },
@@ -152,7 +159,7 @@ export default function LoanCalculator() {
             <div className="relative">
               <input type="number" value={years} onChange={(e) => { setYears(e.target.value); }} placeholder="30" min="1" max="50"
                 className="calc-input calc-input-lg" />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">년</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">년</span>
             </div>
           </div>
         </div>
@@ -182,14 +189,14 @@ export default function LoanCalculator() {
       {result && (
         <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
-            <p className="text-blue-100 text-sm mb-1">월 상환금 (첫 달)</p>
+            <p className="text-white text-sm mb-1">월 상환금 (첫 달)</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-3xl font-bold">{formatNumber(result.monthlyPayments[0].payment)}원</p>
               <button onClick={handleCopy} className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors" title="결과 복사" aria-label="결과 복사">
                 {copied ? <span className="text-xs font-medium">복사됨!</span> : <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>}
               </button>
             </div>
-            <div className="flex justify-center gap-8 mt-3 text-sm text-blue-100">
+            <div className="flex justify-center gap-8 mt-3 text-sm text-white">
               <span>총 이자: {formatNumber(result.totalInterest)}원</span>
               <span>총 상환: {formatNumber(result.totalPayment)}원</span>
             </div>
@@ -197,8 +204,8 @@ export default function LoanCalculator() {
 
           <div className="p-6">
             <h3 className="font-semibold text-gray-900 mb-3">월별 상환 내역</h3>
-            <div className="overflow-x-auto">
-              <div className="overflow-x-auto"><table className="w-full text-sm">
+            <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="월별 대출 상환 일정표">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 text-gray-500">
                     <th className="py-2 text-left">회차</th>
@@ -213,13 +220,13 @@ export default function LoanCalculator() {
                     <tr key={m.month} className="border-b border-gray-50">
                       <td className="py-2 text-gray-600">{m.month}개월</td>
                       <td className="py-2 text-right">{formatNumber(m.principal)}원</td>
-                      <td className="py-2 text-right text-red-400">{formatNumber(m.interest)}원</td>
+                      <td className="py-2 text-right text-red-700">{formatNumber(m.interest)}원</td>
                       <td className="py-2 text-right font-medium">{formatNumber(m.payment)}원</td>
                       <td className="py-2 text-right text-gray-500">{formatNumber(m.remainingBalance)}원</td>
                     </tr>
                   ))}
                 </tbody>
-              </table></div>
+              </table>
             </div>
             {result.monthlyPayments.length > 12 && (
               <button onClick={() => setShowAll(!showAll)}
@@ -234,8 +241,8 @@ export default function LoanCalculator() {
       <section className="mt-12 space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">상환 방식 비교</h2>
-          <div className="overflow-x-auto">
-            <div className="overflow-x-auto"><table className="w-full text-sm border-collapse">
+          <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="대출 상환 방식 비교표">
+            <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-50">
                   <th className="text-left py-2 px-3 border border-gray-200">구분</th>
@@ -249,17 +256,17 @@ export default function LoanCalculator() {
                 <tr><td className="py-2 px-3 border border-gray-200 font-medium">총 이자</td><td className="py-2 px-3 border border-gray-200">더 많음</td><td className="py-2 px-3 border border-gray-200">더 적음</td></tr>
                 <tr><td className="py-2 px-3 border border-gray-200 font-medium">추천 대상</td><td className="py-2 px-3 border border-gray-200">일정한 지출 선호</td><td className="py-2 px-3 border border-gray-200">총 이자 절약 선호</td></tr>
               </tbody>
-            </table></div>
+            </table>
           </div>
         </div>
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">대출 이자 절약 팁</h2>
           <ul className="text-gray-600 space-y-2 text-sm">
-            <li className="flex gap-2"><span className="text-blue-500 font-bold">1.</span><span><strong>중도상환</strong> - 여유 자금이 생기면 중도상환하면 이자를 크게 줄일 수 있습니다. 단, 중도상환 수수료를 확인하세요.</span></li>
-            <li className="flex gap-2"><span className="text-blue-500 font-bold">2.</span><span><strong>대출 갈아타기</strong> - 기존 대출보다 낮은 금리의 대출로 전환하면 이자 부담을 줄일 수 있습니다.</span></li>
-            <li className="flex gap-2"><span className="text-blue-500 font-bold">3.</span><span><strong>원금균등 선택</strong> - 초기 부담이 가능하다면 원금균등상환이 총 이자가 적습니다.</span></li>
-            <li className="flex gap-2"><span className="text-blue-500 font-bold">4.</span><span><strong>대출 기간 단축</strong> - 같은 금액이라도 대출 기간이 짧을수록 총 이자는 줄어듭니다.</span></li>
+            <li className="flex gap-2"><span className="text-blue-700 font-bold">1.</span><span><strong>중도상환</strong> - 여유 자금이 생기면 중도상환하면 이자를 크게 줄일 수 있습니다. 단, 중도상환 수수료를 확인하세요.</span></li>
+            <li className="flex gap-2"><span className="text-blue-700 font-bold">2.</span><span><strong>대출 갈아타기</strong> - 기존 대출보다 낮은 금리의 대출로 전환하면 이자 부담을 줄일 수 있습니다.</span></li>
+            <li className="flex gap-2"><span className="text-blue-700 font-bold">3.</span><span><strong>원금균등 선택</strong> - 초기 부담이 가능하다면 원금균등상환이 총 이자가 적습니다.</span></li>
+            <li className="flex gap-2"><span className="text-blue-700 font-bold">4.</span><span><strong>대출 기간 단축</strong> - 같은 금액이라도 대출 기간이 짧을수록 총 이자는 줄어듭니다.</span></li>
           </ul>
         </div>
 

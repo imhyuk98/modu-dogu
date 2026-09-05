@@ -98,14 +98,14 @@ export default function SalaryCalculator() {
             placeholder="예: 50,000,000"
             className="calc-input calc-input-lg pr-10"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm font-medium">
             원
           </span>
         </div>
 
         {/* 빠른 선택 */}
         <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-gray-100">
-          <span className="text-xs text-gray-400 font-medium self-center mr-1">빠른 선택</span>
+          <span className="text-xs text-gray-600 font-medium self-center mr-1">빠른 선택</span>
           {quickAmounts.map((amount) => (
             <button
               key={amount}
@@ -203,7 +203,7 @@ export default function SalaryCalculator() {
               </div>
             </div>
           </div>
-          <p className="px-6 pb-5 text-xs leading-relaxed text-gray-500">
+          <p className="px-6 pb-5 text-xs leading-relaxed text-gray-700">
             본인 1인, 비과세 급여·상여금 없음 기준의 예상액입니다. 실제 원천징수액은
             부양가족, 비과세 항목, 회사 급여 규정에 따라 달라질 수 있습니다.
           </p>
@@ -224,7 +224,7 @@ export default function SalaryCalculator() {
 
         <div className="calc-seo-card">
           <h2 className="calc-seo-title">4대보험 요율 (2026년 7월 이후)</h2>
-          <div className="overflow-x-auto -mx-2">
+          <div className="overflow-x-auto -mx-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="4대보험 요율 표">
             <table className="calc-table">
               <thead>
                 <tr>
@@ -246,7 +246,7 @@ export default function SalaryCalculator() {
 
         <div className="calc-seo-card">
           <h2 className="calc-seo-title">연봉별 실수령액 참고표</h2>
-          <div className="overflow-x-auto -mx-2">
+          <div className="overflow-x-auto -mx-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="연봉별 실수령액 참고표">
             <table className="calc-table">
               <thead>
                 <tr>
@@ -263,7 +263,7 @@ export default function SalaryCalculator() {
                     <tr key={sal}>
                       <td className="font-medium">{sal.toLocaleString()}만원</td>
                       <td className="text-right">{r.monthlyGross.toLocaleString()}원</td>
-                      <td className="text-right text-red-400">{r.totalDeductions.toLocaleString()}원</td>
+                      <td className="text-right text-red-700">{r.totalDeductions.toLocaleString()}원</td>
                       <td className="text-right font-bold text-blue-600">{r.monthlyNet.toLocaleString()}원</td>
                     </tr>
                   );
@@ -279,7 +279,7 @@ export default function SalaryCalculator() {
             한국의 소득세는 누진세율 구조로, 과세표준이 높을수록 높은 세율이 적용됩니다.
             단, 전체 소득에 최고 세율이 적용되는 것이 아니라 구간별로 다른 세율이 적용됩니다.
           </p>
-          <div className="overflow-x-auto -mx-2">
+          <div className="overflow-x-auto -mx-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="소득세 누진세율 표">
             <table className="calc-table">
               <thead>
                 <tr>
@@ -370,16 +370,16 @@ function Row({
 
   return (
     <div className="flex justify-between items-center py-1.5">
-      <span className={`text-sm ${bold ? "font-bold text-gray-900" : "text-gray-500"}`}>
+      <span className={`text-sm ${bold ? "font-bold text-gray-900" : "text-gray-700"}`}>
         {label}
       </span>
       <span
         className={`text-sm tabular-nums ${
           bold ? "font-bold" : "font-medium"
         } ${
-          accent ? "text-blue-600 text-base" :
-          highlight ? "text-red-500" :
-          value < 0 ? "text-red-400" :
+          accent ? "text-blue-800 text-base" :
+          highlight ? "text-red-700" :
+          value < 0 ? "text-red-700" :
           "text-gray-900"
         }`}
       >

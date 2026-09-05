@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Gasoek_One, Geist_Mono, Noto_Sans_KR } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,6 +9,8 @@ import Breadcrumb from "@/components/Breadcrumb";
 import TrackVisit from "@/components/TrackVisit";
 import RegisterSW from "@/components/RegisterSW";
 import HtmlLanguageSync from "@/components/HtmlLanguageSync";
+import ConsentBanner from "@/components/ConsentBanner";
+import AdSenseScript from "@/components/AdSenseScript";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,8 +29,6 @@ const gasoekOne = Gasoek_One({
   subsets: ["latin"],
   display: "swap",
 });
-
-const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://modu-dogu.pages.dev"),
@@ -100,14 +99,7 @@ export default function RootLayout({
       <body
         className={`${notoSansKr.variable} ${geistMono.variable} ${gasoekOne.variable} antialiased min-h-screen flex flex-col`}
       >
-        {adsenseId && (
-          <Script
-            id="google-adsense"
-            strategy="lazyOnload"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        <AdSenseScript />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -144,6 +136,7 @@ export default function RootLayout({
         <FloatingButtons />
         <TrackVisit />
         <RegisterSW />
+        <ConsentBanner />
       </body>
     </html>
   );

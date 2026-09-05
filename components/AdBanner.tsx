@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useOptionalConsent } from "@/lib/consent";
 
 declare global {
   interface Window {
@@ -23,26 +24,19 @@ export default function AdBanner({
 }: AdBannerProps) {
   const adRef = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
+  const consent = useOptionalConsent();
 
   useEffect(() => {
-    if (!AD_CLIENT || !/^\d+$/.test(slot) || pushed.current) return;
+    if (!AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot) || pushed.current) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
       pushed.current = true;
     } catch {
       // AdSense not loaded yet
     }
-  }, [slot]);
+  }, [consent, slot]);
 
-  if (!AD_CLIENT || !/^\d+$/.test(slot)) {
-    return (
-      <div
-        className={`bg-gray-50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400 text-sm py-6 ${className}`}
-      >
-        광고 영역
-      </div>
-    );
-  }
+  if (!AD_CLIENT || consent !== "granted" || !/^\d+$/.test(slot)) return null;
 
   return (
     <ins

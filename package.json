@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/generate-service-worker.mjs",
     "dev": "next dev --webpack",
     "build": "next build",
     "postbuild": "node scripts/localize-static-html.mjs",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
     "qa:calculations": "node --no-warnings scripts/calculation-regression.mjs",
     "qa:static": "node --no-warnings scripts/static-export-audit.mjs",
     "qa:browser": "node scripts/browser-route-audit.mjs",
@@ -18,24 +20,29 @@
     "sitemap": "node --no-warnings scripts/generate-sitemap.mjs",
     "qa:english": "node scripts/english-interaction-smoke.mjs",
     "qa:critical": "node scripts/critical-calculator-smoke.mjs",
-    "qa:performance": "node scripts/performance-smoke.mjs"
+    "qa:performance": "node scripts/performance-smoke.mjs",
+    "qa:a11y": "node scripts/accessibility-smoke.mjs",
+    "qa:consent": "node scripts/consent-smoke.mjs",
+    "qa:data": "node scripts/data-freshness-smoke.mjs",
+    "qa:production": "node scripts/production-health.mjs"
   },
   "dependencies": {
-    "jspdf": "^4.2.0",
-    "next": "16.1.6",
+    "jspdf": "^4.2.1",
+    "next": "^16.3.4",
     "qrcode": "^1.5.4",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^20.19.43",
     "@types/qrcode": "^1.5.6",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "axe-core": "^4.13.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }

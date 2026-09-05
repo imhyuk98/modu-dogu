@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { OPEN_CONSENT_EVENT } from "@/lib/consent";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -24,6 +25,7 @@ export default function Footer() {
             {!isEnglish && <Link href="/editorial-policy" className="hover:text-blue-600 transition-colors">검수 정책</Link>}
             {!isEnglish && <Link href="/changelog" className="hover:text-blue-600 transition-colors">변경 이력</Link>}
             {!isEnglish && <Link href="/feedback" className="hover:text-blue-600 transition-colors">오류 제보</Link>}
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_EVENT))} className="hover:text-blue-600 transition-colors">{isEnglish ? "Cookie choices" : "선택 쿠키 설정"}</button>
           </div>
         </div>
       </div>

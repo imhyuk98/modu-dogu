@@ -123,7 +123,7 @@ const CATEGORY_COLORS: Record<Exclude<Category, "전체">, string> = {
 
 const CATEGORY_TAB_COLORS: Record<Category, string> = {
   전체: "bg-gray-700 text-white",
-  일반: "bg-blue-500 text-white",
+  일반: "bg-blue-700 text-white",
   연애: "bg-pink-500 text-white",
   "학교/직장": "bg-amber-500 text-white",
   술자리: "bg-purple-600 text-white",
@@ -431,7 +431,7 @@ export default function NeverHaveIEverPage() {
                   <button
                     onClick={addPlayer}
                     disabled={players.length >= 10}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed"
                   >
                     추가
                   </button>

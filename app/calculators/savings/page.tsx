@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { calculateSavings, type SavingsType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
+import { isDataStale } from "@/lib/data-freshness";
 
 interface SavingsRatesData {
   updatedAt: string;
@@ -31,7 +32,7 @@ export default function SavingsCalculator() {
       .then((res) => res.json())
       .then((data: SavingsRatesData) => {
         setRatesData(data);
-        setRate(data.savings.toString());
+        if (!isDataStale(data.updatedAt, 7)) setRate(data.savings.toString());
       })
       .catch(() => {});
   }, []);
@@ -47,7 +48,7 @@ export default function SavingsCalculator() {
 
   const handleReset = () => {
     setMonthly("500,000");
-    setRate(ratesData ? ratesData.savings.toString() : "4.0");
+    setRate(ratesData && !isDataStale(ratesData.updatedAt, 7) ? ratesData.savings.toString() : "4.0");
     setMonths("12");
     setType("simple");
     setTaxRate("15.4");
@@ -67,6 +68,7 @@ export default function SavingsCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setMonthly(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
   };
+  const ratesStale = ratesData ? isDataStale(ratesData.updatedAt, 7) : false;
 
   return (
     <div className="py-6">
@@ -77,12 +79,17 @@ export default function SavingsCalculator() {
         <div className="calc-card p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-gray-900">
-              시중 평균 적금금리
+              저장된 평균 적금금리 참고값
             </h2>
-            <span className="text-xs text-gray-400">
-              {formatDataMonth(ratesData.dataMonth)}
+            <span className="text-xs text-gray-600">
+              {formatDataMonth(ratesData.dataMonth)} · {ratesData.updatedAt} 수집
             </span>
           </div>
+          {ratesStale && (
+            <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
+              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
+            </p>
+          )}
           <div className="flex flex-wrap gap-2">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
               기준금리 {ratesData.baseRate}%
@@ -100,16 +107,16 @@ export default function SavingsCalculator() {
           <div className="relative">
             <input type="text" value={monthly} onChange={handleMonthlyChange} placeholder="예: 500,000"
               className="calc-input calc-input-lg" />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">원</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">원</span>
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">연 이자율</label>
+            <label htmlFor="savings-interest-rate" className="block text-sm font-medium text-gray-700 mb-1">연 이자율</label>
             <div className="relative">
-              <input type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); }} placeholder="4.0"
+              <input id="savings-interest-rate" data-testid="interest-rate-input" type="number" step="0.01" value={rate} onChange={(e) => { setRate(e.target.value); }} placeholder="4.0"
                 className="calc-input calc-input-lg" />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">%</span>
             </div>
           </div>
           <div>
@@ -117,7 +124,7 @@ export default function SavingsCalculator() {
             <div className="relative">
               <input type="number" value={months} onChange={(e) => { setMonths(e.target.value); }} placeholder="12"
                 className="calc-input calc-input-lg" />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">개월</span>
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">개월</span>
             </div>
           </div>
         </div>
@@ -154,7 +161,7 @@ export default function SavingsCalculator() {
       {result && (
         <div className="calc-card overflow-hidden">
           <div className="bg-blue-600 text-white p-6 text-center">
-            <p className="text-blue-100 text-sm mb-1">만기 수령액 (세후)</p>
+            <p className="text-white text-sm mb-1">만기 수령액 (세후)</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-3xl font-bold">{fmt(result.totalAmount)}원</p>
               <button onClick={handleCopy} className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors" title="결과 복사" aria-label="결과 복사">

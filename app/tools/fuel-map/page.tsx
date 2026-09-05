@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { isDataStale } from "@/lib/data-freshness";
 
 /* ── Types ── */
 interface Station {
@@ -349,6 +350,7 @@ export default function FuelMapPage() {
 
   const cheapestPrice =
     data && data.stations.length > 0 ? data.stations[0].price : 0;
+  const staleData = data ? isDataStale(data.updatedAt, 2) : false;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -381,6 +383,14 @@ export default function FuelMapPage() {
         </div>
       </div>
 
+      {data?.updatedAt && (
+        <div className={`mb-4 rounded-xl border px-4 py-3 text-sm leading-6 ${staleData ? "border-amber-300 bg-amber-50 text-amber-950" : "border-blue-200 bg-blue-50 text-blue-950"}`} role={staleData ? "alert" : "status"}>
+          <strong>{data.updatedAt} 오피넷 수집 자료</strong>
+          <span className="ml-1">현재 판매가가 아니며 실제 가격은 주유 전 오피넷 또는 해당 주유소에서 확인하세요.</span>
+          {staleData && <span className="ml-1 font-bold">자동 갱신이 지연된 자료입니다.</span>}
+        </div>
+      )}
+
       {/* Map + List Layout */}
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Map */}
@@ -394,13 +404,13 @@ export default function FuelMapPage() {
                   {selectedArea.name} 주유소 지도
                 </span>
                 {data && (
-                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full">
                     {data.stations.length}개
                   </span>
                 )}
               </div>
               {data?.updatedAt && (
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-600">
                   {data.updatedAt} 기준
                 </span>
               )}
@@ -550,7 +560,7 @@ export default function FuelMapPage() {
                           </div>
 
                           {/* Address */}
-                          <p className="text-[11px] text-gray-400 truncate mb-1">
+                          <p className="text-[11px] text-gray-600 truncate mb-1">
                             {station.addr}
                           </p>
                         </div>
@@ -559,7 +569,7 @@ export default function FuelMapPage() {
                         <div
                           className={`flex-shrink-0 px-2.5 py-1 rounded-lg text-sm font-bold ${
                             isCheapest
-                              ? "bg-green-500 text-white"
+                              ? "bg-green-700 text-white"
                               : idx < 3
                                 ? "bg-yellow-100 text-yellow-800"
                                 : "bg-gray-100 text-gray-700"
@@ -582,8 +592,9 @@ export default function FuelMapPage() {
           <h2 className="calc-seo-title">전국 주유소 최저가 지도란?</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
             전국 17개 시도의 주유소 가격을 한눈에 비교할 수 있는 서비스입니다.
-            한국석유공사 오피넷(OPINET) 데이터를 기반으로 매일 업데이트되며,
-            지도에서 최저가 주유소의 위치를 확인하고 가격을 비교할 수 있습니다.
+            한국석유공사 오피넷(OPINET) 자료의 자동 갱신을 매일 시도하며,
+            화면에 표시된 수집 기준일의 주유소 위치와 가격을 비교할 수 있습니다.
+            갱신이 지연되면 경고를 표시하고 현재 판매가로 표현하지 않습니다.
             SK에너지, GS칼텍스, 현대오일뱅크, S-Oil 등 주요 브랜드별로
             색상이 구분되어 있어 한눈에 파악이 가능합니다.
           </p>

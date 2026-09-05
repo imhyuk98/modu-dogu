@@ -115,7 +115,7 @@ export default function AnnualLeaveCalculator() {
         <section className="calc-card mb-8 p-5 sm:p-6" aria-labelledby="annual-leave-schedule-title">
           <h2 id="annual-leave-schedule-title" className="text-lg font-bold text-gray-900">2. 발생 내역</h2>
           <p className="mt-1 text-sm text-gray-500">총 발생은 과거 발생 이력이며, 지금 남아 있는 연차와 같지 않습니다.</p>
-          <div className="mt-4 overflow-x-auto">
+          <div className="mt-4 overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="연차 발생 내역 표">
             <table className="w-full min-w-[560px] border-collapse text-left text-sm">
               <thead><tr className="border-y border-gray-200 bg-gray-50 text-gray-600"><th className="px-3 py-2">기준일</th><th className="px-3 py-2">구분</th><th className="px-3 py-2">발생</th><th className="px-3 py-2">산정 내용</th></tr></thead>
               <tbody>{result.details.map((detail, index) => <tr key={`${detail.grantDate}-${detail.kind}-${index}`} className="border-b border-gray-100"><td className="px-3 py-3 font-mono text-xs">{detail.grantDate}</td><td className="px-3 py-3">{detail.kind === "monthly" ? "1년 미만" : detail.kind === "fiscal" ? "회계연도 참고" : "연 단위"}</td><td className="px-3 py-3 font-bold text-[#a93d28]">{detail.days}일</td><td className="px-3 py-3 text-gray-600">{detail.description}</td></tr>)}</tbody>

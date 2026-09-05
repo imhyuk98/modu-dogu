@@ -247,15 +247,9 @@ function scoreMovie(
    ══════════════════════════════════════════ */
 
 function StarRating({ rating }: { rating: number }) {
-  const fullStars = Math.floor(rating / 2);
-  const halfStar = rating % 2 >= 1;
-  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
   return (
-    <span className="inline-flex items-center gap-0.5 text-amber-400">
-      {"★".repeat(fullStars)}
-      {halfStar && "½"}
-      {"☆".repeat(emptyStars)}
-      <span className="text-xs text-gray-500 ml-1">{rating.toFixed(1)}</span>
+    <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600" title="외부 평점이 아닌 내부 편집용 선호도 점수입니다.">
+      편집 점수 <strong>{rating.toFixed(1)}</strong>
     </span>
   );
 }
@@ -420,7 +414,8 @@ export default function MovieRecommendationPage() {
 
           {/* Platform */}
           <div className="calc-card p-5">
-            <h2 className="text-sm font-bold text-gray-800 mb-3">플랫폼</h2>
+            <h2 className="text-sm font-bold text-gray-800 mb-1">저장 목록의 플랫폼</h2>
+            <p className="mb-3 text-xs leading-5 text-amber-800">2026-03-06에 정리한 참고값입니다. 실제 제공 여부는 각 OTT에서 확인하세요.</p>
             <div className="flex flex-wrap gap-2">
               {PLATFORMS.map((p) => (
                 <button
@@ -454,10 +449,10 @@ export default function MovieRecommendationPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                도구가 분석 중...
+                후보를 고르는 중...
               </span>
             ) : (
-              "🎬 영화 추천 도우미받기"
+              "🎬 영화 추천받기"
             )}
           </button>
           {!canRecommend && (
@@ -480,6 +475,7 @@ export default function MovieRecommendationPage() {
               {country && <span className="bg-white/20 px-2 py-1 rounded-full">{country}</span>}
             </div>
           </div>
+          <p className="-mt-3 mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-950">편집 점수와 OTT 표시는 외부 실시간 데이터가 아닌 2026-03-06 저장 목록입니다. 시청 전 제공처와 연령등급을 확인하세요.</p>
 
           {/* Movie Cards */}
           {results.map((movie, idx) => (
@@ -564,8 +560,8 @@ export default function MovieRecommendationPage() {
           <div className="text-sm text-gray-600 space-y-2 leading-relaxed">
             <p>1. <strong>기분/상황</strong>을 선택하세요 - 지금 기분에 맞는 영화를 추천합니다.</p>
             <p>2. <strong>장르</strong>를 선택하세요 - 여러 장르를 동시에 선택할 수 있습니다.</p>
-            <p>3. <strong>국가, 시대, 길이, 플랫폼</strong>을 선택하면 더 정확한 추천을 받을 수 있습니다.</p>
-            <p>4. <strong>영화 추천 도우미받기</strong> 버튼을 누르면 맞춤 영화 TOP 5를 추천해드립니다.</p>
+            <p>3. <strong>국가, 시대, 길이</strong>와 저장 당시 플랫폼을 선택하면 내부 목록에서 후보를 좁힐 수 있습니다.</p>
+            <p>4. <strong>영화 추천받기</strong> 버튼을 누르면 조건에 맞는 영화 TOP 5를 보여줍니다.</p>
             <p>5. 마음에 들지 않으면 <strong>다시 추천받기</strong>를 눌러 새로운 영화를 추천받으세요.</p>
           </div>
         </div>
@@ -573,9 +569,9 @@ export default function MovieRecommendationPage() {
         <div className="calc-seo-card">
           <h2 className="calc-seo-title">150편 이상의 영화 데이터베이스</h2>
           <div className="text-sm text-gray-600 space-y-2 leading-relaxed">
-            <p>한국, 미국, 일본, 유럽 등 다양한 국가의 명작과 최신 영화 150편 이상을 데이터베이스에 보유하고 있습니다.</p>
-            <p>기생충, 인터스텔라, 센과 치히로의 행방불명 등 평점이 검증된 영화들만 엄선했습니다.</p>
-            <p>넷플릭스, 왓챠, 디즈니+ 등 OTT 플랫폼별 필터링도 지원합니다.</p>
+            <p>한국, 미국, 일본, 유럽 등 여러 국가와 시대의 영화 150편 이상을 저장 목록에서 다룹니다.</p>
+            <p>표시 점수는 외부 평점이 아니라 추천 순서를 위한 내부 편집값입니다.</p>
+            <p>OTT 플랫폼 표시는 2026-03-06 저장 참고값이며 현재 제공 여부를 보장하지 않습니다.</p>
           </div>
         </div>
       </section>

@@ -52,7 +52,7 @@ const home = await evaluate(`({
   navLinks: document.querySelectorAll("header a").length
 })`);
 
-await navigate(`${baseUrl}/tools/telepathy-game.html`);
+await navigate(`${baseUrl}/tools/telepathy-game`);
 await evaluate(`(() => {
   Object.defineProperty(navigator, "share", { configurable: true, value: async (data) => { window.__smokeShared = data; } });
   const inputs = [...document.querySelectorAll("section input")];
@@ -106,7 +106,7 @@ const result = await evaluate(`({
 })`);
 
 await evaluate(`localStorage.removeItem("daily-return:daily-fortune")`);
-await navigate(`${baseUrl}/calculators/daily-fortune.html`);
+await navigate(`${baseUrl}/calculators/daily-fortune`);
 await evaluate(`(() => {
   [...document.querySelectorAll("button")].find((button) => button.textContent.includes("쥐"))?.click();
 })()`);

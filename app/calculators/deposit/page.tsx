@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { isDataStale } from "@/lib/data-freshness";
 
 type TaxType = "normal" | "taxFree" | "taxFavored";
 
@@ -91,7 +92,7 @@ export default function DepositCalculator() {
       .then((res) => res.json())
       .then((data: InterestRatesData) => {
         setRatesData(data);
-        setRate(data.deposit.avg.rate.toString());
+        if (!isDataStale(data.updatedAt, 7)) setRate(data.deposit.avg.rate.toString());
       })
       .catch(() => {
         // 실패 시 기본값 유지
@@ -136,7 +137,7 @@ export default function DepositCalculator() {
 
   const handleReset = () => {
     setPrincipal("10,000,000");
-    setRate(ratesData ? ratesData.deposit.avg.rate.toString() : "3.5");
+    setRate(ratesData && !isDataStale(ratesData.updatedAt, 7) ? ratesData.deposit.avg.rate.toString() : "3.5");
     setMonths("12");
     setTaxType("normal");
     setCopied(false);
@@ -160,6 +161,7 @@ export default function DepositCalculator() {
         { label: "2년", rate: ratesData.deposit["1y_2y"].rate },
       ]
     : null;
+  const ratesStale = ratesData ? isDataStale(ratesData.updatedAt, 7) : false;
 
   return (
     <div className="py-6">
@@ -175,12 +177,17 @@ export default function DepositCalculator() {
         <div className="calc-card p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold text-gray-900">
-              시중 평균 예금금리
+              저장된 평균 예금금리 참고값
             </h2>
-            <span className="text-xs text-gray-400">
-              {formatDataMonth(ratesData.dataMonth)}
+            <span className="text-xs text-gray-600">
+              {formatDataMonth(ratesData.dataMonth)} · {ratesData.updatedAt} 수집
             </span>
           </div>
+          {ratesStale && (
+            <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
+              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
+            </p>
+          )}
           <div className="flex flex-wrap gap-2">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
               기준금리 {ratesData.baseRate}%
@@ -206,18 +213,19 @@ export default function DepositCalculator() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 예치금액 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="deposit-principal" className="block text-sm font-medium text-gray-700 mb-2">
               예치금액
             </label>
             <div className="relative">
               <input
+                id="deposit-principal"
                 type="text"
                 value={principal}
                 onChange={(e) => handleNumberInput(e.target.value, setPrincipal)}
                 placeholder="예: 10,000,000"
                 className="calc-input calc-input-lg"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">
                 원
               </span>
             </div>
@@ -238,11 +246,13 @@ export default function DepositCalculator() {
 
           {/* 연이율 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="deposit-interest-rate" className="block text-sm font-medium text-gray-700 mb-2">
               연이율
             </label>
             <div className="relative">
               <input
+                id="deposit-interest-rate"
+                data-testid="interest-rate-input"
                 type="text"
                 value={rate}
                 onChange={(e) => {
@@ -253,7 +263,7 @@ export default function DepositCalculator() {
                 placeholder="예: 3.5"
                 className="calc-input calc-input-lg"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">
                 %
               </span>
             </div>
@@ -303,7 +313,7 @@ export default function DepositCalculator() {
                 placeholder="예: 12"
                 className="calc-input calc-input-lg"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">
                 개월
               </span>
             </div>
@@ -370,7 +380,7 @@ export default function DepositCalculator() {
       {result && (
         <div className="calc-card overflow-hidden mb-6">
           <div className="bg-blue-600 text-white p-6 text-center">
-            <p className="text-blue-100 text-sm mb-1">세후 수령액</p>
+            <p className="text-white text-sm mb-1">세후 수령액</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-3xl font-bold">
                 {formatNumber(result.totalAmount)}원
@@ -379,7 +389,7 @@ export default function DepositCalculator() {
                 {copied ? <span className="text-xs font-medium">복사됨!</span> : <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>}
               </button>
             </div>
-            <p className="text-blue-200 text-sm mt-2">
+            <p className="text-white text-sm mt-2">
               원금 {formatNumber(result.principal)}원 + 세후이자{" "}
               {formatNumber(result.netInterest)}원
             </p>
@@ -426,7 +436,7 @@ export default function DepositCalculator() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             예금과 적금의 차이
           </h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" tabIndex={0} role="region" aria-label="예금과 적금 비교표">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-50">
@@ -544,7 +554,7 @@ function Row({
         {label}
       </span>
       <span
-        className={`text-sm ${bold ? "font-semibold text-gray-900" : ""} ${highlight ? "text-red-400" : ""}`}
+        className={`text-sm ${bold ? "font-semibold text-gray-900" : ""} ${highlight ? "text-red-700" : ""}`}
       >
         {value}
       </span>

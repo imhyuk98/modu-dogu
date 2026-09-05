@@ -1,11 +1,14 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const baseUrl = process.env.STOREFRONT_BASE_URL ?? "http://127.0.0.1:4177";
+const baseUrl = process.env.STOREFRONT_BASE_URL ?? "http://127.0.0.1:3000";
 const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9224";
 const outputDir = process.env.STOREFRONT_SCREEN_DIR ?? process.env.TEMP ?? ".";
 
 mkdirSync(outputDir, { recursive: true });
+
+const homeResponse = await fetch(baseUrl);
+if (!homeResponse.ok) throw new Error(`Storefront is unavailable: ${homeResponse.status} ${baseUrl}`);
 
 const targets = await fetch(`${debuggerUrl}/json`).then((response) => response.json());
 const target = targets.find((candidate) => candidate.type === "page");
@@ -119,6 +122,25 @@ const filter = await evaluate(`({
   cards: document.querySelectorAll(".store-tool-card").length,
   selected: document.querySelector('.home-category-tab[aria-selected="true"]')?.textContent?.trim(),
 })`);
+
+function assertLayout(name, result, expectedColumns) {
+  if (
+    !result.title ||
+    result.scrollWidth > result.viewport ||
+    result.toolCards < 120 ||
+    result.categoryTabs < 7 ||
+    result.gridColumns < expectedColumns ||
+    result.clippedDescriptions > 0
+  ) {
+    throw new Error(`${name} storefront layout failed: ${JSON.stringify(result)}`);
+  }
+}
+
+assertLayout("Desktop", desktopTop, 4);
+assertLayout("Mobile", mobileTop, 2);
+if (!filter.selected || filter.cards < 1 || filter.cards >= desktopTop.toolCards) {
+  throw new Error(`Storefront category filter failed: ${JSON.stringify(filter)}`);
+}
 
 socket.close();
 console.log(JSON.stringify({
