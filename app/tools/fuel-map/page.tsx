@@ -79,14 +79,13 @@ const AREAS: { code: string; name: string; lat: number; lng: number }[] = [
   { code: "04", name: "충북", lat: 36.6357, lng: 127.4912 },
   { code: "05", name: "충남", lat: 36.5184, lng: 126.8 },
   { code: "06", name: "전북", lat: 35.8203, lng: 127.1088 },
-  { code: "07", name: "전남", lat: 34.8161, lng: 126.4629 },
+  { code: "20", name: "전남·광주", lat: 35.1595, lng: 126.8526 },
   { code: "08", name: "경북", lat: 36.4919, lng: 128.8889 },
   { code: "09", name: "경남", lat: 35.4606, lng: 128.2132 },
   { code: "10", name: "부산", lat: 35.1796, lng: 129.0756 },
   { code: "11", name: "제주", lat: 33.4996, lng: 126.5312 },
   { code: "14", name: "대구", lat: 35.8714, lng: 128.6014 },
   { code: "15", name: "인천", lat: 37.4563, lng: 126.7052 },
-  { code: "16", name: "광주", lat: 35.1595, lng: 126.8526 },
   { code: "17", name: "대전", lat: 36.3504, lng: 127.3845 },
   { code: "18", name: "울산", lat: 35.5384, lng: 129.3114 },
   { code: "19", name: "세종", lat: 36.48, lng: 127.2561 },
@@ -591,7 +590,7 @@ export default function FuelMapPage() {
         <div className="calc-seo-card">
           <h2 className="calc-seo-title">전국 주유소 최저가 지도란?</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            전국 17개 시도의 주유소 가격을 한눈에 비교할 수 있는 서비스입니다.
+            오피넷 지역 코드 기준 전국 16개 권역의 주유소 가격을 한눈에 비교할 수 있는 서비스입니다.
             한국석유공사 오피넷(OPINET) 자료의 자동 갱신을 매일 시도하며,
             화면에 표시된 수집 기준일의 주유소 위치와 가격을 비교할 수 있습니다.
             갱신이 지연되면 경고를 표시하고 현재 판매가로 표현하지 않습니다.

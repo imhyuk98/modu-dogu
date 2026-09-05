@@ -1,5 +1,10 @@
+import { readFile } from "node:fs/promises";
+
 const baseUrl = process.env.DATA_QA_BASE_URL ?? "http://127.0.0.1:3000";
 const debuggerUrl = process.env.CHROME_DEBUG_URL ?? "http://127.0.0.1:9224";
+const staleInterestRates = JSON.parse(await readFile("public/interest-rates.json", "utf8"));
+staleInterestRates.updatedAt = "2000-01-01";
+const staleInterestRatesBody = Buffer.from(JSON.stringify(staleInterestRates)).toString("base64");
 const targets = await fetch(`${debuggerUrl}/json`).then((response) => response.json());
 const target = targets.find((candidate) => candidate.type === "page");
 if (!target) throw new Error("No Chrome page target found.");
@@ -14,6 +19,15 @@ let requestId = 0;
 const pending = new Map();
 socket.addEventListener("message", (event) => {
   const message = JSON.parse(event.data);
+  if (message.method === "Fetch.requestPaused") {
+    void send("Fetch.fulfillRequest", {
+      requestId: message.params.requestId,
+      responseCode: 200,
+      responseHeaders: [{ name: "Content-Type", value: "application/json; charset=utf-8" }],
+      body: staleInterestRatesBody,
+    });
+    return;
+  }
   if (!message.id || !pending.has(message.id)) return;
   const waiter = pending.get(message.id);
   pending.delete(message.id);
@@ -26,6 +40,10 @@ function send(method, params = {}) {
   socket.send(JSON.stringify({ id, method, params }));
   return new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
 }
+
+await send("Fetch.enable", {
+  patterns: [{ urlPattern: "*interest-rates.json*", requestStage: "Request" }],
+});
 
 async function evaluate(expression) {
   const result = await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
@@ -66,5 +84,16 @@ for (const [route, expectedRate] of checks) {
   }
 }
 
+const fuelRegion = await evaluate(`fetch(${JSON.stringify(new URL("/fuel-stations/20.json", baseUrl).href)})
+  .then((response) => response.json())
+  .then((data) => ({ area: data.area, stations: data.stations.length }))`);
+if (fuelRegion.area !== "전남·광주" || fuelRegion.stations === 0) {
+  throw new Error(`Current Opinet region mapping failed: ${JSON.stringify(fuelRegion)}`);
+}
+
 socket.close();
-console.log(JSON.stringify({ message: "Stale interest-rate data was warned about and not auto-applied.", results }, null, 2));
+console.log(JSON.stringify({
+  message: "Stale interest-rate protection and current Opinet region mapping passed.",
+  results,
+  fuelRegion,
+}, null, 2));
