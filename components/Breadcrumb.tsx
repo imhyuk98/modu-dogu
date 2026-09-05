@@ -145,7 +145,7 @@ const titleMap: Record<string, string> = {
   constellation: "별자리 계산기",
   zodiac: "띠 계산기",
   "blood-type": "혈액형 계산기",
-  saju: "사주팔자",
+  saju: "간단 오행 성향 테스트",
   "past-life": "전생 테스트",
   "daily-fortune": "오늘의 운세",
   "couple-dday": "커플 D-day",

@@ -276,10 +276,10 @@ export default function NeverHaveIEverPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-center tracking-tight">
-        손병호 게임
+        손병호 게임 질문 카드
       </h1>
       <p className="text-gray-500 text-center text-sm">
-        &quot;나는 ~한 적 있다/없다&quot; 문장을 하나씩 보여줍니다. 해당하면 벌칙!
+        일반·연애·학교·직장 등 주제를 골라 질문을 넘겨보세요. 안전한 질문이 기본으로 표시됩니다.
       </p>
 
       {/* ───── category tabs ───── */}
