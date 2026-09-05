@@ -22,9 +22,9 @@ export default function GoogleAnalytics() {
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
-          gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' });
+          gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
           gtag('js', new Date());
-          gtag('config', '${GA_ID}', { send_page_view: false, page_location: ${safeLocationJson} });
+          gtag('config', '${GA_ID}', { send_page_view: false, page_location: ${safeLocationJson}, allow_google_signals: false, allow_ad_personalization_signals: false });
         `}
       </Script>
     </>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 type EffectType = "pixelate" | "blur";
 type DrawMode = "rect" | "brush";
@@ -32,6 +33,7 @@ export default function ImageMosaic() {
   const [currentRect, setCurrentRect] = useState<MosaicArea | null>(null);
   const [currentBrush, setCurrentBrush] = useState<BrushStroke | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileError, setFileError] = useState("");
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,17 +42,28 @@ export default function ImageMosaic() {
   // Scale factor between displayed canvas and actual image
   const scaleRef = useRef({ sx: 1, sy: 1 });
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setOriginalImage(img);
-      setImageSrc(url);
-      setMosaicAreas([]);
-      setBrushStrokes([]);
-    };
-    img.src = url;
+  const loadImage = useCallback(async (file: File) => {
+    try {
+      const probe = await probeSafeImage(file);
+      const img = new Image();
+      img.onload = () => {
+        setOriginalImage(img);
+        setImageSrc((previous) => {
+          if (previous) URL.revokeObjectURL(previous);
+          return probe.url;
+        });
+        setMosaicAreas([]);
+        setBrushStrokes([]);
+        setFileError("");
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(probe.url);
+        setFileError("이미지를 열 수 없습니다.");
+      };
+      img.src = probe.url;
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   // Draw canvas whenever image, areas, or current drawing changes
@@ -486,6 +499,8 @@ export default function ImageMosaic() {
       <p className="text-gray-500 mb-8">
         사진의 특정 영역을 드래그하여 모자이크 또는 블러 처리할 수 있습니다.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Upload Area */}
       {!imageSrc && (

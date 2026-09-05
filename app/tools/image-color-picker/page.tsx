@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface PickedColor {
   hex: string;
@@ -16,6 +17,7 @@ export default function ImageColorPicker() {
   const [dragOver, setDragOver] = useState(false);
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
   const [loupePixels, setLoupePixels] = useState<Uint8ClampedArray | null>(null);
+  const [fileError, setFileError] = useState("");
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -81,16 +83,20 @@ export default function ImageColorPicker() {
     []
   );
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageSrc(reader.result as string);
+  const loadImage = useCallback(async (file: File) => {
+    try {
+      const probe = await probeSafeImage(file);
+      setImageSrc((previous) => {
+        if (previous) URL.revokeObjectURL(previous);
+        return probe.url;
+      });
       setCurrentColor(null);
       setMousePos(null);
       setLoupePixels(null);
-    };
-    reader.readAsDataURL(file);
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   // Draw image to canvas when loaded
@@ -202,7 +208,9 @@ export default function ImageColorPicker() {
         <p className="text-gray-500 text-sm sm:text-base">
           이미지에서 원하는 위치를 클릭하여 색상 코드(HEX, RGB, HSL)를 추출하세요.
         </p>
+        <p className="mt-2 text-xs text-gray-500">{imageSafetySummary()}</p>
       </div>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Upload or Canvas */}
       {!imageSrc ? (
@@ -254,7 +262,10 @@ export default function ImageColorPicker() {
               </button>
               <button
                 onClick={() => {
-                  setImageSrc(null);
+                  setImageSrc((previous) => {
+                    if (previous) URL.revokeObjectURL(previous);
+                    return null;
+                  });
                   setCurrentColor(null);
                   setHistory([]);
                   setMousePos(null);

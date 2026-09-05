@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { calculateSavings, type SavingsType } from "@/lib/calculations";
 import RelatedTools from "@/components/RelatedTools";
-import { isDataStale } from "@/lib/data-freshness";
+import { isReferenceDataStale } from "@/lib/data-freshness";
 
 interface SavingsRatesData {
   updatedAt: string;
@@ -32,7 +32,7 @@ export default function SavingsCalculator() {
       .then((res) => res.json())
       .then((data: SavingsRatesData) => {
         setRatesData(data);
-        if (!isDataStale(data.updatedAt, 7)) setRate(data.savings.toString());
+        if (!isReferenceDataStale(data.updatedAt, data.dataMonth)) setRate(data.savings.toString());
       })
       .catch(() => {});
   }, []);
@@ -48,7 +48,7 @@ export default function SavingsCalculator() {
 
   const handleReset = () => {
     setMonthly("500,000");
-    setRate(ratesData && !isDataStale(ratesData.updatedAt, 7) ? ratesData.savings.toString() : "4.0");
+    setRate(ratesData && !isReferenceDataStale(ratesData.updatedAt, ratesData.dataMonth) ? ratesData.savings.toString() : "4.0");
     setMonths("12");
     setType("simple");
     setTaxRate("15.4");
@@ -68,7 +68,7 @@ export default function SavingsCalculator() {
     const raw = e.target.value.replace(/[^0-9]/g, "");
     setMonthly(raw ? parseInt(raw, 10).toLocaleString("ko-KR") : "");
   };
-  const ratesStale = ratesData ? isDataStale(ratesData.updatedAt, 7) : false;
+  const ratesStale = ratesData ? isReferenceDataStale(ratesData.updatedAt, ratesData.dataMonth) : false;
 
   return (
     <div className="py-6">
@@ -87,7 +87,7 @@ export default function SavingsCalculator() {
           </div>
           {ratesStale && (
             <p className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-950" role="alert">
-              자동 갱신이 7일 넘게 지연되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
+              수집일 또는 통계 기준월이 오래되어 이 값을 입력란에 자동 적용하지 않았습니다. 금융회사 공시에서 확인한 금리를 직접 입력하세요.
             </p>
           )}
           <div className="flex flex-wrap gap-2">

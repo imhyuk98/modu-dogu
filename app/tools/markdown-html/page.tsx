@@ -10,7 +10,28 @@ function escapeHtml(text: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function safeUrl(rawUrl: string, kind: "link" | "image"): string | null {
+  const value = rawUrl.trim();
+  if (!value || /[\u0000-\u001f\u007f]/.test(value)) return null;
+
+  try {
+    const parsed = new URL(value, "https://modu-dogu.invalid/");
+    if (kind === "image") {
+      return parsed.protocol === "https:" || parsed.origin === "https://modu-dogu.invalid"
+        ? value
+        : null;
+    }
+    return ["https:", "http:", "mailto:"].includes(parsed.protocol) ||
+      parsed.origin === "https://modu-dogu.invalid"
+      ? value
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 function markdownToHtml(md: string): string {
@@ -152,24 +173,42 @@ function markdownToHtml(md: string): string {
 }
 
 function processInline(text: string): string {
-  // Images (before links to avoid conflict)
-  text = text.replace(
-    /!\[([^\]]*)\]\(([^)]+)\)/g,
-    '<img src="$2" alt="$1" />'
+  const tokens: string[] = [];
+  const stash = (html: string) => {
+    const token = `\u0000MDTOKEN${tokens.length}\u0000`;
+    tokens.push(html);
+    return token;
+  };
+
+  // Extract elements whose contents must not be interpreted as HTML or Markdown.
+  text = text.replace(/`([^`]+)`/g, (_match, code: string) =>
+    stash(`<code>${escapeHtml(code)}</code>`)
   );
-  // Links
-  text = text.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-  );
-  // Inline code (before bold/italic to avoid conflicts inside code)
-  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt: string, url: string) => {
+    const safe = safeUrl(url, "image");
+    return safe
+      ? stash(`<img src="${escapeHtml(safe)}" alt="${escapeHtml(alt)}" loading="lazy" referrerpolicy="no-referrer" />`)
+      : escapeHtml(alt);
+  });
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, label: string, url: string) => {
+    const safe = safeUrl(url, "link");
+    return safe
+      ? stash(`<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`)
+      : escapeHtml(label);
+  });
+
+  // Raw HTML is text, never executable markup.
+  text = escapeHtml(text);
   // Bold
   text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   // Strikethrough
   text = text.replace(/~~(.+?)~~/g, "<del>$1</del>");
   // Italic
   text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+  tokens.forEach((html, index) => {
+    text = text.replace(`\u0000MDTOKEN${index}\u0000`, html);
+  });
   return text;
 }
 

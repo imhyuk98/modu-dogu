@@ -146,6 +146,20 @@ async function setInput(index, value) {
   await wait(120);
 }
 
+async function setTextarea(value) {
+  const changed = await evaluate(`(() => {
+    const textarea = document.querySelector("textarea");
+    if (!textarea) return false;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value").set;
+    setter.call(textarea, ${JSON.stringify(value)});
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    textarea.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  })()`);
+  assert.ok(changed, "textarea not found");
+  await wait(150);
+}
+
 async function setCheckbox(checked) {
   const changed = await evaluate(`(() => {
     const input = document.querySelector('input[type="checkbox"]');
@@ -248,10 +262,64 @@ assert.equal(
 );
 assert.deepEqual(runtimeErrors, [], `housing subscription: browser errors\n${runtimeErrors.join("\n")}`);
 
+await navigate("/tools/markdown-html");
+await evaluate("window.__markdownXssProbe = 0");
+await setTextarea('<img src=/x onerror="window.__markdownXssProbe=42">\n[x](javascript:window.__markdownXssProbe=43)');
+const markdownSecurity = await evaluate(`(() => {
+  const preview = document.querySelector(".prose-preview");
+  return {
+    executed: window.__markdownXssProbe,
+    images: preview?.querySelectorAll("img").length ?? -1,
+    links: preview?.querySelectorAll("a").length ?? -1,
+    text: preview?.textContent ?? "",
+  };
+})()`);
+assert.equal(markdownSecurity.executed, 0, "Markdown preview executed user HTML");
+assert.equal(markdownSecurity.images, 0, "raw Markdown HTML created an image element");
+assert.equal(markdownSecurity.links, 0, "unsafe Markdown URL created a link");
+assert.match(markdownSecurity.text, /<img/, "raw Markdown HTML was not preserved as inert text");
+
+await navigate("/calculators/alcohol");
+const alcoholSafety = await evaluate("document.body.innerText");
+assert.doesNotMatch(alcoholSafety, /운전 가능 여부\s*(가능|불가)|완전 분해 예상 시간|운전 가능\)/, "alcohol calculator gives an actionable driving decision");
+assert.match(alcoholSafety, /이 계산 결과로 운전 가능 여부나 안전한 운전 시간을 판단할 수 없습니다/, "alcohol safety warning is missing");
+
+await navigate("/calculators/scientific");
+for (const label of ["2", "+", "3", "×", "4", "="]) await clickButton(label);
+assert.equal(
+  await evaluate('document.querySelector(".font-mono.font-bold.break-all")?.textContent?.trim()'),
+  "14",
+  "scientific calculator arithmetic parser",
+);
+for (const label of ["AC", "2", "xⁿ", "3", "xⁿ", "2", "="]) await clickButton(label);
+assert.equal(
+  await evaluate('document.querySelector(".font-mono.font-bold.break-all")?.textContent?.trim()'),
+  "512",
+  "scientific calculator right-associative exponentiation",
+);
+for (const label of ["AC", "sin", "3", "0", "( )", "="]) await clickButton(label);
+assert.equal(
+  await evaluate('document.querySelector(".font-mono.font-bold.break-all")?.textContent?.trim()'),
+  "0.5",
+  "scientific calculator function parsing",
+);
+
+await navigate("/tools/image-converter");
+await evaluate(`(() => {
+  const input = document.querySelector('input[type="file"]');
+  const transfer = new DataTransfer();
+  transfer.items.add(new File([new Uint8Array(15 * 1024 * 1024 + 1)], "too-large.png", { type: "image/png" }));
+  Object.defineProperty(input, "files", { configurable: true, value: transfer.files });
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+})()`);
+await wait(150);
+assert.match(await evaluate('document.querySelector("[role=alert]")?.textContent ?? ""'), /15MB/, "oversized image was not rejected");
+assert.doesNotMatch(await evaluate("document.body.innerText"), /업로드된 이미지 \(1개\)/, "oversized image reached the converter");
+
 socket.close();
 if (localServer) {
   await new Promise((resolve, reject) => {
     localServer.close((error) => error ? reject(error) : resolve());
   });
 }
-console.log("Critical calculator browser checks passed (11 scenarios).");
+console.log("Critical calculator and security browser checks passed (15 scenarios).");

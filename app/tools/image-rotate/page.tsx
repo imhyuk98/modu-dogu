@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageDimensionError, imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface Transform {
   rotation: number; // degrees
@@ -17,26 +18,46 @@ export default function ImageRotate() {
   const [transform, setTransform] = useState<Transform>({ rotation: 0, flipH: false, flipV: false });
   const [customAngle, setCustomAngle] = useState(0);
   const [useCustomAngle, setUseCustomAngle] = useState(false);
+  const [fileError, setFileError] = useState("");
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
+  const loadImage = useCallback(async (file: File) => {
     setFileName(file.name.replace(/\.[^.]+$/, ""));
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setImageSrc(url);
-      setImageEl(img);
-      setTransform({ rotation: 0, flipH: false, flipV: false });
-      setCustomAngle(0);
-      setUseCustomAngle(false);
-    };
-    img.src = url;
+    try {
+      const probe = await probeSafeImage(file);
+      const img = new Image();
+      img.onload = () => {
+        setImageSrc((previous) => {
+          if (previous) URL.revokeObjectURL(previous);
+          return probe.url;
+        });
+        setImageEl(img);
+        setTransform({ rotation: 0, flipH: false, flipV: false });
+        setCustomAngle(0);
+        setUseCustomAngle(false);
+        setFileError("");
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(probe.url);
+        setFileError("이미지를 열 수 없습니다.");
+      };
+      img.src = probe.url;
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   const effectiveRotation = useCustomAngle ? customAngle : transform.rotation;
+  const rotationOutputError = useMemo(() => {
+    if (!imageEl) return "";
+    const radians = (effectiveRotation * Math.PI) / 180;
+    const width = Math.ceil(imageEl.naturalWidth * Math.abs(Math.cos(radians)) + imageEl.naturalHeight * Math.abs(Math.sin(radians)));
+    const height = Math.ceil(imageEl.naturalWidth * Math.abs(Math.sin(radians)) + imageEl.naturalHeight * Math.abs(Math.cos(radians)));
+    const error = imageDimensionError(width, height);
+    return error ? `회전 결과가 처리 한도를 넘습니다. ${error}` : "";
+  }, [effectiveRotation, imageEl]);
 
   // Draw preview on canvas
   useEffect(() => {
@@ -54,6 +75,7 @@ export default function ImageRotate() {
     // Calculate bounding box after rotation
     const boundW = Math.ceil(natW * cos + natH * sin);
     const boundH = Math.ceil(natW * sin + natH * cos);
+    if (rotationOutputError) return;
 
     canvas.width = boundW;
     canvas.height = boundH;
@@ -65,7 +87,7 @@ export default function ImageRotate() {
     ctx.scale(transform.flipH ? -1 : 1, transform.flipV ? -1 : 1);
     ctx.drawImage(imageEl, -natW / 2, -natH / 2, natW, natH);
     ctx.restore();
-  }, [imageEl, transform, effectiveRotation]);
+  }, [imageEl, transform, effectiveRotation, rotationOutputError]);
 
   const rotate = (deg: number) => {
     setUseCustomAngle(false);
@@ -97,6 +119,7 @@ export default function ImageRotate() {
   };
 
   const handleDownload = () => {
+    if (rotationOutputError) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     canvas.toBlob((blob) => {
@@ -132,6 +155,8 @@ export default function ImageRotate() {
       <p className="text-gray-500 mb-8">
         이미지를 회전하거나 좌우/상하로 뒤집을 수 있습니다. 자유 각도 회전도 지원합니다.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {(fileError || rotationOutputError) && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError || rotationOutputError}</p>}
 
       {/* Drop Zone */}
       {!imageEl && (
@@ -273,7 +298,7 @@ export default function ImageRotate() {
 
           {/* Actions */}
           <div className="flex flex-wrap gap-3 mb-6">
-            <button onClick={handleDownload} className="calc-btn-primary">
+            <button onClick={handleDownload} disabled={Boolean(rotationOutputError)} className="calc-btn-primary disabled:cursor-not-allowed disabled:opacity-50">
               다운로드
             </button>
             <button onClick={resetTransform} className="calc-btn-secondary">

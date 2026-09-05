@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Local blob previews require native image elements. */
 
 import { useState, useRef, useCallback } from "react";
+import { imageBatchError, imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface ImageItem {
   id: string;
@@ -22,36 +23,46 @@ export default function ImageToPdf() {
   const [generating, setGenerating] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [fileError, setFileError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const loadImage = (file: File): Promise<ImageItem> =>
-    new Promise((resolve, reject) => {
+  const loadImage = async (file: File): Promise<ImageItem> => {
+    const probe = await probeSafeImage(file);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () =>
-          resolve({
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-            file,
-            dataUrl: reader.result as string,
-            width: img.width,
-            height: img.height,
-          });
-        img.onerror = reject;
-        img.src = reader.result as string;
-      };
+      reader.onload = () => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(file);
-    });
+      });
+      return {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        file,
+        dataUrl,
+        width: probe.width,
+        height: probe.height,
+      };
+    } finally {
+      URL.revokeObjectURL(probe.url);
+    }
+  };
 
   const addFiles = useCallback(async (files: FileList | File[]) => {
-    const validFiles = Array.from(files).filter((f) =>
-      f.type.startsWith("image/")
-    );
-    if (validFiles.length === 0) return;
-    const items = await Promise.all(validFiles.map(loadImage));
-    setImages((prev) => [...prev, ...items]);
-  }, []);
+    const validFiles = Array.from(files);
+    const selectionError = imageBatchError(validFiles, images.map((item) => item.file));
+    if (selectionError) {
+      setFileError(selectionError);
+      return;
+    }
+    try {
+      const items: ImageItem[] = [];
+      for (const file of validFiles) items.push(await loadImage(file));
+      setImages((prev) => [...prev, ...items]);
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
+  }, [images]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -238,10 +249,11 @@ export default function ImageToPdf() {
             이미지를 드래그하거나 클릭하여 추가
           </p>
           <p className="text-gray-600 text-sm">
-            JPG, PNG, WebP, GIF 등 지원 | 여러 파일 동시 선택 가능
+            {imageSafetySummary()} · 최대 12장/전체 60MB
           </p>
         </div>
       </div>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Options */}
       {images.length > 0 && (

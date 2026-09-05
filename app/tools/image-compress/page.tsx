@@ -3,6 +3,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 interface ImageFile {
   id: string;
@@ -31,6 +32,7 @@ export default function ImageCompress() {
   const [quality, setQuality] = useState(80);
   const [isCompressing, setIsCompressing] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [fileError, setFileError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatSize = (bytes: number) => {
@@ -39,9 +41,7 @@ export default function ImageCompress() {
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
-
+  const loadImage = useCallback(async (file: File) => {
     // Clean up previous
     setImageFile((prev) => {
       if (prev) URL.revokeObjectURL(prev.previewUrl);
@@ -52,20 +52,21 @@ export default function ImageCompress() {
       return null;
     });
 
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
+    try {
+      const probe = await probeSafeImage(file);
       setImageFile({
         id: crypto.randomUUID(),
         file,
         name: file.name,
         size: file.size,
-        previewUrl: url,
-        width: img.naturalWidth,
-        height: img.naturalHeight,
+        previewUrl: probe.url,
+        width: probe.width,
+        height: probe.height,
       });
-    };
-    img.src = url;
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   const handleDrop = useCallback(
@@ -199,6 +200,8 @@ export default function ImageCompress() {
       <p className="text-gray-500 mb-8">
         JPG, PNG, WebP 이미지의 용량을 품질 조절로 간편하게 줄여보세요.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Drop Zone */}
       <div

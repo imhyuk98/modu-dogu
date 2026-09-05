@@ -54,7 +54,7 @@ interface KakaoMaps {
     image: object;
     title: string;
   }) => KakaoMarker;
-  InfoWindow: new (options: { content: string; removable: boolean }) => KakaoInfoWindow;
+  InfoWindow: new (options: { content: string | HTMLElement; removable: boolean }) => KakaoInfoWindow;
   event: {
     addListener(target: object, eventName: string, handler: () => void): void;
   };
@@ -109,6 +109,50 @@ function getBrandInfo(brand: string) {
 /* ── Price formatting ── */
 function formatPrice(price: number) {
   return price.toLocaleString("ko-KR");
+}
+
+function createInfoContent(
+  station: Station,
+  markerColor: string,
+  rank: "cheapest" | "top" | "regular"
+): HTMLDivElement {
+  const root = document.createElement("div");
+  Object.assign(root.style, {
+    padding: "12px 14px",
+    minWidth: "220px",
+    fontFamily: "Pretendard Variable, sans-serif",
+    lineHeight: "1.5",
+  });
+
+  const heading = document.createElement("div");
+  Object.assign(heading.style, { display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" });
+  const marker = document.createElement("span");
+  Object.assign(marker.style, {
+    width: "10px", height: "10px", borderRadius: "50%", background: markerColor, flexShrink: "0",
+  });
+  const name = document.createElement("span");
+  Object.assign(name.style, { fontSize: "13px", fontWeight: "700", color: "#111827" });
+  name.textContent = station.name;
+  heading.append(marker, name);
+
+  const price = document.createElement("div");
+  Object.assign(price.style, {
+    display: "inline-block",
+    padding: "2px 8px",
+    borderRadius: "9999px",
+    fontSize: "14px",
+    fontWeight: "700",
+    marginBottom: "4px",
+    background: rank === "cheapest" ? "#22c55e" : rank === "top" ? "#fef9c3" : "#f3f4f6",
+    color: rank === "cheapest" ? "#fff" : rank === "top" ? "#854d0e" : "#374151",
+  });
+  price.textContent = `${formatPrice(station.price)}원/L`;
+
+  const address = document.createElement("div");
+  Object.assign(address.style, { fontSize: "11px", color: "#6b7280", marginTop: "4px" });
+  address.textContent = station.addr;
+  root.append(heading, price, address);
+  return root;
 }
 
 /* ── Kakao map marker SVG as data URI ── */
@@ -260,25 +304,13 @@ export default function FuelMapPage() {
         title: station.name,
       });
 
-      const priceClass =
+      const rank =
         station.price === cheapestPrice
-          ? "background:#22c55e;color:#fff;"
+          ? "cheapest"
           : idx < 3
-            ? "background:#fef9c3;color:#854d0e;"
-            : "background:#f3f4f6;color:#374151;";
-
-      const infoContent = `
-        <div style="padding:12px 14px;min-width:220px;font-family:Pretendard Variable,sans-serif;line-height:1.5;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-            <span style="width:10px;height:10px;border-radius:50%;background:${brandInfo.markerColor};flex-shrink:0;"></span>
-            <span style="font-size:13px;font-weight:700;color:#111827;">${station.name}</span>
-          </div>
-          <div style="display:inline-block;padding:2px 8px;border-radius:9999px;font-size:14px;font-weight:700;${priceClass}margin-bottom:4px;">
-            ${formatPrice(station.price)}원/L
-          </div>
-          <div style="font-size:11px;color:#6b7280;margin-top:4px;">${station.addr}</div>
-        </div>
-      `;
+            ? "top"
+            : "regular";
+      const infoContent = createInfoContent(station, brandInfo.markerColor, rank);
 
       kakao.maps.event.addListener(marker, "click", () => {
         if (infoWindowRef.current) infoWindowRef.current.close();
@@ -314,25 +346,13 @@ export default function FuelMapPage() {
         const brandInfo = getBrandInfo(station.brand);
         const cheapestPrice =
           data && data.stations.length > 0 ? data.stations[0].price : 0;
-        const priceClass =
+        const rank =
           station.price === cheapestPrice
-            ? "background:#22c55e;color:#fff;"
+            ? "cheapest"
             : idx < 3
-              ? "background:#fef9c3;color:#854d0e;"
-              : "background:#f3f4f6;color:#374151;";
-
-        const infoContent = `
-          <div style="padding:12px 14px;min-width:220px;font-family:Pretendard Variable,sans-serif;line-height:1.5;">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-              <span style="width:10px;height:10px;border-radius:50%;background:${brandInfo.markerColor};flex-shrink:0;"></span>
-              <span style="font-size:13px;font-weight:700;color:#111827;">${station.name}</span>
-            </div>
-            <div style="display:inline-block;padding:2px 8px;border-radius:9999px;font-size:14px;font-weight:700;${priceClass}margin-bottom:4px;">
-              ${formatPrice(station.price)}원/L
-            </div>
-            <div style="font-size:11px;color:#6b7280;margin-top:4px;">${station.addr}</div>
-          </div>
-        `;
+              ? "top"
+              : "regular";
+        const infoContent = createInfoContent(station, brandInfo.markerColor, rank);
 
         const infoWindow = new kakao.maps.InfoWindow({
           content: infoContent,

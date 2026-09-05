@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { imageDimensionError, probeSafeImage } from "@/lib/image-safety";
 
 const inputClass = "calc-input calc-input-lg";
 const primaryButton = "calc-btn-primary px-5 py-3";
@@ -18,18 +19,17 @@ function useLoadedImage() {
   const [error, setError] = useState("");
   const imageUrl = useRef("");
   useEffect(() => () => { if (imageUrl.current) URL.revokeObjectURL(imageUrl.current); }, []);
-  const load = (file?: File, onLoaded?: (loaded: LoadedImage) => void) => {
+  const load = async (file?: File, onLoaded?: (loaded: LoadedImage) => void) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) { setError("Choose a JPG, PNG, or WebP image."); return; }
-    const url = URL.createObjectURL(file); const probe = new Image();
-    probe.onload = () => {
+    try {
+      const safe = await probeSafeImage(file);
       if (imageUrl.current) URL.revokeObjectURL(imageUrl.current);
-      imageUrl.current = url;
-      const loaded = { file, url, width: probe.naturalWidth, height: probe.naturalHeight };
+      imageUrl.current = safe.url;
+      const loaded = { file, url: safe.url, width: safe.width, height: safe.height };
       setImage(loaded); onLoaded?.(loaded); setError("");
-    };
-    probe.onerror = () => { URL.revokeObjectURL(url); setError("The selected image could not be opened."); };
-    probe.src = url;
+    } catch {
+      setError("Use a JPG, PNG, WebP, or GIF up to 15 MB, 8,192 px per side, and 24 megapixels.");
+    }
   };
   return { image, error, load };
 }
@@ -37,8 +37,8 @@ function useLoadedImage() {
 function FilePicker({ onPick }: { onPick: (file?: File) => void }) {
   return (
     <label className="grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed border-[#d9c8bd] bg-[#fffaf6] px-5 py-10 text-center transition hover:border-[#a93d28]">
-      <span className="text-4xl">🖼️</span><strong className="mt-2 text-[#513b31]">Choose an image</strong><small className="mt-1 text-gray-500">JPG, PNG, or WebP · processed on this device</small>
-      <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => onPick(event.target.files?.[0])} />
+      <span className="text-4xl">🖼️</span><strong className="mt-2 text-[#513b31]">Choose an image</strong><small className="mt-1 text-gray-500">JPG, PNG, WebP, or GIF · max 15 MB / 24 MP · processed on this device</small>
+      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => onPick(event.target.files?.[0])} />
     </label>
   );
 }
@@ -90,13 +90,13 @@ export function ImageResizeEn() {
   const changeHeight = (value: string) => { setHeight(value); if (locked && image && Number(value) > 0) setWidth(String(Math.max(1, Math.round(Number(value) * image.width / image.height)))); };
   const resize = async () => {
     if (!image) return; const nextWidth = Math.floor(Number(width)), nextHeight = Math.floor(Number(height));
-    if (nextWidth < 1 || nextHeight < 1 || nextWidth > 12000 || nextHeight > 12000) { setProcessError("Width and height must be between 1 and 12,000 pixels."); return; }
+    if (imageDimensionError(nextWidth, nextHeight)) { setProcessError("The result must be at most 8,192 px per side and 24 megapixels."); return; }
     try { publish(await canvasBlob(image, nextWidth, nextHeight, image.file.type === "image/png" ? "image/png" : "image/jpeg", 0.92)); setProcessError(""); } catch (caught) { setProcessError(caught instanceof Error ? caught.message : "Could not resize this image."); }
   };
   return (
     <div className="space-y-5">
       <FilePicker onPick={(file) => { clear(); load(file, (loaded) => { setWidth(String(loaded.width)); setHeight(String(loaded.height)); setProcessError(""); }); }} />{(error || processError) && <p role="alert" className="text-sm text-red-600">{error || processError}</p>}
-      {image && <><div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600"><span><strong>{image.file.name}</strong> · {image.width} × {image.height}px</span><span>{(image.file.size / 1024).toFixed(1)} KB</span></div><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold text-gray-700">Width (px)<input type="number" min="1" max="12000" value={width} onChange={(e) => changeWidth(e.target.value)} className={`mt-1 ${inputClass}`} /></label><label className="text-sm font-bold text-gray-700">Height (px)<input type="number" min="1" max="12000" value={height} onChange={(e) => changeHeight(e.target.value)} className={`mt-1 ${inputClass}`} /></label></div><label className="flex items-center gap-2 text-sm font-bold text-gray-700"><input type="checkbox" checked={locked} onChange={(e) => setLocked(e.target.checked)} className="h-4 w-4 accent-[#a93d28]" />Keep original aspect ratio</label><div className="flex flex-wrap gap-3"><button type="button" className={secondaryButton} onClick={resize}>Resize image</button>{result && <ResultDownload result={result} filename={`resized-${image.file.name.replace(/\.[^.]+$/, "")}.${image.file.type === "image/png" ? "png" : "jpg"}`} />}</div>{result && <p role="status" className="text-sm font-bold text-[#246b36]">Ready: {(result.blob.size / 1024).toFixed(1)} KB</p>}</>}
+      {image && <><div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600"><span><strong>{image.file.name}</strong> · {image.width} × {image.height}px</span><span>{(image.file.size / 1024).toFixed(1)} KB</span></div><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-bold text-gray-700">Width (px)<input type="number" min="1" max="8192" value={width} onChange={(e) => changeWidth(e.target.value)} className={`mt-1 ${inputClass}`} /></label><label className="text-sm font-bold text-gray-700">Height (px)<input type="number" min="1" max="8192" value={height} onChange={(e) => changeHeight(e.target.value)} className={`mt-1 ${inputClass}`} /></label></div><label className="flex items-center gap-2 text-sm font-bold text-gray-700"><input type="checkbox" checked={locked} onChange={(e) => setLocked(e.target.checked)} className="h-4 w-4 accent-[#a93d28]" />Keep original aspect ratio</label><div className="flex flex-wrap gap-3"><button type="button" className={secondaryButton} onClick={resize}>Resize image</button>{result && <ResultDownload result={result} filename={`resized-${image.file.name.replace(/\.[^.]+$/, "")}.${image.file.type === "image/png" ? "png" : "jpg"}`} />}</div>{result && <p role="status" className="text-sm font-bold text-[#246b36]">Ready: {(result.blob.size / 1024).toFixed(1)} KB</p>}</>}
     </div>
   );
 }

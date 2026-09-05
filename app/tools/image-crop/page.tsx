@@ -3,6 +3,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import RelatedTools from "@/components/RelatedTools";
+import { imageSafetySummary, probeSafeImage } from "@/lib/image-safety";
 
 type AspectRatio = "free" | "1:1" | "16:9" | "4:3" | "3:2" | "9:16";
 
@@ -43,6 +44,7 @@ export default function ImageCrop() {
   const [crop, setCrop] = useState<CropArea>({ x: 0, y: 0, w: 0, h: 0 });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("image");
+  const [fileError, setFileError] = useState("");
 
   // Canvas display scale: image may be scaled to fit the container
   const [scale, setScale] = useState(1);
@@ -56,17 +58,28 @@ export default function ImageCrop() {
     mode: null, startX: 0, startY: 0, startCrop: { x: 0, y: 0, w: 0, h: 0 },
   });
 
-  const loadImage = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return;
+  const loadImage = useCallback(async (file: File) => {
     setFileName(file.name.replace(/\.[^.]+$/, ""));
     setPreviewUrl(null);
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setImageSrc(url);
-      setImageEl(img);
-    };
-    img.src = url;
+    try {
+      const probe = await probeSafeImage(file);
+      const img = new Image();
+      img.onload = () => {
+        setImageSrc((previous) => {
+          if (previous) URL.revokeObjectURL(previous);
+          return probe.url;
+        });
+        setImageEl(img);
+        setFileError("");
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(probe.url);
+        setFileError("이미지를 열 수 없습니다.");
+      };
+      img.src = probe.url;
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "이미지를 열 수 없습니다.");
+    }
   }, []);
 
   // Calculate display dimensions & initial crop when image loads
@@ -416,6 +429,8 @@ export default function ImageCrop() {
       <p className="text-gray-500 mb-8">
         이미지를 원하는 영역만 선택하여 자를 수 있습니다. 다양한 비율 프리셋을 지원합니다.
       </p>
+      <p className="-mt-6 mb-6 text-xs text-gray-500">{imageSafetySummary()}</p>
+      {fileError && <p className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{fileError}</p>}
 
       {/* Drop Zone */}
       {!imageEl && (

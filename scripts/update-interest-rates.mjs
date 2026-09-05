@@ -3,7 +3,7 @@ import { writeFile } from "node:fs/promises";
 const apiKey = process.env.BOK_API_KEY?.trim();
 if (!apiKey) throw new Error("BOK_API_KEY is required; stale data was left unchanged.");
 
-const months = Array.from({ length: 6 }, (_, offset) => {
+const months = Array.from({ length: 4 }, (_, offset) => {
   const date = new Date();
   date.setUTCDate(1);
   date.setUTCMonth(date.getUTCMonth() - offset);
@@ -64,6 +64,10 @@ const dataMonth = [
   ...Object.values(deposit).map((entry) => entry.period),
   ...Object.values(loan).map((entry) => entry.period),
 ].sort()[0];
+
+if (!/^\d{6}$/.test(dataMonth) || !months.includes(dataMonth)) {
+  throw new Error("Bank of Korea returned a reference period older than the allowed three-month publication lag; stale data was left unchanged.");
+}
 
 const dateParts = Object.fromEntries(new Intl.DateTimeFormat("en", {
   timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
