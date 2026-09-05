@@ -16,7 +16,10 @@ async function fetchOpinet(path, params = {}) {
   if (!response.ok) throw new Error(`Opinet request failed with HTTP ${response.status}.`);
   const data = await response.json();
   const rows = data?.RESULT?.OIL;
-  if (!Array.isArray(rows) || rows.length === 0) throw new Error("Opinet returned no rows.");
+  if (!Array.isArray(rows) || rows.length === 0) {
+    const context = Object.entries(params).map(([key, value]) => `${key}=${value}`).join(", ");
+    throw new Error(`Opinet returned no rows for ${path}${context ? ` (${context})` : ""}.`);
+  }
   return rows;
 }
 
@@ -81,6 +84,7 @@ for (const [code, area] of Object.entries(areas)) {
     area,
     stations,
   };
+  console.log(`Fetched ${area}: ${stations.length} stations.`);
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
