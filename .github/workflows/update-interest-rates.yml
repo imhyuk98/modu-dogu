@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
   pull-requests: write
 
@@ -41,3 +42,5 @@ jobs:
           git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch" || true
           git push --force-with-lease="refs/heads/$branch" origin "HEAD:refs/heads/$branch"
           gh pr view "$branch" >/dev/null 2>&1 || gh pr create --base master --head "$branch" --title "chore: update interest rates" --body "Automated Bank of Korea reference-data update. Merge only after the Quality workflow passes."
+          gh workflow run quality.yml --ref "$branch"
+          gh pr merge "$branch" --auto --squash
