@@ -1,4 +1,5 @@
 "use client";
+import { useToolMeasurement } from "@/lib/useToolMeasurement";
 
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -154,6 +155,7 @@ export default function ElectricityCalculator() {
     if (!kwh || kwh <= 0) return null;
     return calculateElectricity(kwh, season, housingType);
   }, [usage, season, housingType]);
+  const measurement = useToolMeasurement("electricity", result ? JSON.stringify([usage, season, housingType]) : null);
 
   const handleReset = () => {
     setUsage("");
@@ -165,11 +167,13 @@ export default function ElectricityCalculator() {
   const handleCopy = async () => {
     if (!result) return;
     await navigator.clipboard.writeText(`${formatNumber(result.total)}원`);
+    measurement.share();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    measurement.start();
     const raw = e.target.value.replace(/[^0-9]/g, "");
     if (raw) {
       setUsage(parseInt(raw, 10).toLocaleString("ko-KR"));
@@ -204,7 +208,7 @@ export default function ElectricityCalculator() {
           ].map((opt) => (
             <button
               key={opt.value}
-              onClick={() => setHousingType(opt.value)}
+              onClick={() => { measurement.start(); setHousingType(opt.value); }}
               className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
                 housingType === opt.value
                   ? "bg-blue-600 text-white border-blue-600"
@@ -228,7 +232,7 @@ export default function ElectricityCalculator() {
           ].map((opt) => (
             <button
               key={opt.value}
-              onClick={() => setSeason(opt.value)}
+              onClick={() => { measurement.start(); setSeason(opt.value); }}
               className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
                 season === opt.value
                   ? "bg-blue-600 text-white border-blue-600"
@@ -270,6 +274,7 @@ export default function ElectricityCalculator() {
             <button
               key={amount}
               onClick={() => {
+                measurement.start();
                 setUsage(amount.toLocaleString("ko-KR"));
               }}
               className="calc-preset"

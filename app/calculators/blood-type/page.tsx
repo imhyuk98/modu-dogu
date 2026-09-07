@@ -1,4 +1,5 @@
 "use client";
+import { useToolMeasurement } from "@/lib/useToolMeasurement";
 
 import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -64,6 +65,7 @@ const bloodTypeColors: Record<BloodType, { bg: string; bar: string; text: string
 const bloodTypes: BloodType[] = ["A", "B", "O", "AB"];
 
 export default function BloodTypeCalculator() {
+  const measurement = useToolMeasurement("blood-type");
   const [father, setFather] = useState<BloodType>("A");
   const [mother, setMother] = useState<BloodType>("B");
   const [result, setResult] = useState<Record<BloodType, number> | null>(null);
@@ -71,6 +73,7 @@ export default function BloodTypeCalculator() {
 
   const handleCalculate = () => {
     setResult(calculateBloodType(father, mother));
+    measurement.complete();
   };
 
   const handleReset = () => {
@@ -86,6 +89,7 @@ export default function BloodTypeCalculator() {
     const text = `아빠 ${father}형 + 엄마 ${mother}형 = ${possible}`;
     try {
       await navigator.clipboard.writeText(text);
+      measurement.share();
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -114,7 +118,7 @@ export default function BloodTypeCalculator() {
               {bloodTypes.map((bt) => (
                 <button
                   key={`father-${bt}`}
-                  onClick={() => setFather(bt)}
+                  onClick={() => { measurement.start(); setFather(bt); }}
                   className={`py-3 rounded-lg font-bold text-lg transition-all ${
                     father === bt
                       ? `${bloodTypeColors[bt].bar} text-white shadow-md scale-105`
@@ -136,7 +140,7 @@ export default function BloodTypeCalculator() {
               {bloodTypes.map((bt) => (
                 <button
                   key={`mother-${bt}`}
-                  onClick={() => setMother(bt)}
+                  onClick={() => { measurement.start(); setMother(bt); }}
                   className={`py-3 rounded-lg font-bold text-lg transition-all ${
                     mother === bt
                       ? `${bloodTypeColors[bt].bar} text-white shadow-md scale-105`
