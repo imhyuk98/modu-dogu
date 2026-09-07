@@ -1,4 +1,5 @@
 "use client";
+import { useToolMeasurement } from "@/lib/useToolMeasurement";
 
 import { useState } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -106,6 +107,7 @@ function getDuration(startDate: Date, today: Date) {
 }
 
 export default function CoupleDdayCalculator() {
+  const measurement = useToolMeasurement("couple-dday");
   const [startDateStr, setStartDateStr] = useState("");
   const [calculated, setCalculated] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -126,7 +128,7 @@ export default function CoupleDdayCalculator() {
   const anniversaries = isValid ? getAnniversaries(startDate, today) : [];
 
   const handleCalculate = () => {
-    if (isValid) setCalculated(true);
+    if (isValid) { setCalculated(true); measurement.complete(); }
   };
 
   const handleReset = () => {
@@ -143,6 +145,7 @@ export default function CoupleDdayCalculator() {
     const text = `함께한 지 ${daysTogether.toLocaleString()}일 (${durationText})`;
     try {
       await navigator.clipboard.writeText(text);
+      measurement.share();
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -175,6 +178,7 @@ export default function CoupleDdayCalculator() {
             value={startDateStr}
             max={today.toISOString().split("T")[0]}
             onChange={(e) => {
+              measurement.start();
               setStartDateStr(e.target.value);
               setCalculated(false);
             }}

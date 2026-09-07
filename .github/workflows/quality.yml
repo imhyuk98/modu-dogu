@@ -31,6 +31,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run qa:calculations
       - run: npm run qa:security
+      - run: node --test scripts/tool-measurement.test.mjs
       - run: npm run build
       - run: npm run qa:static
 
@@ -54,6 +55,7 @@ jobs:
       - run: npm run qa:english
       - run: npm run qa:social
       - run: npm run qa:consent
+      - run: node scripts/tool-measurement-smoke.mjs
       - run: npm run qa:a11y
       - run: npm run qa:data
       - run: npm run qa:storefront

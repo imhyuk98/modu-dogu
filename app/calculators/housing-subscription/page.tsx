@@ -1,4 +1,5 @@
 "use client";
+import { useToolMeasurement } from "@/lib/useToolMeasurement";
 
 import { useState, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -83,6 +84,7 @@ export default function HousingSubscriptionCalculator() {
     const total = homelessScore + dependentsScore + accountScore;
     return { homelessScore, dependentsScore, applicantAccountScore, spouseAccountScore, accountScore, total };
   }, [homelessIdx, dependentsIdx, accountIdx, spouseAccountIdx]);
+  const measurement = useToolMeasurement("housing-subscription", JSON.stringify([homelessIdx, dependentsIdx, accountIdx, spouseAccountIdx]));
 
   const scoreGuide = useMemo(() => getScoreGuide(result.total), [result.total]);
 
@@ -98,6 +100,7 @@ export default function HousingSubscriptionCalculator() {
     const text = `청약 가점: ${result.total}점/84점\n- 무주택기간: ${result.homelessScore}점 (${HOMELESS_OPTIONS[homelessIdx].label})\n- 부양가족수: ${result.dependentsScore}점 (${DEPENDENTS_OPTIONS[dependentsIdx].label})\n- 청약통장 가입기간: ${result.accountScore}점 (신청자 ${result.applicantAccountScore}점 + 배우자 ${result.spouseAccountScore}점, 합산 최대 17점)\n- 점수 구간: ${scoreGuide.label}`;
     try {
       await navigator.clipboard.writeText(text);
+      measurement.share();
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -105,9 +108,10 @@ export default function HousingSubscriptionCalculator() {
       textarea.value = text;
       document.body.appendChild(textarea);
       textarea.select();
-      document.execCommand("copy");
+      const copiedSuccessfully = document.execCommand("copy");
       document.body.removeChild(textarea);
-      setCopied(true);
+      if (copiedSuccessfully) measurement.share();
+      setCopied(copiedSuccessfully);
       setTimeout(() => setCopied(false), 1500);
     }
   };
@@ -131,7 +135,7 @@ export default function HousingSubscriptionCalculator() {
           <select
             aria-label="무주택기간"
             value={homelessIdx}
-            onChange={(e) => setHomelessIdx(Number(e.target.value))}
+            onChange={(e) => { measurement.start(); setHomelessIdx(Number(e.target.value)); }}
             className="calc-input"
           >
             {HOMELESS_OPTIONS.map((opt, i) => (
@@ -150,7 +154,7 @@ export default function HousingSubscriptionCalculator() {
           <select
             aria-label="부양가족수"
             value={dependentsIdx}
-            onChange={(e) => setDependentsIdx(Number(e.target.value))}
+            onChange={(e) => { measurement.start(); setDependentsIdx(Number(e.target.value)); }}
             className="calc-input"
           >
             {DEPENDENTS_OPTIONS.map((opt, i) => (
@@ -169,7 +173,7 @@ export default function HousingSubscriptionCalculator() {
           <select
             aria-label="신청자 청약통장 가입기간"
             value={accountIdx}
-            onChange={(e) => setAccountIdx(Number(e.target.value))}
+            onChange={(e) => { measurement.start(); setAccountIdx(Number(e.target.value)); }}
             className="calc-input"
           >
             {ACCOUNT_OPTIONS.map((opt, i) => (
@@ -188,7 +192,7 @@ export default function HousingSubscriptionCalculator() {
           <select
             aria-label="배우자 청약통장 가입기간"
             value={spouseAccountIdx}
-            onChange={(e) => setSpouseAccountIdx(Number(e.target.value))}
+            onChange={(e) => { measurement.start(); setSpouseAccountIdx(Number(e.target.value)); }}
             className="calc-input"
           >
             {SPOUSE_ACCOUNT_OPTIONS.map((opt, i) => (

@@ -1,4 +1,5 @@
 "use client";
+import { useToolMeasurement } from "@/lib/useToolMeasurement";
 
 import { useState, useCallback, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -143,6 +144,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 type GamePhase = "setup" | "question" | "vote" | "result";
 
 export default function ImageGamePage() {
+  const measurement = useToolMeasurement("image-game");
   const [selectedCategory, setSelectedCategory] = useState<Category>("전체");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isShuffled, setIsShuffled] = useState(false);
@@ -230,6 +232,7 @@ export default function ImageGamePage() {
 
   const startGame = () => {
     if (players.length >= 2) {
+      measurement.start();
       setGamePhase("question");
       setCurrentIndex(0);
       resetVotes();
@@ -246,6 +249,7 @@ export default function ImageGamePage() {
     setVotes((prev) => ({ ...prev, [votedFor]: (prev[votedFor] || 0) + 1 }));
     if (currentVoter + 1 >= players.length) {
       setGamePhase("result");
+      measurement.complete();
     } else {
       setCurrentVoter((v) => v + 1);
     }
