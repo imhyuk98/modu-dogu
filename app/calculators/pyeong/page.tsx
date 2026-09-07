@@ -25,7 +25,7 @@ export default function PyeongCalculator() {
   const [unit, setUnit] = useState<AreaUnit>("sqm");
   const [input, setInput] = useState("84");
   const value = Number(input);
-  const valid = Number.isFinite(value) && value >= 0;
+  const valid = input.trim() !== "" && Number.isFinite(value) && value >= 0;
   const result = useMemo(() => convertArea(valid ? value : 0, unit), [unit, valid, value]);
   const selected = units.find((item) => item.value === unit)!;
 

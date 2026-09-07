@@ -126,6 +126,7 @@ export default function HousingSubscriptionCalculator() {
       </p>
 
       {/* 입력 폼 */}
+      <p className="mb-4 rounded-lg bg-amber-50 p-4 text-sm text-amber-900">처음 표시된 점수는 기본 선택값의 예시입니다. 아래 네 항목을 본인 상황에 맞게 확인한 뒤 결과를 보세요.</p>
       <div className="calc-card p-6 mb-6 space-y-5">
         {/* 무주택기간 */}
         <div>
