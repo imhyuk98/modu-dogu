@@ -1,5 +1,6 @@
 "use client";
 import { useToolMeasurement } from "@/lib/useToolMeasurement";
+import { trackEvent } from "@/lib/analytics";
 
 import { useState, useCallback, useMemo } from "react";
 import RelatedTools from "@/components/RelatedTools";
@@ -145,6 +146,8 @@ type GamePhase = "setup" | "question" | "vote" | "result";
 
 export default function ImageGamePage() {
   const measurement = useToolMeasurement("image-game");
+  const [cardsOnly, setCardsOnly] = useState(false);
+  const [playerError, setPlayerError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category>("전체");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isShuffled, setIsShuffled] = useState(false);
@@ -220,6 +223,11 @@ export default function ImageGamePage() {
   // Player management
   const addPlayer = () => {
     const name = newPlayerName.trim();
+    if (!name || players.includes(name)) {
+      setPlayerError(name ? "이미 등록된 이름입니다. 다른 별명을 입력해 주세요." : "이름이나 별명을 입력해 주세요.");
+      return;
+    }
+    setPlayerError("");
     if (name && !players.includes(name)) {
       setPlayers((p) => [...p, name]);
       setNewPlayerName("");
@@ -232,11 +240,20 @@ export default function ImageGamePage() {
 
   const startGame = () => {
     if (players.length >= 2) {
+      setCardsOnly(false);
       measurement.start();
       setGamePhase("question");
       setCurrentIndex(0);
       resetVotes();
     }
+  };
+
+  const browseQuestions = () => {
+    setCardsOnly(true);
+    setGamePhase("question");
+    setCurrentIndex(0);
+    resetVotes();
+    trackEvent("tool_browse_start", { tool: "image-game", flow: "questions" });
   };
 
   const startVoting = () => {
@@ -296,6 +313,12 @@ export default function ImageGamePage() {
         </p>
 
         <div className="calc-card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">질문만 찾고 있나요?</h2>
+          <p className="text-sm text-gray-500 mb-4">이름 입력 없이 질문 카드를 넘겨 보세요. 함께 읽고 손으로 지목해도 됩니다.</p>
+          <button type="button" onClick={browseQuestions} className="w-full min-h-11 rounded-lg bg-purple-600 px-4 py-3 font-semibold text-white hover:bg-purple-700">질문 바로 보기</button>
+        </div>
+
+        <div className="calc-card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">👥 참가자 등록</h2>
           <p className="text-sm text-gray-500 mb-4">함께 게임할 사람들의 이름을 입력하세요 (최소 2명)</p>
 
@@ -303,10 +326,13 @@ export default function ImageGamePage() {
             <input
               type="text"
               value={newPlayerName}
-              onChange={(e) => setNewPlayerName(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") addPlayer(); }}
+              onChange={(e) => { setNewPlayerName(e.target.value); setPlayerError(""); }}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) addPlayer(); }}
+              aria-label="참가자 이름 또는 별명"
+              aria-invalid={Boolean(playerError)}
+              aria-describedby={playerError ? "player-error" : undefined}
               placeholder="이름 입력"
-              className="calc-input calc-input-lg flex-1"
+              className="calc-input calc-input-lg min-w-0 flex-1"
               maxLength={10}
             />
             <button
@@ -316,6 +342,8 @@ export default function ImageGamePage() {
               추가
             </button>
           </div>
+
+          {playerError && <p id="player-error" role="alert" className="mb-4 text-sm text-red-700">{playerError}</p>}
 
           {players.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -436,6 +464,7 @@ export default function ImageGamePage() {
       </div>
 
       {/* Category filter */}
+      {cardsOnly && <p className="mb-4 text-sm text-gray-600">질문 보기 모드 · 투표 게임을 하려면 ‘처음으로’에서 참가자를 등록하세요.</p>}
       <div className="flex flex-wrap gap-2 mb-4">
         {CATEGORIES.map((cat) => {
           const count =
@@ -509,7 +538,7 @@ export default function ImageGamePage() {
           ◀ 이전 질문
         </button>
         <button
-          onClick={handleNext}
+          onClick={() => { handleNext(); if (cardsOnly) trackEvent("tool_question_next", { tool: "image-game", flow: "questions" }); }}
           disabled={currentIndex >= filteredQuestions.length - 1}
           className={`flex-1 py-3 rounded-lg font-medium transition-colors ${
             currentIndex >= filteredQuestions.length - 1
@@ -522,7 +551,7 @@ export default function ImageGamePage() {
       </div>
 
       {/* Vote / Result section */}
-      {gamePhase === "question" && (
+      {!cardsOnly && gamePhase === "question" && (
         <button
           onClick={startVoting}
           className="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white font-semibold rounded-lg hover:from-pink-600 hover:to-rose-700 transition-colors text-lg mb-6"
@@ -561,7 +590,7 @@ export default function ImageGamePage() {
             ))}
           </div>
           <p className="text-xs text-gray-400 mt-2 text-center">
-            {currentVoter + 1} / {players.length} 투표 완료
+            {currentVoter} / {players.length} 투표 완료
           </p>
         </div>
       )}
@@ -620,7 +649,7 @@ export default function ImageGamePage() {
       })()}
 
       {/* Players bar */}
-      <div className="calc-card p-4 mb-6">
+      {!cardsOnly && <div className="calc-card p-4 mb-6">
         <p className="text-sm text-gray-500 mb-2">참가자 ({players.length}명)</p>
         <div className="flex flex-wrap gap-2">
           {players.map((name) => (
@@ -629,7 +658,7 @@ export default function ImageGamePage() {
             </span>
           ))}
         </div>
-      </div>
+      </div>}
 
       {/* SEO section */}
       <section className="mt-12 space-y-8">

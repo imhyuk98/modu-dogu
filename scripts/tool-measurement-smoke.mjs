@@ -38,10 +38,12 @@ async function input(selector, value, tag = 'HTMLInputElement') {
 }
 async function navigate(path, consent = 'granted') {
   await send('Page.navigate', { url: base + path });
+  let ready = false;
   for (let i = 0; i < 120; i++) {
-    if (await evaluate(`location.pathname === ${JSON.stringify(path)} && document.readyState === 'complete' && !!document.querySelector('h1')`).catch(() => false)) break;
+    if (await evaluate(`location.origin === ${JSON.stringify(new URL(base).origin)} && location.pathname === ${JSON.stringify(path)} && document.readyState === 'complete' && !!document.querySelector('h1')`).catch(() => false)) { ready = true; break; }
     await pause(100);
   }
+  assert.equal(ready, true, `Page unavailable: ${path}`);
   await pause(800);
   await evaluate(`localStorage.setItem('modu:optional-consent:v1',${JSON.stringify(consent)}); window.dispatchEvent(new Event('modu:consent-change'));`);
   await pause(300);
@@ -54,6 +56,24 @@ try {
   await send('Network.enable');
   await send('Network.setBlockedURLs', { urls: ['*google-analytics.com*', '*googletagmanager.com*', '*analytics.google.com*', '*doubleclick.net*', '*googleadservices.com*'] });
   await send('Page.enable');
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await navigate('/tools/image-game');
+  await click('질문 바로 보기');
+  assert.equal(await evaluate(`document.body.textContent.includes('질문 보기 모드')`), true);
+  assert.equal(await evaluate(`[...document.querySelectorAll('button')].some(b=>b.textContent.includes('투표하기'))`), false);
+  await click('다음 질문');
+  await pause(300);
+  assert.equal((await events()).length, 0, 'Question browsing is not a completed vote');
+  assert.deepEqual(await evaluate(`window.__measurement.map(e=>e[1])`), ['tool_browse_start', 'tool_question_next']);
+  assert.equal(await evaluate('document.documentElement.scrollWidth > innerWidth'), false, 'Mobile overflow');
+  await click('처음으로');
+  await click('추가');
+  assert.equal(await evaluate(`!!document.querySelector('#player-error')`), true);
+  await navigate('/calculators/pyeong');
+  await input('input[type=number]', '');
+  assert.equal(await evaluate(`!!document.querySelector('#area-result-title')`), false, 'Empty area must not show zero result');
+  await input('input[type=number]', '0');
+  assert.equal(await evaluate(`!!document.querySelector('#area-result-title')`), true, 'Explicit zero remains valid');
   for (const tool of ['electricity', 'housing-subscription', 'couple-dday', 'blood-type', 'image-game']) {
     await navigate(`/${tool === 'image-game' ? 'tools' : 'calculators'}/${tool}`);
     assert.equal((await events()).length, 0, `${tool}: initial result must not count`);

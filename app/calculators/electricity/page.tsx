@@ -245,6 +245,7 @@ export default function ElectricityCalculator() {
         </div>
 
         {/* 사용량 입력 */}
+        <p className="mb-3 text-sm text-gray-600">고지서의 사용량(kWh)을 입력하세요. 납부 금액(원)을 입력하는 칸이 아닙니다. 결과는 예상치이며 검침일수·할인 등으로 실제 고지액과 다를 수 있습니다.</p>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           월간 전력 사용량
         </label>
