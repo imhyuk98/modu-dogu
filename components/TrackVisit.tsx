@@ -12,6 +12,7 @@ export default function TrackVisit() {
   const visitState = useRef({ pathname: "", returning: false, analyticsPath: "" });
 
   useEffect(() => {
+    if (pathname === "/tools/friend-inbox") return;
     if (visitState.current.pathname !== pathname) {
       let returning = false;
       if (pathname !== "/" && (pathname.startsWith("/calculators/") || pathname.startsWith("/tools/"))) {

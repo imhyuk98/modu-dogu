@@ -11,5 +11,10 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+/tools/friend-inbox
+  Referrer-Policy: no-referrer
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable

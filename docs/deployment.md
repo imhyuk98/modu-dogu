@@ -38,4 +38,6 @@ Cloudflare 대시보드 → Workers & Pages → `modu-dogu` → Settings → Var
 
 대시보드는 `dashboard/README.md`의 별도 Worker 실행/배포 절차를 따릅니다. 홈페이지 배포로 함께 공개되지 않습니다. 관리자 비밀번호, `.dev.vars`, Google 서비스 계정 JSON, 개인 대화 캡처, 원본 분석 자료는 공개 저장소에 올리지 않습니다.
 
+친구 질문 결과함의 API·D1·만료 정리는 `inbox/README.md`를 따릅니다. API 배포/마이그레이션 후 Pages Production에 `NEXT_PUBLIC_FRIEND_INBOX_API=https://modu-friend-inbox.huni1260.workers.dev`를 설정해야 합니다. API 코드 변경은 Pages 자동 빌드만으로 배포되지 않습니다.
+
 참고: [Cloudflare 빌드 설정과 기본 환경 변수](https://developers.cloudflare.com/pages/configuration/build-configuration/), [Git 통합](https://developers.cloudflare.com/pages/get-started/git-integration/), [Next.js 환경 변수](https://nextjs.org/docs/app/guides/environment-variables).

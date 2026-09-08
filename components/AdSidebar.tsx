@@ -8,6 +8,7 @@ const TOP_SLOT = process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_TOP ?? "";
 const BOTTOM_SLOT = process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_BOTTOM ?? "";
 const certifiedConsentEnabled = process.env.NEXT_PUBLIC_ADSENSE_CERTIFIED_CONSENT === "true";
 const AD_EXCLUDED_PATHS = new Set([
+  "/tools/friend-inbox",
   "/calculators/alcohol",
   "/tools/image-game",
   "/tools/never-have-i-ever",

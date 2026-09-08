@@ -21,6 +21,7 @@ jobs:
       # Enables mocked sharing UI tests; never use this placeholder in production.
       NEXT_PUBLIC_KAKAO_JS_KEY: '00000000000000000000000000000000'
       SOCIAL_QA_BASE_URL: http://127.0.0.1:3000
+      NEXT_PUBLIC_FRIEND_INBOX_API: http://127.0.0.1:8790
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -39,11 +40,17 @@ jobs:
       - run: node --test scripts/validate-build-env.test.mjs dashboard/worker.test.mjs
       - run: npm run qa:friend-games
       - run: npm run qa:social-sharing
+      - run: npm run qa:inbox
       - run: npm run build
       - run: npm run qa:static
 
       - name: Start browser test services
         run: |
+          npm run dev:inbox > /tmp/modu-inbox.log 2>&1 &
+          for attempt in {1..30}; do
+            curl --fail --silent -H 'Origin: http://127.0.0.1:3000' http://127.0.0.1:8790/v1/health > /dev/null && break
+            sleep 1
+          done
           npm run dev -- --hostname 127.0.0.1 > /tmp/modu-next.log 2>&1 &
           for attempt in {1..60}; do
             curl --fail --silent http://127.0.0.1:3000/ > /dev/null && break
@@ -62,6 +69,7 @@ jobs:
       - run: npm run qa:english
       - run: npm run qa:social
       - run: npm run qa:friend-games:browser
+      - run: npm run qa:inbox:browser
       - run: npm run qa:consent
       - run: node scripts/tool-measurement-smoke.mjs
       - run: npm run qa:a11y
@@ -75,3 +83,4 @@ jobs:
         run: |
           tail -n 200 /tmp/modu-next.log || true
           tail -n 200 /tmp/modu-chrome.log || true
+          tail -n 200 /tmp/modu-inbox.log || true

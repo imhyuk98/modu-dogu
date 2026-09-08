@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { validateBuildEnv } from './validate-build-env.mjs';
 
-const production = { CF_PAGES: '1', CF_PAGES_BRANCH: 'master' };
+const production = { CF_PAGES: '1', CF_PAGES_BRANCH: 'master', NEXT_PUBLIC_FRIEND_INBOX_API: 'https://modu-friend-inbox.huni1260.workers.dev' };
 const exampleKey = '1234567890abcdef1234567890abcdef';
 
 test('Cloudflare production requires a non-placeholder JavaScript key', () => {
@@ -28,4 +28,8 @@ test('CLI rejects a misconfigured release without printing the supplied key', ()
   assert.equal(result.status, 1);
   assert.match(result.stderr, /NEXT_PUBLIC_KAKAO_JS_KEY/);
   assert.ok(!`${result.stdout}${result.stderr}`.includes(key));
+});
+
+test('production cannot silently omit inboxes or point visitors to a development API', () => {
+  for (const api of ['', undefined, 'http://127.0.0.1:8790', 'https://untrusted.test']) assert.throws(() => validateBuildEnv({ ...production, NEXT_PUBLIC_KAKAO_JS_KEY: exampleKey, NEXT_PUBLIC_FRIEND_INBOX_API: api }), /NEXT_PUBLIC_FRIEND_INBOX_API/);
 });

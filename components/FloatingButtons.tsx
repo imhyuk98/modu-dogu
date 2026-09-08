@@ -42,7 +42,7 @@ export default function FloatingButtons() {
     window.dispatchEvent(new Event("theme-change"));
   };
 
-  if (!mounted || ["friendship-quiz", "friend-manual", "friend-chemistry", "compliment-card", "moon-compatibility"].some(slug => pathname === `/tools/${slug}`)) return null;
+  if (!mounted || ["friendship-quiz", "friend-manual", "friend-chemistry", "compliment-card", "moon-compatibility", "friend-inbox"].some(slug => pathname === `/tools/${slug}`)) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
