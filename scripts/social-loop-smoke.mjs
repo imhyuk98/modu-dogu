@@ -55,6 +55,15 @@ await send("Page.enable");
 await send("Runtime.enable");
 await send("Emulation.setDeviceMetricsOverride", { width: 412, height: 915, deviceScaleFactor: 1, mobile: true });
 
+await navigate("/tools/telepathy-game?challenge=invalid");
+assert(await evaluate(`() => document.body.innerText.includes("초대 링크를 읽을 수 없어요.")`), "Invalid telepathy invite must show recovery");
+const recovered = await evaluate(`async () => {
+  [...document.querySelectorAll("button")].find(button => button.textContent.trim() === "새로 만들기")?.click();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  return location.search === "" && !document.body.innerText.includes("초대 링크를 읽을 수 없어요.") && document.querySelectorAll('input[placeholder="내 답을 먼저 입력"]').length === 5;
+}`);
+assert(recovered, "Invalid telepathy invite must recover to a clean form");
+
 await navigate("/tools/telepathy-game");
 await evaluate(`() => localStorage.setItem("modu:optional-consent:v1", "granted")`);
 const telepathy = await evaluate(`async () => {
@@ -67,7 +76,7 @@ const telepathy = await evaluate(`async () => {
   [...document.querySelectorAll("button")].find((button) => button.textContent.includes("초대 링크 만들기"))?.click();
   await new Promise((resolve) => setTimeout(resolve, 150));
   const events = window.__qaEvents;
-  return { ready: document.body.innerText.includes("초대 링크가 준비됐어요"), answerCount: inputs.length, shareMethods: ["카카오톡·앱 공유", "문자로 보내기", "링크 복사"].every((label) => [...document.querySelectorAll("button")].some((button) => button.textContent.includes(label))), event: events.includes("invite_create"), overflow: document.documentElement.scrollWidth > innerWidth };
+  return { ready: document.body.innerText.includes("초대 링크가 준비됐어요"), answerCount: inputs.length, shareMethods: ["앱으로 공유", "문자로 보내기", "링크 복사"].every((label) => [...document.querySelectorAll("button")].some((button) => button.textContent.includes(label))), event: events.includes("invite_create"), overflow: document.documentElement.scrollWidth > innerWidth };
 }`);
 assert(telepathy.ready && telepathy.answerCount === 5 && telepathy.shareMethods && telepathy.event && !telepathy.overflow && browserErrors.length === 0, `Telepathy failed: ${JSON.stringify({ telepathy, browserErrors })}`);
 
@@ -78,7 +87,7 @@ const never = await evaluate(`async () => {
   const safeDefault = [...document.querySelectorAll("span")].some((span) => span.textContent.trim() === "일반");
   [...document.querySelectorAll("button")].find((button) => button.textContent.includes("있다!"))?.click();
   await new Promise((resolve) => setTimeout(resolve, 80));
-  const hasShare = ["카카오톡·앱 공유", "문자로 보내기", "링크 복사"].every((label) => [...document.querySelectorAll("button")].some((button) => button.textContent.includes(label)));
+  const hasShare = ["앱으로 공유", "문자로 보내기", "링크 복사"].every((label) => [...document.querySelectorAll("button")].some((button) => button.textContent.includes(label)));
   [...document.querySelectorAll("button")].find((button) => button.textContent.includes("만 19세 이상"))?.click();
   await new Promise((resolve) => setTimeout(resolve, 80));
   const events = window.__qaEvents;

@@ -51,8 +51,15 @@ function drawWrappedText(
   y: number,
   maxWidth: number,
   lineHeight: number,
+  maxLines = Number.POSITIVE_INFINITY,
 ) {
-  const lines = getWrappedLines(context, text, maxWidth);
+  const allLines = getWrappedLines(context, text, maxWidth);
+  const lines = allLines.slice(0, maxLines);
+  if (allLines.length > lines.length && lines.length) {
+    let last = lines[lines.length - 1];
+    while (last && context.measureText(`${last}…`).width > maxWidth) last = Array.from(last).slice(0, -1).join("");
+    lines[lines.length - 1] = `${last}…`;
+  }
   lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight));
   return y + lines.length * lineHeight;
 }
@@ -111,28 +118,30 @@ export default function ShareResultCard({
 
     context.fillStyle = accent;
     context.font = '700 30px "Geist Mono", "Noto Sans KR", monospace';
-    context.fillText(kicker, 92, format === "story" ? 306 : 220);
+    context.fillText(kicker, 92, format === "story" ? 306 : 220, 896);
 
     context.fillStyle = "#1d1c19";
-    context.font = '800 92px "Noto Sans KR", sans-serif';
+    context.font = `800 ${format === "story" ? 92 : 64}px "Noto Sans KR", sans-serif`;
     const titleBottom = drawWrappedText(
       context,
       title,
       92,
       format === "story" ? 430 : 318,
       896,
-      108,
+      format === "story" ? 108 : 76,
+      format === "story" ? 3 : 2,
     );
 
     context.fillStyle = "#5e5a52";
-    context.font = '400 36px "Noto Sans KR", sans-serif';
+    context.font = `400 ${format === "story" ? 36 : 30}px "Noto Sans KR", sans-serif`;
     const subtitleBottom = drawWrappedText(
       context,
       subtitle,
       92,
-      titleBottom + 46,
+      titleBottom + (format === "story" ? 46 : 26),
       860,
-      56,
+      format === "story" ? 56 : 40,
+      format === "story" ? 3 : 2,
     );
 
     const cardTop = format === "story"
@@ -159,16 +168,17 @@ export default function ShareResultCard({
 
       context.fillStyle = "#5e5a52";
       context.font = '600 26px "Noto Sans KR", sans-serif';
-      context.fillText(highlight.label, x + 30, y + (format === "story" ? 55 : 42));
+      drawWrappedText(context, highlight.label, x + 30, y + (format === "story" ? 55 : 42), cardWidth - 60, 30, 1);
       context.fillStyle = index === 0 ? accent : "#1d1c19";
-      context.font = `${format === "story" ? 750 : 700} ${format === "story" ? 40 : 31}px "Noto Sans KR", sans-serif`;
+      context.font = `${format === "story" ? 750 : 700} ${format === "story" ? 40 : 26}px "Noto Sans KR", sans-serif`;
       drawWrappedText(
         context,
         highlight.value,
         x + 30,
-        y + (format === "story" ? 122 : 88),
+        y + (format === "story" ? 122 : 80),
         cardWidth - 60,
-        format === "story" ? 48 : 36,
+        format === "story" ? 48 : 30,
+        2,
       );
     });
 

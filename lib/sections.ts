@@ -75,6 +75,10 @@ const lifeCalcs: Item[] = [
 ];
 
 const funCalcs: Item[] = [
+  { title: "나에 대한 우정고사", href: "/tools/friendship-quiz", emoji: "✍️", desc: "친구는 내 취향을 얼마나 알까?", featured: true },
+  { title: "친구가 쓰는 내 사용 설명서", href: "/tools/friend-manual", emoji: "📖", desc: "친구가 골라주는 나만의 설명서" },
+  { title: "친구 칭찬 카드", href: "/tools/compliment-card", emoji: "💌", desc: "쑥스러웠던 칭찬을 카드로 보내요" },
+  { title: "생일 달 궁합 카드", href: "/tools/moon-compatibility", emoji: "🌙", desc: "두 생일의 달로 만드는 오락용 카드" },
   { title: "MBTI 궁합", href: "/calculators/mbti-compatibility", emoji: "💕", desc: "우리 MBTI 조합 괜찮음?", featured: true },
   { title: "이름 궁합", href: "/calculators/name-compatibility", emoji: "💘", desc: "이름만 넣고 케미 확인" },
   { title: "별자리 계산기", href: "/calculators/constellation", emoji: "⭐", desc: "내 별자리 바로 찾기" },

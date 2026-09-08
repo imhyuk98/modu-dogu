@@ -123,7 +123,12 @@ export default function TelepathyLinkChallenge() {
       <section className="mb-8 rounded-3xl border border-red-200 bg-red-50 p-6 text-center">
         <strong className="text-red-800">초대 링크를 읽을 수 없어요.</strong>
         <p className="mt-2 text-sm text-red-700">링크가 잘리지 않았는지 확인하거나 새 텔레파시를 만들어주세요.</p>
-        <a href="/tools/telepathy-game" className="mt-4 inline-block rounded-xl bg-red-700 px-5 py-2.5 text-sm font-bold text-white">새로 만들기</a>
+        <button type="button" onClick={() => {
+          // The invalid invite never hydrated the form. Reset its error state
+          // as well as the URL; same-route navigation alone leaves it mounted.
+          window.history.replaceState(null, "", "/tools/telepathy-game");
+          setInvalidLink(false);
+        }} className="mt-4 inline-block rounded-xl bg-red-700 px-5 py-2.5 text-sm font-bold text-white">새로 만들기</button>
       </section>
     );
   }
