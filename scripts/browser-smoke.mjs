@@ -71,7 +71,7 @@ const created = await evaluate(`({
   scrollWidth: document.documentElement.scrollWidth,
   createButtonDisabled: [...document.querySelectorAll("button")].find((button) => button.textContent.includes("초대 링크 만들기"))?.disabled
 })`);
-await evaluate(`[...document.querySelectorAll("button")].find((button) => button.textContent.includes("카카오톡·앱 공유"))?.click()`);
+await evaluate(`[...document.querySelectorAll("button")].find((button) => button.textContent.includes("앱으로 공유"))?.click()`);
 await wait(150);
 const inviteUrl = await evaluate(`window.__smokeShared?.url`);
 if (!inviteUrl) throw new Error("Invite URL was not created or shared");

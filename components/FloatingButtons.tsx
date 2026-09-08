@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 
 const subscribeToTheme = (onStoreChange: () => void) => {
   window.addEventListener("storage", onStoreChange);
@@ -18,6 +19,7 @@ const getClientSnapshot = () => true;
 const getServerClientSnapshot = () => false;
 
 export default function FloatingButtons() {
+  const pathname = usePathname();
   const dark = useSyncExternalStore(
     subscribeToTheme,
     getThemeSnapshot,
@@ -40,7 +42,7 @@ export default function FloatingButtons() {
     window.dispatchEvent(new Event("theme-change"));
   };
 
-  if (!mounted) return null;
+  if (!mounted || ["friendship-quiz", "friend-manual", "friend-chemistry", "compliment-card", "moon-compatibility"].some(slug => pathname === `/tools/${slug}`)) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">

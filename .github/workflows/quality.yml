@@ -17,6 +17,10 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Enables mocked sharing UI tests; never use this placeholder in production.
+      NEXT_PUBLIC_KAKAO_JS_KEY: '00000000000000000000000000000000'
+      SOCIAL_QA_BASE_URL: http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -32,6 +36,9 @@ jobs:
       - run: npm run qa:calculations
       - run: npm run qa:security
       - run: node --test scripts/tool-measurement.test.mjs
+      - run: node --test scripts/validate-build-env.test.mjs dashboard/worker.test.mjs
+      - run: npm run qa:friend-games
+      - run: npm run qa:social-sharing
       - run: npm run build
       - run: npm run qa:static
 
@@ -54,6 +61,7 @@ jobs:
       - run: npm run qa:browser
       - run: npm run qa:english
       - run: npm run qa:social
+      - run: npm run qa:friend-games:browser
       - run: npm run qa:consent
       - run: node scripts/tool-measurement-smoke.mjs
       - run: npm run qa:a11y

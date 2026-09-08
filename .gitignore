@@ -44,3 +44,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Private dashboard configuration
+/dashboard/.dev.vars
+/dashboard/.dev.vars.*
+!/dashboard/.dev.vars.example
+/dashboard/.wrangler/
