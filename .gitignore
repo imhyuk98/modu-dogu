@@ -50,3 +50,5 @@ next-env.d.ts
 /dashboard/.dev.vars.*
 !/dashboard/.dev.vars.example
 /dashboard/.wrangler/
+/inbox/.wrangler/
+/inbox/.dev.vars

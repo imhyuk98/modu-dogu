@@ -14,6 +14,7 @@ declare global {
 /** Send a GA4 event when analytics has loaded. Analytics must never block a tool. */
 export function trackEvent(eventName: string, params: AnalyticsParams = {}) {
   if (typeof window === "undefined") return false;
+  if (window.location.pathname === "/tools/friend-inbox") return false;
   try {
     if (window.localStorage.getItem("modu:optional-consent:v1") !== "granted") return false;
   } catch {

@@ -9,6 +9,9 @@ export function validateBuildEnv(env) {
   if (!/^[a-f0-9]{32}$/i.test(key) || /^0+$/.test(key)) {
     throw new Error('Set a valid NEXT_PUBLIC_KAKAO_JS_KEY in Cloudflare Pages production build variables. Use the JavaScript key, never an Admin or REST API key.');
   }
+  if (production && env.NEXT_PUBLIC_FRIEND_INBOX_API !== 'https://modu-friend-inbox.huni1260.workers.dev') {
+    throw new Error('Set NEXT_PUBLIC_FRIEND_INBOX_API to the production inbox Worker URL before building master.');
+  }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

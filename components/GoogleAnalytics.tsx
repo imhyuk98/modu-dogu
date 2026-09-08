@@ -1,13 +1,15 @@
 "use client";
 
 import Script from "next/script";
+import { usePathname } from "next/navigation";
 import { useOptionalConsent } from "@/lib/consent";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-79YR5PPP3Q";
 
 export default function GoogleAnalytics() {
   const consent = useOptionalConsent();
-  if (!GA_ID || consent !== "granted") return null;
+  const pathname = usePathname();
+  if (pathname === "/tools/friend-inbox" || !GA_ID || consent !== "granted") return null;
 
   const safeLocation = typeof window === "undefined" ? "https://modu-dogu.pages.dev/" : `${window.location.origin}${window.location.pathname}`;
   const safeLocationJson = JSON.stringify(safeLocation);

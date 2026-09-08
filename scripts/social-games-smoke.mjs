@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 const axeSource = readFileSync(new URL('../node_modules/axe-core/axe.min.js', import.meta.url),'utf8');
 const base = process.env.SOCIAL_QA_BASE_URL ?? 'http://localhost:3000';
+const inboxApi = process.env.INBOX_QA_API ?? process.env.NEXT_PUBLIC_FRIEND_INBOX_API ?? 'http://127.0.0.1:8790';
+const testInboxes = [];
 const debuggerUrl = process.env.CHROME_DEBUG_URL ?? 'http://127.0.0.1:9224';
 const target = await fetch(`${debuggerUrl}/json/new?about:blank`, { method: 'PUT' }).then(r => r.json());
 const socket = new WebSocket(target.webSocketDebuggerUrl);
@@ -28,6 +30,7 @@ async function navigate(path) {
 }
 async function fill(value = '테스트닉') {
   await evaluate(`(() => { const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; const input = document.querySelector('main input:not([type=radio]):not([readonly])'); setter.call(input, ${JSON.stringify(value)}); input.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+  await evaluate(`document.querySelector('main input[type=checkbox]:not(:checked)')?.click()`);
   await until(`!!document.querySelector('main button[type=submit]') && !document.querySelector('main button[type=submit]').disabled`);
   if (await evaluate(`document.querySelector('main button[type=submit]').textContent.includes('시작하기')`)) {
     await evaluate(`document.querySelector('main button[type=submit]').click()`);
@@ -55,6 +58,7 @@ async function fill(value = '테스트닉') {
     await evaluate(`document.querySelector('main input[type=radio][value="0"]').click()`);
     await until(`document.querySelector('[data-quiz-step]').dataset.quizStep===${JSON.stringify(reviewStep)}`);
     assert.equal(await evaluate(`!!document.querySelector('#social-result-title')`),false,'Automatic advance never submits the result');
+    await evaluate(`document.querySelector('main input[type=checkbox]:not(:checked)')?.click()`);
   }
 }
 try {
@@ -68,6 +72,11 @@ try {
     await evaluate(`document.querySelector('main button[type=submit]').click()`);
     await until(`!!document.querySelector('main input[readonly]')`);
     const invite = await evaluate(`document.querySelector('main input[readonly]').value`);
+    const privateUrl = await evaluate(`document.querySelector('input[aria-label="생성자 전용 결과함 주소"]')?.value ?? ''`);
+    if (privateUrl) {
+      const [, id, token] = new URL(privateUrl).hash.match(/^#([a-f0-9]{32})\.([a-f0-9]{64})$/);
+      testInboxes.push({ id, token });
+    }
     assert.ok(invite.includes('#') && !invite.includes('?'));
     await navigate(invite); await fill('친구닉');
     await evaluate(`document.querySelector('main button[type=submit]').click()`);
@@ -162,4 +171,8 @@ try {
   assert.equal(await evaluate('document.documentElement.scrollWidth>innerWidth'), false);
   assert.deepEqual(errors, []);
   console.log('PASS moon card and legacy invitation');
-} finally { await new Promise(resolve => { socket.addEventListener('close', resolve, { once: true }); socket.close(); }); await fetch(`${debuggerUrl}/json/close/${target.id}`); }
+} finally {
+  for (const box of testInboxes) await fetch(`${inboxApi}/v1/inboxes/${box.id}/owner`, { method: 'DELETE', signal: AbortSignal.timeout(15000), headers: { Origin: new URL(base).origin, Authorization: `Bearer ${box.token}` } }).catch(() => {});
+  await new Promise(resolve => { socket.addEventListener('close', resolve, { once: true }); socket.close(); });
+  await fetch(`${debuggerUrl}/json/close/${target.id}`);
+}

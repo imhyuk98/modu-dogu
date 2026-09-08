@@ -7,7 +7,7 @@ import ts from 'typescript';
 function harness(consent = 'granted') {
   const events = [], refs = [], timers = new Map();
   let index = 0, sequence = 0, effectDeps, cleanup;
-  const window = { localStorage: { getItem: () => consent }, gtag: (...args) => events.push(args) };
+  const window = { location: { pathname: '/tools/test-tool' }, localStorage: { getItem: () => consent }, gtag: (...args) => events.push(args) };
   const context = vm.createContext({ window, exports: {}, setTimeout: fn => { timers.set(++sequence, fn); return sequence; }, clearTimeout: id => timers.delete(id) });
   const evaluate = path => vm.runInContext(ts.transpileModule(readFileSync(path, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, context);
   evaluate('lib/analytics.ts');
@@ -35,6 +35,12 @@ test('invalid results and unmounted pages cancel pending completion', () => {
 });
 test('denied consent does not emit start, completion or sharing', () => {
   const h = harness('denied'); const m = h.render(); m.start(); m.complete(); m.share();
+  assert.equal(h.events.length, 0);
+});
+
+test('private inbox never emits analytics even with optional consent', () => {
+  const h = harness(); h.window.location.pathname = '/tools/friend-inbox';
+  const m = h.render(); m.start(); m.complete(); m.share();
   assert.equal(h.events.length, 0);
 });
 test('blocked storage and failing analytics never break tools', () => {

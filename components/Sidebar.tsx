@@ -8,6 +8,7 @@ const MAX_LINKS = 9;
 
 export default function Sidebar({ type }: { type: "calculators" | "tools" }) {
   const pathname = usePathname();
+  if (pathname === "/tools/friend-inbox") return null;
   const activeSection = sections.find((section) =>
     section.items.some((item) => pathname === item.href || pathname.startsWith(`${item.href}/`)),
   );
