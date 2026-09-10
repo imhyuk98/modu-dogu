@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { calculateSalary } from "@/lib/calculations";
 
 const AMOUNTS = Array.from({ length: 81 }, (_, i) => 2000 + i * 100); // 2000~10000
@@ -31,8 +32,7 @@ export async function generateMetadata({
   const description = `2026년 7월 이후 기준 연봉 ${amountLabel}원의 예상 월 실수령액은 약 ${monthlyNet}원입니다. 4대보험 ${formatWon(result.nationalPension + result.healthInsurance + result.longTermCare + result.employmentInsurance)}원, 예상 소득세 ${formatWon(result.incomeTax)}원 공제 후 계산 결과입니다.`;
 
   return {
-    alternates: { canonical: "/calculators/salary" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/salary", amount),
     title,
     description,
     keywords: [

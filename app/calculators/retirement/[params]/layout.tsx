@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { calculateRetirement } from "@/lib/calculations";
 
 const YEARS = [1, 2, 3, 5, 7, 10, 15, 20];
@@ -46,8 +47,7 @@ export async function generateMetadata({
   const description = `2026년 기준 월급 ${monthlyPay}만원으로 ${years}년 근무 시 예상 퇴직금은 약 ${retirementPayFormatted}원입니다. 일평균임금 ${formatWon(result.averageDailyWage)}원, 총 근무일수 ${result.totalDays.toLocaleString("ko-KR")}일 기준 계산 결과입니다.`;
 
   return {
-    alternates: { canonical: "/calculators/retirement" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/retirement", paramStr),
     title,
     description,
     keywords: [

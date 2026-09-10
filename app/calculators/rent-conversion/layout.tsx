@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CalculatorResultExamples from "@/components/CalculatorResultExamples";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/calculators/rent-conversion" },
@@ -37,6 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }}
       />
       {children}
+      <CalculatorResultExamples base="/calculators/rent-conversion" />
     </>
   );
 }

@@ -209,35 +209,6 @@ export default function ExchangeRateCalculator() {
     return CURRENCIES.find((c) => c.code === code);
   };
 
-  if (loading) {
-    return (
-      <div className="py-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">환율 계산기</h1>
-        <div className="calc-card p-12 text-center">
-          <div className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-500">환율 데이터를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">환율 계산기</h1>
-        <div className="calc-card p-12 text-center">
-          <p className="text-red-500 font-medium mb-2">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            다시 시도
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="py-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">환율 계산기</h1>
@@ -245,6 +216,25 @@ export default function ExchangeRateCalculator() {
         평일 하루 한 번 갱신되는 최근 기준환율로 주요 외화 간 금액을 계산합니다.
       </p>
 
+      {loading && (
+        <div className="calc-card p-12 text-center" role="status">
+          <div aria-hidden="true" className="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="text-gray-500">환율 데이터를 불러오는 중...</p>
+        </div>
+      )}
+      {error && (
+        <div className="calc-card p-12 text-center" role="alert">
+          <p className="text-red-500 font-medium mb-2">{error}</p>
+          <button onClick={() => window.location.reload()} className="calc-btn-primary">
+            다시 시도
+          </button>
+        </div>
+      )}
+      <noscript>
+        <p className="my-4 text-sm text-gray-600">최신 환율 조회와 금액 변환에는 자바스크립트가 필요합니다. 아래 사용법과 계산 원리는 그대로 확인할 수 있습니다.</p>
+      </noscript>
+
+      {!loading && !error && (<>
       {/* 환율 변환기 */}
       <div className="calc-card p-6 mb-6">
         {/* From */}
@@ -409,8 +399,19 @@ export default function ExchangeRateCalculator() {
         </div>
       )}
 
-      {/* SEO 콘텐츠 */}
+      </>)}
+
+      {/* Keep guidance in the initial HTML, including loading and error states. */}
       <section className="mt-12 space-y-8">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">환율 계산기 사용법</h2>
+          <ol className="list-decimal pl-5 space-y-2 text-gray-600 leading-relaxed">
+            <li>보내는 통화와 받는 통화를 선택합니다.</li>
+            <li>변환할 금액을 입력하면 상대 통화 금액을 계산합니다. 반대쪽 금액을 입력해 역산할 수도 있습니다.</li>
+            <li>표시된 기준일을 확인하세요. 계산 결과에는 환전·송금 수수료가 포함되지 않습니다.</li>
+          </ol>
+          <p className="mt-3 text-sm text-gray-600">환율 조회가 지연되거나 실패하면 금액 결과를 표시하지 않습니다. 데이터가 없는 상태에서 0원이나 임의 환율을 결과로 사용하지 않습니다.</p>
+        </div>
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             환율이란?

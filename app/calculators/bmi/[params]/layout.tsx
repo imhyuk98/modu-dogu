@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { calculateBMI } from "@/lib/calculations";
 
 const HEIGHTS = [150, 155, 160, 163, 165, 168, 170, 173, 175, 178, 180, 183, 185, 190];
@@ -29,8 +30,7 @@ export async function generateMetadata({
   const description = `키 ${height}cm, 몸무게 ${weight}kg의 BMI는 ${result.bmi}로 '${result.category}' 범위입니다. ${result.description} BMI 계산 결과와 표준 체중, 건강 관리 팁을 확인하세요.`;
 
   return {
-    alternates: { canonical: "/calculators/bmi" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/bmi", slug),
     title,
     description,
     keywords: [

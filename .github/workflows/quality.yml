@@ -43,6 +43,7 @@ jobs:
       - run: npm run qa:inbox
       - run: npm run build
       - run: npm run qa:static
+      - run: npm run qa:seo
 
       - name: Start browser test services
         run: |
@@ -65,6 +66,7 @@ jobs:
           curl --fail --silent http://127.0.0.1:9224/json/version > /dev/null
 
       - run: npm run qa:critical
+      - run: node scripts/exchange-render-smoke.mjs
       - run: npm run qa:browser
       - run: npm run qa:english
       - run: npm run qa:social

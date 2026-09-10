@@ -13,6 +13,7 @@
     "qa:calculations": "node --no-warnings scripts/calculation-regression.mjs",
     "qa:security": "node --no-warnings scripts/security-source-regression.mjs",
     "qa:static": "node --no-warnings scripts/static-export-audit.mjs",
+    "qa:seo": "node --no-warnings scripts/seo-recovery-audit.mjs",
     "qa:browser": "node scripts/browser-route-audit.mjs",
     "qa:mobile": "node scripts/mobile-qa.mjs",
     "qa:storefront": "node scripts/storefront-smoke.mjs",

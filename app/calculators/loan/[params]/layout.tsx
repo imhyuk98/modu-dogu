@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { calculateLoan } from "@/lib/calculations";
 
 const AMOUNTS = [5000, 10000, 15000, 20000, 30000, 40000, 50000]; // 만원 단위
@@ -45,8 +46,7 @@ export async function generateMetadata({
   const description = `${amountLabel}원을 연 ${rate}% 금리로 ${years}년 대출 시 월 상환액은 약 ${formatWon(monthlyPayment)}원(원리금균등)입니다. 총 이자 ${formatWon(result.totalInterest)}원, 총 상환액 ${formatWon(result.totalPayment)}원.`;
 
   return {
-    alternates: { canonical: "/calculators/loan" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/loan", p),
     title,
     description,
     keywords: [
