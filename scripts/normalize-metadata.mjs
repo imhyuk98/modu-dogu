@@ -42,49 +42,8 @@ for (const file of walk(appRoot).filter((candidate) => candidate.endsWith(`${pat
   }
 }
 
-const dynamicBases = new Map([
-  ["app/calculators/bmi/[params]/layout.tsx", "/calculators/bmi"],
-  ["app/calculators/loan/[params]/layout.tsx", "/calculators/loan"],
-  ["app/calculators/rent-conversion/[params]/layout.tsx", "/calculators/rent-conversion"],
-  ["app/calculators/retirement/[params]/layout.tsx", "/calculators/retirement"],
-  ["app/calculators/salary/[amount]/layout.tsx", "/calculators/salary"],
-  ["app/calculators/unemployment/[params]/layout.tsx", "/calculators/unemployment"],
-]);
-
-for (const [relativeFile, canonical] of dynamicBases) {
-  const file = path.resolve(relativeFile);
-  let source = fs.readFileSync(file, "utf8");
-  const metadataStart = source.indexOf("export async function generateMetadata");
-  if (metadataStart < 0) continue;
-  const before = source;
-  source = source.replaceAll("/og-image.svg", "/og-image.png");
-  const prefix = source.slice(0, metadataStart);
-  let metadataSource = source.slice(metadataStart);
-
-  if (!metadataSource.includes("alternates:")) {
-    metadataSource = metadataSource.replace(
-      /return\s*{\s*\n/,
-      `return {\n    alternates: { canonical: "${canonical}" },\n    robots: { index: false, follow: true },\n`,
-    );
-  }
-  if (!metadataSource.includes("images:") && /openGraph\s*:\s*{/.test(metadataSource)) {
-    metadataSource = metadataSource.replace(/openGraph\s*:\s*{/, (match) => `${match}\n      images: ["/og-image.svg"],`);
-  }
-  source = prefix + metadataSource;
-  if (source !== before) {
-    fs.writeFileSync(file, source, "utf8");
-    updated += 1;
-  }
-}
-
-const sitemapFile = path.resolve("public/sitemap.xml");
-let sitemap = fs.readFileSync(sitemapFile, "utf8");
-const dynamicPattern = /\s*<url>\s*<loc>https:\/\/modu-dogu\.pages\.dev\/calculators\/(?:bmi|loan|rent-conversion|retirement|salary|unemployment)\/[^<]+<\/loc>[\s\S]*?<\/url>/g;
-const originalSitemap = sitemap;
-sitemap = sitemap.replace(dynamicPattern, "");
-if (sitemap !== originalSitemap) {
-  fs.writeFileSync(sitemapFile, sitemap, "utf8");
-  updated += 1;
-}
+// Result-page metadata is owned by calculator-result-indexing.ts. Never infer
+// indexing policy from a dynamic route or overwrite its reviewed allowlist.
+await import("./generate-sitemap.mjs");
 
 console.log(`Normalized metadata and indexing in ${updated} files for ${siteOrigin}.`);

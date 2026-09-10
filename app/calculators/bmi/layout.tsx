@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CalculatorResultExamples from "@/components/CalculatorResultExamples";
 
 export const metadata: Metadata = {
   alternates: {
@@ -41,6 +42,7 @@ export default function BMILayout({ children }: { children: React.ReactNode }) {
         }}
       />
       {children}
+      <CalculatorResultExamples base="/calculators/bmi" />
     </>
   );
 }

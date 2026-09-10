@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { calculateUnemployment } from "@/lib/calculations";
 
 const AGES = [30, 35, 40, 45, 50, 55];
@@ -37,8 +38,7 @@ export async function generateMetadata({
   const description = `${age}세, 월급 ${monthlyPay}만원, ${workedYears}년 근무 시 예상 실업급여: 일 ${formatWon(result.dailyAmount)}원, 월 ${formatWon(result.monthlyAmount)}원, 수급기간 ${result.totalDays}일, 총 수급액 ${formatWon(result.totalAmount)}원. 2026년 7월 이후 기준입니다.`;
 
   return {
-    alternates: { canonical: "/calculators/unemployment" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/unemployment", slug),
     title,
     description,
     keywords: [

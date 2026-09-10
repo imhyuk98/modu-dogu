@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { calculatorResultMetadata } from "@/lib/calculator-result-indexing";
 import { convertJeonseToMonthly } from "@/lib/calculations";
 
 const JEONSE = [10000, 15000, 20000, 25000, 30000, 40000, 50000]; // 만원
@@ -53,8 +54,7 @@ export async function generateMetadata({
   const description = `전세 ${jeonseLabel}원을 보증금 ${depositLabel}원으로 전환 시(전환율 ${rate}%) 월세는 약 ${formatWon(result.monthlyRent)}원입니다. 전월세 전환 계산 결과.`;
 
   return {
-    alternates: { canonical: "/calculators/rent-conversion" },
-    robots: { index: false, follow: true },
+    ...calculatorResultMetadata("/calculators/rent-conversion", p),
     title,
     description,
     keywords: [
