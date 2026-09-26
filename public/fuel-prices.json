@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-09-05",
+  "updatedAt": "2026-09-26",
   "gasoline": {
-    "price": 1859,
-    "diff": -0.1
-  },
-  "diesel": {
-    "price": 1844,
-    "diff": -0.3
-  },
-  "lpg": {
-    "price": 1099,
+    "price": 1856,
     "diff": 0.1
   },
-  "tradeDate": "2026-09-05"
+  "diesel": {
+    "price": 1841,
+    "diff": 0
+  },
+  "lpg": {
+    "price": 1089,
+    "diff": 0.1
+  },
+  "tradeDate": "2026-09-26"
 }
