@@ -1,65 +1,65 @@
 {
-  "updatedAt": "2026-09-05",
-  "dataMonth": "202607",
+  "updatedAt": "2026-10-03",
+  "dataMonth": "202608",
   "baseRate": 3,
   "deposit": {
     "6m_under": {
-      "rate": 2.88,
+      "rate": 2.97,
       "label": "정기예금(6개월 미만)",
-      "period": "202607"
+      "period": "202608"
     },
     "6m_1y": {
-      "rate": 3.26,
+      "rate": 3.37,
       "label": "정기예금(6개월~1년 미만)",
-      "period": "202607"
+      "period": "202608"
     },
     "1y_2y": {
-      "rate": 3.49,
+      "rate": 3.4,
       "label": "정기예금(1~2년 미만)",
-      "period": "202607"
+      "period": "202608"
     },
     "2y_3y": {
-      "rate": 3.52,
+      "rate": 3.49,
       "label": "정기예금(2~3년 미만)",
-      "period": "202607"
+      "period": "202608"
     },
     "avg": {
-      "rate": 3.15,
+      "rate": 3.14,
       "label": "정기예금",
-      "period": "202607"
+      "period": "202608"
     }
   },
   "loan": {
     "avg": {
-      "rate": 4.27,
+      "rate": 4.4,
       "label": "대출평균",
-      "period": "202607"
+      "period": "202608"
     },
     "household": {
-      "rate": 4.64,
+      "rate": 4.76,
       "label": "가계대출",
-      "period": "202607"
+      "period": "202608"
     },
     "mortgage": {
-      "rate": 4.48,
+      "rate": 4.66,
       "label": "주택담보대출",
-      "period": "202607"
+      "period": "202608"
     },
     "mortgage_fixed": {
-      "rate": 4.76,
+      "rate": 4.88,
       "label": "고정형 주택담보대출",
-      "period": "202607"
+      "period": "202608"
     },
     "corporate": {
-      "rate": 4.2,
+      "rate": 4.3,
       "label": "기업대출",
-      "period": "202607"
+      "period": "202608"
     },
     "small_loan": {
-      "rate": 6.29,
+      "rate": 6.55,
       "label": "소액대출(500만원 이하)",
-      "period": "202607"
+      "period": "202608"
     }
   },
-  "savings": 3.15
+  "savings": 3.14
 }
