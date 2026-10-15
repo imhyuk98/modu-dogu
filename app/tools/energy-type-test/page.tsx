@@ -59,6 +59,27 @@ export default function EnergyTypeTestPage() {
           <h2 className="calc-seo-title">어떤 검사인가요?</h2>
           <p className="text-sm leading-7 text-gray-600">성별이나 호르몬을 성격과 연결하지 않고, 일상에서 드러나는 추진 속도·감정 반응·계획 성향만 재미로 정리합니다. 의학적·심리학적 진단이 아닙니다.</p>
         </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">이용 방법</h2>
+          <ol className="list-decimal space-y-2 pl-5 text-sm leading-7 text-gray-600">
+            <li>새 제안을 받았을 때, 친구의 고민을 들을 때처럼 일상 장면을 다룬 8개 질문에 차례로 답합니다.</li>
+            <li>질문마다 두 가지 보기 중 지금의 나와 더 가까운 쪽을 고릅니다. 고르면 바로 다음 질문으로 넘어갑니다.</li>
+            <li>마지막 질문에 답하면 네 가지 에너지 유형 중 하나와 설명, 키워드, 생활 팁이 나옵니다.</li>
+            <li>결과 카드를 이미지로 저장하거나 링크로 공유할 수 있고, &lsquo;다시 테스트하기&rsquo;로 처음부터 다시 할 수 있습니다.</li>
+          </ol>
+        </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">네 가지 에너지와 결과 계산 방식</h2>
+          <p className="text-sm leading-7 text-gray-600">빠르게 시작하는 점화형 스파크, 감정과 아이디어를 잇는 확산형 브리즈, 기준을 세우는 정렬형 앵커, 천천히 관찰하는 숙성형 그로브가 있습니다. 보기마다 두 유형에 점수가 나뉘어 있어, 8개 답변의 점수를 더해 가장 높은 유형이 결과가 됩니다. 점수가 같으면 스파크, 브리즈, 앵커, 그로브 순서로 앞선 유형이 표시됩니다. 같은 사람도 요즘 상황에 따라 답이 달라질 수 있으니 결과는 지금의 경향을 가볍게 돌아보는 참고로만 봐 주세요.</p>
+        </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">자주 묻는 질문</h2>
+          <div className="space-y-4 text-sm leading-7 text-gray-600">
+            <div><h3 className="font-bold text-gray-900">내 답변이 저장되나요?</h3><p>답변은 저장하지 않습니다. 결과가 나오면 주소창에 결과 유형만 표시되어, 그 링크를 공유하면 같은 결과 화면을 보여줄 수 있습니다.</p></div>
+            <div><h3 className="font-bold text-gray-900">MBTI와 같은 검사인가요?</h3><p>아니요. 이 사이트에서 만든 재미용 문항으로, MBTI나 공인 심리검사와 관련이 없습니다.</p></div>
+            <div><h3 className="font-bold text-gray-900">답을 잘못 골랐어요.</h3><p>지금은 이전 질문으로 돌아가는 기능이 없습니다. 결과 화면에서 &lsquo;다시 테스트하기&rsquo;를 눌러 처음부터 다시 진행해 주세요.</p></div>
+          </div>
+        </section>
         <RelatedTools current="energy-type-test" />
       </div>
     </main>

@@ -164,6 +164,9 @@ export default function SocialGame({ mode }: { mode: SocialMode }) {
     }
     <Link href="/tools/friend-inbox" className="mt-6 inline-block min-h-11 py-3 text-sm font-bold underline">내가 만든 질문의 결과함</Link>
     <details className={styles.details}><summary>개인정보 및 이용 안내</summary><p>새 초대는 닉네임과 선택을 서버에 저장하고 친구 답변을 생성자의 결과함에 모읍니다. 생성 30일 후 접근이 종료되고 정기 정리 작업으로 삭제됩니다. 생성자는 결과함 전체를 먼저 삭제할 수 있습니다. 서버 저장은 완성 단계에서 별도로 동의하며 선택 분석 쿠키와는 다릅니다.</p><p className="mt-2">기존 초대·공유 결과 카드에는 닉네임과 선택이 링크에 포함될 수 있습니다. 링크 소지자는 내용을 읽거나 바꿀 수 있고 이미 공유된 사본은 결과함 삭제로 회수되지 않습니다. 민감한 정보는 넣지 마세요. SNS 자동 알림은 없습니다. 놀이용 콘텐츠이며 실제 우정·성격을 진단하지 않습니다. 닉네임·답변·결과함 열람 키는 분석 이벤트에 넣지 않습니다.</p></details>
+    <section className={styles.details}><h2 className="font-bold text-[var(--ink)]">이용 방법</h2><ol className="mt-2 list-decimal space-y-1 pl-5">{game.guide.steps.map(step=><li key={step}>{step}</li>)}</ol>
+      <h2 className="mt-6 font-bold text-[var(--ink)]">{game.guide.howTitle}</h2>{game.guide.how.map(text=><p key={text} className="mt-2">{text}</p>)}
+      <h2 className="mt-6 font-bold text-[var(--ink)]">자주 묻는 질문</h2>{game.guide.faq.map(item=><div key={item.q} className="mt-3"><h3 className="font-bold text-[var(--ink)]">{item.q}</h3><p>{item.a}</p></div>)}</section>
     <nav aria-label="다른 친구 놀이" className="mt-8 grid gap-3">{socialModes.filter(item=>item!==mode).map(item=><Link key={item} href={`/tools/${item}`} className="border-b border-current/15 py-3 text-sm font-bold">{socialGames[item].title} →</Link>)}<Link href="/tools/moon-compatibility" className="border-b border-current/15 py-3 text-sm font-bold">생일 달 궁합 카드 →</Link></nav>
   </div></main>;
 }

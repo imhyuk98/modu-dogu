@@ -292,6 +292,48 @@ export default function ReactionTest() {
               <li>반복적인 연습을 통해 점진적으로 개선할 수 있습니다</li>
             </ul>
           </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              측정 방법
+            </h2>
+            <ol className="text-gray-600 space-y-2 list-decimal pl-5">
+              <li>파란 &apos;시작&apos; 화면을 누르면 화면이 빨간색으로 바뀝니다.</li>
+              <li>빨간 화면은 1~5초 사이의 무작위 시간 동안 유지됩니다. 신호 시점을 예측할 수 없게 하기 위해서입니다.</li>
+              <li>초록색으로 바뀌는 순간 최대한 빨리 화면을 클릭하거나 터치합니다.</li>
+              <li>초록색이 되기 전에 누르면 &apos;너무 빨라요&apos;가 표시되고, 그 회차는 기록하지 않고 다시 측정합니다.</li>
+              <li>5회를 측정하면 평균 반응속도와 등급, 회차별 기록을 보여줍니다.</li>
+            </ol>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              결과 보는 법
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              등급은 5회 평균으로 정합니다. 150ms 이하는 번개, 200ms 이하는 매우 빠름, 250ms 이하는 빠름,
+              300ms 이하는 보통, 400ms 이하는 느림, 그보다 길면 거북이입니다.
+              측정값에는 사람의 반응 시간뿐 아니라 마우스·터치스크린의 입력 지연과 모니터 표시 지연도 함께 들어갑니다.
+              그래서 같은 사람이라도 기기나 브라우저가 바뀌면 결과가 달라질 수 있으니, 기록을 비교할 때는 같은 기기에서 측정하는 것이 좋습니다.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              자주 묻는 질문
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-medium text-gray-900">최고 기록은 어디에 저장되나요?</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                  가장 빠른 5회 평균만 이 브라우저의 로컬 저장소에 보관되며 서버로 전송되지 않습니다. 브라우저 데이터를 지우면 함께 사라집니다.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">왜 한 번이 아니라 5번을 측정하나요?</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                  한 번의 기록은 우연히 빠르거나 잠깐 놓쳐서 느릴 수 있습니다. 여러 번 측정한 평균이 실제 반응속도에 더 가깝습니다.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <RelatedTools current="reaction-test" />

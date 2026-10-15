@@ -179,6 +179,38 @@ export default function BombGamePage() {
             <li>폭탄이 터졌을 때 가지고 있던 사람이 랜덤 벌칙을 수행합니다.</li>
           </ol>
         </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">진행 팁</h2>
+          <ul className="text-gray-600 text-sm leading-relaxed space-y-2 list-disc pl-5">
+            <li>폭탄은 입력한 이름 순서대로 넘어가며, 마지막 사람 다음에는 다시 첫 번째 사람에게 돌아갑니다. 앉은 순서대로 이름을 입력하면 진행이 자연스럽습니다.</li>
+            <li>남은 시간은 화면에 표시되지 않습니다. 다만 터지기 약 5초 전부터 폭탄이 흔들리기 시작하니, 흔들리면 서둘러 넘기세요.</li>
+            <li>폭탄을 넘기기 전에 끝말잇기, 주제어 말하기, 퀴즈 정답 맞히기 같은 조건을 붙이면 더 긴장감 있게 즐길 수 있습니다.</li>
+            <li>&apos;다시 하기&apos;는 같은 명단으로 새 타이머를 정해 첫 번째 사람부터 다시 시작하고, &apos;설정으로&apos;는 참가자를 바꿀 수 있는 화면으로 돌아갑니다.</li>
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">자주 묻는 질문</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium text-gray-900">폭탄이 터지는 시간은 어떻게 정해지나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                게임을 시작할 때마다 5초부터 30초 사이의 시간이 무작위로 정해집니다. 이전 판의 시간과는 관계가 없어서 매번 언제 터질지 예측할 수 없습니다.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">벌칙은 몇 가지인가요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                20가지 벌칙 중 하나가 무작위로 나옵니다. 음주 관련 벌칙이 부담스럽다면 참가자끼리 미리 다른 벌칙으로 바꾸기로 정해 두세요.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">참가자 이름이 저장되나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                아니요. 명단은 현재 화면에서만 쓰이며 서버로 보내거나 기기에 저장하지 않습니다. 새로고침하면 다시 입력해야 합니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <RelatedTools current="bomb-game" />
