@@ -145,6 +145,42 @@ export default function UpDownGamePage() {
             <li>범위가 점점 좁아지며, 정답을 맞추는 사람이 벌칙!</li>
           </ol>
         </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">이용 방법</h2>
+          <ol className="text-gray-600 text-sm leading-relaxed space-y-2 list-decimal list-inside">
+            <li>&apos;게임 시작&apos;을 누르면 1~100 중 하나가 무작위로 정해집니다. 정답은 맞힐 때까지 화면에 나오지 않습니다.</li>
+            <li>차례가 된 사람이 숫자를 입력하고 &apos;확인&apos;이나 Enter를 누릅니다.</li>
+            <li>UP 또는 DOWN 결과에 따라 화면의 남은 범위가 자동으로 줄어듭니다.</li>
+            <li>남은 범위 밖의 숫자를 입력하면 안내 문구만 나오고 시도 횟수에는 들어가지 않습니다.</li>
+            <li>정답이 나오면 몇 번 만에 맞혔는지 표시됩니다. &apos;새 게임&apos;으로 언제든 새 숫자를 뽑을 수 있습니다.</li>
+          </ol>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">전략 팁</h2>
+          <p className="text-gray-600 leading-relaxed">
+            혼자 빨리 맞히는 것이 목표라면 남은 범위의 한가운데 숫자를 고르는 것이 가장 효율적입니다.
+            매번 범위가 절반씩 줄어들기 때문에 1~100에서는 최대 7번 안에 반드시 정답에 도달할 수 있습니다.
+            반대로 이 게임처럼 정답을 맞힌 사람이 벌칙을 받는 규칙이라면, 범위를 조금씩만 줄이는 숫자를 골라 정답을 다음 사람에게 미루는 것이 유리합니다.
+            범위가 좁아질수록 누구도 피하기 어려워져 마지막 몇 차례가 가장 긴장됩니다.
+          </p>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">자주 묻는 질문</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium text-gray-900">정답은 어떻게 정해지나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                게임을 시작할 때마다 브라우저의 난수로 1부터 100까지의 정수 중 하나를 고릅니다. 모든 숫자가 뽑힐 확률은 같습니다.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">기록이 저장되나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                아니요. 시도 횟수와 정답은 현재 판에서만 보이며, 새 게임을 시작하거나 페이지를 새로고침하면 초기화됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <RelatedTools current="updown-game" />

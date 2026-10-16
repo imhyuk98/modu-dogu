@@ -271,6 +271,45 @@ export default function MemoryGame() {
               <li>명상과 집중력 훈련도 기억력에 도움이 됩니다</li>
             </ul>
           </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              난이도와 등급 기준
+            </h2>
+            <p className="text-gray-600 leading-relaxed">
+              쉬움은 4x3 판에 6쌍, 보통은 4x4 판에 8쌍, 어려움은 6x4 판에 12쌍의 과일 그림이 나옵니다.
+              게임마다 사용할 그림과 카드 위치가 무작위로 섞입니다. 카드 2장을 뒤집을 때마다 시도 1회로 세며,
+              모두 맞히면 시도 횟수를 쌍 수로 나눈 값으로 등급을 매깁니다.
+              1.2배 이하는 천재, 1.5배 이하는 대단함, 2.0배 이하는 보통, 그보다 많으면 분발 필요입니다.
+              예를 들어 보통 난이도(8쌍)를 9회 안에 끝내면 천재 등급입니다.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              자주 묻는 질문
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-medium text-gray-900">최고 기록은 어디에 저장되나요?</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                  난이도별 최고 기록은 이 브라우저의 로컬 저장소에만 보관되며 서버로 전송되지 않습니다.
+                  시도 횟수가 더 적으면 새 기록이 되고, 횟수가 같으면 더 짧은 시간이 기록됩니다.
+                  브라우저 데이터를 지우거나 다른 기기에서 접속하면 기록이 보이지 않습니다.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">틀린 카드는 언제 다시 뒤집히나요?</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                  두 장의 그림이 다르면 잠시 보여준 뒤 1초가 안 되어 자동으로 다시 덮입니다. 그 사이에는 다른 카드를 누를 수 없으니, 짧게 보이는 그림을 놓치지 말고 기억해 두세요.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-900">게임 중간에 그만둘 수 있나요?</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                  &apos;게임 중단&apos;을 누르면 난이도 선택 화면으로 돌아갑니다. 중단한 판은 기록에 반영되지 않습니다.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <RelatedTools current="memory-game" />

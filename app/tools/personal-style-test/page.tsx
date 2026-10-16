@@ -63,6 +63,27 @@ export default function PersonalStyleTestPage() {
           <h2 className="calc-seo-title">결과 활용법</h2>
           <p className="text-sm leading-7 text-gray-600">퍼스널 컬러나 체형을 판정하는 검사가 아니라 지금 끌리는 시각 취향을 정리하는 도구입니다. 결과 키워드를 기존 패션 코디 추천의 스타일·색상 선택에 활용해보세요.</p>
         </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">이용 방법</h2>
+          <ol className="list-decimal space-y-2 pl-5 text-sm leading-7 text-gray-600">
+            <li>옷장, 액세서리, 사진 분위기, 쇼핑 기준, 첫 모임 옷차림, 방 소품까지 6개 질문에 답합니다.</li>
+            <li>질문마다 네 가지 보기 중 가장 끌리는 하나를 고르면 다음 질문으로 넘어갑니다. 사진을 올리거나 얼굴·체형 정보를 입력할 필요는 없습니다.</li>
+            <li>마지막 답을 고르면 스타일 유형과 설명, 키워드, 추천 색상과 코디 팁이 나옵니다.</li>
+            <li>결과 카드를 이미지로 저장하거나 링크로 공유할 수 있고, &lsquo;다시 테스트하기&rsquo;로 처음부터 다시 할 수 있습니다.</li>
+          </ol>
+        </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">네 가지 스타일과 결과 계산 방식</h2>
+          <p className="text-sm leading-7 text-gray-600">선과 여백을 중시하는 클린 아키텍트, 부드러운 색과 곡선의 소프트 블루머, 대비와 포인트를 즐기는 비비드 플레이어, 소재와 질감을 고르는 내추럴 큐레이터가 있습니다. 보기 하나가 한 유형에 2점씩 더해지며, 6개 답변 중 가장 많이 고른 유형이 결과가 됩니다. 점수가 같으면 클린, 소프트, 비비드, 내추럴 순서로 앞선 유형이 표시됩니다. 결과는 재미로 보는 취향 정리이며 어울림을 판정하거나 보장하지 않습니다.</p>
+        </section>
+        <section className="calc-seo-card mt-6">
+          <h2 className="calc-seo-title">자주 묻는 질문</h2>
+          <div className="space-y-4 text-sm leading-7 text-gray-600">
+            <div><h3 className="font-bold text-gray-900">퍼스널 컬러 진단과 같은가요?</h3><p>아니요. 피부톤이나 얼굴을 분석하지 않고, 고른 취향만으로 방향을 정리합니다. 정확한 컬러 진단이 필요하다면 전문가 상담을 받아 보세요.</p></div>
+            <div><h3 className="font-bold text-gray-900">내 답변이 저장되나요?</h3><p>답변은 저장하지 않습니다. 결과가 나오면 주소창에 결과 유형만 표시되어, 그 링크로 같은 결과 화면을 공유할 수 있습니다.</p></div>
+            <div><h3 className="font-bold text-gray-900">답을 바꾸고 싶어요.</h3><p>이전 질문으로 돌아가는 기능은 없습니다. 결과 화면에서 &lsquo;다시 테스트하기&rsquo;를 눌러 처음부터 다시 진행해 주세요.</p></div>
+          </div>
+        </section>
         <RelatedTools current="personal-style-test" />
       </div>
     </main>

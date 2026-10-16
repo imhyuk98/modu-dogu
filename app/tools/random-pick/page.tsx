@@ -155,6 +155,43 @@ export default function RandomPickPage() {
             <li>선택된 사람이 미션을 수행합니다!</li>
           </ol>
         </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">결과는 어떻게 정해지나요?</h2>
+          <p className="text-gray-600 leading-relaxed">
+            화면에서 이름이 빠르게 바뀌는 연출이 끝나면, 브라우저의 난수(Math.random)로 참가자 중 한 명을 고릅니다.
+            돌아가는 동안 보이는 순서와 마지막 결과는 서로 관계가 없어서, 이름을 입력한 순서나 누르는 타이밍으로 결과를 조절할 수 없습니다.
+            미션도 30가지 목록에서 같은 방식으로 하나가 무작위로 함께 뽑힙니다.
+          </p>
+          <ul className="mt-3 text-gray-600 text-sm leading-relaxed space-y-2 list-disc pl-5">
+            <li>같은 이름은 한 번만 추가됩니다. 동명이인은 &apos;민수A&apos;, &apos;민수B&apos;처럼 구분해 입력하세요.</li>
+            <li>이름 옆의 x 버튼으로 참가자를 뺄 수 있습니다.</li>
+            <li>&apos;다시 돌리기&apos;를 누르면 같은 참가자 명단으로 바로 다음 판을 진행합니다.</li>
+            <li>미션이 부담스럽다면 참가자끼리 합의해 다른 미션으로 바꾸거나 건너뛰어도 됩니다.</li>
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">자주 묻는 질문</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium text-gray-900">입력한 이름이 저장되나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                아니요. 참가자 명단은 현재 화면에서만 사용되며 서버로 보내거나 기기에 저장하지 않습니다. 페이지를 새로고침하면 명단이 비워집니다.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">몇 명까지 참여할 수 있나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                최소 2명부터 돌릴 수 있고 인원 제한은 따로 없습니다. 인원이 많을수록 한 사람이 뽑힐 확률은 그만큼 낮아집니다.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-900">같은 사람이 연속으로 뽑힐 수도 있나요?</h3>
+              <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                네. 매번 전체 참가자 중에서 새로 뽑기 때문에 직전에 뽑힌 사람도 다시 걸릴 수 있습니다. 한 번 뽑힌 사람을 빼고 싶다면 x 버튼으로 명단에서 지운 뒤 돌리세요.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <RelatedTools current="random-pick" />

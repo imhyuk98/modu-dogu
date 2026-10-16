@@ -91,6 +91,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.lang=location.pathname==='/en'||location.pathname.startsWith('/en/')?'en':'ko'" }} />
         <meta name="naver-site-verification" content="8856760dc5a9e429adfe0c65cb1bfe4206d6fdb2" />
+        <meta name="google-adsense-account" content="ca-pub-3204700288703280" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#a93d28" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
